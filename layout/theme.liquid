@@ -299,15 +299,19 @@
     </script>
     <style>
       @font-face {
-      font-family: 'Derma';
-      src: url('{{ "Derma.woff2" | asset_url }}') format('woff2');
-      font-display: swap;
-}
+        font-family: 'Derma';
+        src: url('{{ "Derma-E4zvr.ttf" | asset_url }}') format('truetype');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
 
-h1,h2,h3,h4,h5,h6 {
-  font-family: 'Derma', sans-serif !important;
-}
-</style>
+      .wf-logo,
+      .video-banner__overlay h2,
+      #wildfyre-footer .wf-wordmark span {
+        font-family: 'Derma', sans-serif !important;
+      }
+    </style>
   </head>
 
   <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
