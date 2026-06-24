@@ -1,308 +1,548 @@
-{{ 'section-collection-list.css' | asset_url | stylesheet_tag }}
-{{ 'component-card.css' | asset_url | stylesheet_tag }}
-{{ 'component-slider.css' | asset_url | stylesheet_tag }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fragrance Collections</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-{%- style -%}
-  .section-{{ section.id }}-padding {
-    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
-    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
-  }
+:root {
+  --white: #f9f6f1;
+  --dark: #0e0d0c;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-ui: 'Montserrat', sans-serif;
+}
 
-  @media screen and (min-width: 750px) {
-    .section-{{ section.id }}-padding {
-      padding-top: {{ section.settings.padding_top }}px;
-      padding-bottom: {{ section.settings.padding_bottom }}px;
-    }
-  }
-{%- endstyle -%}
+html, body {
+  background: #111;
+  color: var(--white);
+  font-family: var(--font-ui);
+  cursor: none;
+  overflow-x: hidden;
+}
 
-{%- liquid
-  assign columns_mobile_int = section.settings.columns_mobile | plus: 0
-  assign show_mobile_slider = false
-  if section.settings.swipe_on_mobile and section.blocks.size > columns_mobile_int
-    assign show_mobile_slider = true
-  endif
--%}
+#cursor {
+  position: fixed;
+  width: 10px; height: 10px;
+  background: #fff;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%,-50%);
+  mix-blend-mode: difference;
+  transition: width .18s, height .18s;
+}
+#cursor-ring {
+  position: fixed;
+  width: 40px; height: 40px;
+  border: 1.5px solid rgba(255,255,255,0.45);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%,-50%);
+}
+.hovering #cursor { width: 56px; height: 56px; }
+.hovering #cursor-ring { width: 76px; height: 76px; border-color: rgba(255,255,255,0.85); }
 
-<div class="color-{{ section.settings.color_scheme }} gradient">
-  <div class="collection-list-wrapper page-width isolate{% if show_mobile_slider %} page-width-desktop{% endif %}{% if section.settings.title == blank %} no-heading{% endif %}{% if section.settings.show_view_all == false or section.blocks.size > collections.size %} no-mobile-link{% endif %} section-{{ section.id }}-padding">
-    {%- unless section.settings.title == blank -%}
-      <div class="title-wrapper-with-link{% if show_mobile_slider %} title-wrapper--self-padded-tablet-down{% else %} title-wrapper--self-padded-mobile{% endif %} title-wrapper--no-top-margin">
-        <h2
-          id="SectionHeading-{{ section.id }}"
-          class="collection-list-title inline-richtext {{ section.settings.heading_size }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
-        >
-          {{ section.settings.title }}
-        </h2>
+.site-header {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 22px 40px;
+}
+.logo {
+  font-family: var(--font-display);
+  font-size: 30px;
+  letter-spacing: 0.18em;
+  color: #fff;
+  text-decoration: none;
+  mix-blend-mode: difference;
+}
+.header-nav { display: flex; gap: 28px; mix-blend-mode: difference; }
+.header-nav a {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: #fff; text-decoration: none;
+  opacity: 0.65; transition: opacity .2s;
+}
+.header-nav a:hover { opacity: 1; }
 
-        {%- if section.settings.show_view_all and show_mobile_slider -%}
-          <a
-            href="{{ routes.collections_url }}"
-            id="ViewAll-{{ section.id }}"
-            class="link underlined-link large-up-hide{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
-            aria-labelledby="ViewAll-{{ section.id }} SectionHeading-{{ section.id }}"
-          >
-            {{- 'sections.collection_list.view_all' | t -}}
-          </a>
-        {%- endif -%}
-      </div>
-    {%- endunless -%}
+#home { width: 100%; min-height: 100vh; }
 
-    <slider-component class="slider-mobile-gutter{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
-      <ul
-        class="collection-list contains-card contains-card--collection{% if settings.card_style == 'standard' %} contains-card--standard{% endif %} grid grid--{{ section.settings.columns_desktop }}-col-desktop grid--{{ section.settings.columns_mobile }}-col-tablet-down{% if section.settings.swipe_on_mobile %} slider slider--tablet grid--peek{% endif %} collection-list--{{ section.blocks.size }}-items"
-        id="Slider-{{ section.id }}"
-        role="list"
-      >
-        {%- liquid
-          assign columns = section.blocks.size
-          if columns > 3
-            assign columns = 3
-          endif
-        -%}
-        {%- for block in section.blocks -%}
-          <li
-            id="Slide-{{ section.id }}-{{ forloop.index }}"
-            class="collection-list__item grid__item{% if show_mobile_slider %} slider__slide{% endif %}{% if block.settings.collection.featured_image == nil %} collection-list__item--no-media{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
-            {{ block.shopify_attributes }}
-            {% if settings.animations_reveal_on_scroll %}
-              data-cascade
-              style="--animation-order: {{ forloop.index }};"
-            {% endif %}
-          >
-            {%- assign placeholder_image_index = forloop.index0 | modulo: 4 | plus: 1 -%}
-            {%- assign placeholder_image = 'collection-apparel-' | append: placeholder_image_index -%}
-            {% render 'card-collection',
-              card_collection: block.settings.collection,
-              media_aspect_ratio: section.settings.image_ratio,
-              columns: columns,
-              placeholder_image: placeholder_image
-            %}
-          </li>
-        {%- endfor -%}
-      </ul>
-      {%- if show_mobile_slider -%}
-        <div class="slider-buttons">
-          <button
-            type="button"
-            class="slider-button slider-button--prev"
-            name="previous"
-            aria-label="{{ 'general.slider.previous_slide' | t }}"
-          >
-            <span class="svg-wrapper">
-              {{- 'icon-caret.svg' | inline_asset_content -}}
-            </span>
-          </button>
-          <div class="slider-counter caption">
-            <span class="slider-counter--current">1</span>
-            <span aria-hidden="true"> / </span>
-            <span class="visually-hidden">{{ 'general.slider.of' | t }}</span>
-            <span class="slider-counter--total">{{ section.blocks.size }}</span>
-          </div>
-          <button
-            type="button"
-            class="slider-button slider-button--next"
-            name="next"
-            aria-label="{{ 'general.slider.next_slide' | t }}"
-          >
-            <span class="svg-wrapper">
-              {{- 'icon-caret.svg' | inline_asset_content -}}
-            </span>
-          </button>
+.row-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: 100%;
+  height: 100vh;
+  gap: 4px;
+}
+
+.panel {
+  position: relative;
+  overflow: hidden;
+  cursor: none;
+}
+
+.panel-bg {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  transition: transform .8s cubic-bezier(.25,.46,.45,.94);
+}
+.panel[data-g="women"] .panel-bg { background: linear-gradient(170deg,#b06040 0%,#e08060 40%,#f0a878 100%); }
+.panel[data-g="men"]   .panel-bg { background: linear-gradient(170deg,#1a1830 0%,#2e2850 50%,#5040a0 100%); }
+.panel[data-g="unisex"].panel-bg { background: linear-gradient(170deg,#b8b0a0 0%,#d0c8b8 50%,#e8e0d0 100%); }
+
+.panel-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: transform .8s cubic-bezier(.25,.46,.45,.94);
+  display: none;
+}
+.panel:hover .panel-bg,
+.panel:hover .panel-img { transform: scale(1.06); }
+
+.panel-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.05) 40%, rgba(0,0,0,0.52) 100%);
+  z-index: 2;
+  transition: background .45s;
+}
+.panel:hover .panel-overlay {
+  background: linear-gradient(to bottom, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.02) 40%, rgba(0,0,0,0.68) 100%);
+}
+
+.rcanvas {
+  position: absolute; inset: 0;
+  z-index: 3; pointer-events: none;
+  opacity: 0; transition: opacity .3s;
+}
+.panel:hover .rcanvas { opacity: 1; }
+
+.panel-title {
+  position: absolute;
+  top: 36px; left: 32px;
+  z-index: 5;
+  font-family: var(--font-display);
+  font-size: clamp(52px, 6.5vw, 110px);
+  letter-spacing: 0.04em;
+  line-height: 0.9;
+  color: #fff;
+  text-shadow: 0 2px 24px rgba(0,0,0,0.3);
+  pointer-events: none;
+}
+
+.panel-bottom {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  z-index: 5;
+  padding: 28px 32px 36px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.panel-sub {
+  font-size: 12px; font-weight: 500;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 6px;
+}
+.panel-cta-txt {
+  font-family: var(--font-display);
+  font-size: 18px;
+  letter-spacing: 0.12em;
+  color: #fff;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .35s .1s, transform .35s .1s;
+}
+.panel:hover .panel-cta-txt { opacity: 1; transform: translateY(0); }
+
+.panel-arrow {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  transform: scale(0.85);
+  opacity: 0;
+  transition: opacity .3s .15s, transform .3s .15s, background .2s;
+  text-decoration: none;
+}
+.panel:hover .panel-arrow { opacity: 1; transform: scale(1); }
+.panel-arrow:hover { background: #f0ece4; transform: scale(1.08) !important; }
+.panel-arrow svg { width: 20px; height: 20px; }
+
+.upload-btn {
+  position: absolute; top: 16px; right: 16px;
+  z-index: 10;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,255,255,0.22);
+  color: #fff;
+  font-family: var(--font-ui);
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  padding: 7px 13px;
+  display: flex; align-items: center; gap: 6px;
+  cursor: pointer;
+  opacity: 0; transition: opacity .3s, background .2s;
+  backdrop-filter: blur(8px);
+  border-radius: 2px;
+}
+.panel:hover .upload-btn { opacity: 1; }
+.upload-btn:hover { background: rgba(255,255,255,0.15); }
+.upload-btn svg { width: 12px; height: 12px; flex-shrink:0; }
+input[type="file"] { display: none; }
+
+.page { display: none; min-height: 100vh; background: #111; }
+.page.active { display: block; }
+
+.page-hero {
+  position: relative;
+  height: 62vh; overflow: hidden;
+  display: flex; align-items: flex-end;
+}
+.page-hero-bg {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center top;
+}
+.page-hero-placeholder { position: absolute; inset: 0; }
+.page[data-g="women"] .page-hero-placeholder { background: linear-gradient(160deg,#b06040,#e08060 50%,#f0a878); }
+.page[data-g="men"]   .page-hero-placeholder { background: linear-gradient(160deg,#1a1830,#2e2850 50%,#5040a0); }
+.page[data-g="unisex"].page-hero-placeholder { background: linear-gradient(160deg,#b8b0a0,#d0c8b8 50%,#e8e0d0); }
+
+.page-hero::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, #111 0%, rgba(17,17,17,.4) 55%, transparent 100%);
+  z-index: 2;
+}
+.page-hero-content { position: relative; z-index: 3; padding: 40px 56px; }
+.page-back {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  background: none; border: none; cursor: pointer;
+  margin-bottom: 14px; transition: color .2s;
+}
+.page-back:hover { color: #fff; }
+.page-title {
+  font-family: var(--font-display);
+  font-size: clamp(72px, 11vw, 140px);
+  letter-spacing: 0.05em; line-height: 0.9; color: #fff;
+}
+.page-tagline {
+  font-size: 14px; font-weight: 400;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.42);
+  margin-top: 10px;
+}
+.page-body { padding: 52px 56px 80px; }
+.section-label {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.3em; text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  padding-bottom: 14px; margin-bottom: 30px;
+}
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+.product-card {
+  border: 1px solid rgba(255,255,255,0.07);
+  padding: 24px 20px; cursor: pointer;
+  transition: border-color .3s, background .3s;
+}
+.product-card:hover { border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.04); }
+.prod-img {
+  width: 100%; aspect-ratio: 2/3;
+  background: rgba(255,255,255,0.04);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 10px;
+  letter-spacing: 0.18em; color: rgba(255,255,255,0.12); margin-bottom: 16px;
+}
+.prod-name { font-family: var(--font-display); font-size: 20px; letter-spacing: 0.06em; color: #fff; margin-bottom: 3px; }
+.prod-type { font-size: 11px; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.36); margin-bottom: 14px; }
+.prod-price { font-size: 14px; font-weight: 700; color: #fff; }
+
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: #111; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
+
+@media (max-width: 768px) {
+  .row-grid { grid-template-columns: 1fr; height: auto; }
+  .panel { min-height: 55vw; height: 52vw; }
+  .panel-title { font-size: 15vw; top: 20px; left: 20px; }
+  .panel-bottom { padding: 16px 20px 22px; }
+  .page-hero-content { padding: 28px 24px; }
+  .page-body { padding: 32px 24px 56px; }
+  .site-header { padding: 16px 20px; }
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<header class="site-header">
+  <a href="#" class="logo" onclick="showHome();return false;">MAISON</a>
+  <nav class="header-nav">
+    <a href="#" onclick="goPage('women');return false;">Women</a>
+    <a href="#" onclick="goPage('men');return false;">Men</a>
+    <a href="#" onclick="goPage('unisex');return false;">Unisex</a>
+  </nav>
+</header>
+
+<div id="home">
+  <div class="row-grid">
+
+    <!-- WOMEN -->
+    <div class="panel" data-g="women" onclick="goPage('women')">
+      <div class="panel-bg"></div>
+      <img class="panel-img" id="img-women" src="" alt="">
+      <canvas class="rcanvas" id="rc-women"></canvas>
+      <div class="panel-overlay"></div>
+      <label class="upload-btn" onclick="event.stopPropagation()" for="fu-women">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Change Photo
+      </label>
+      <input type="file" id="fu-women" accept="image/*" onchange="loadImg(this,'women')">
+      <div class="panel-title">WOMEN</div>
+      <div class="panel-bottom">
+        <div>
+          <div class="panel-sub">For Her · 16 Scents</div>
+          <div class="panel-cta-txt">Shop Now →</div>
         </div>
-      {%- endif -%}
-    </slider-component>
-
-    {%- if section.settings.show_view_all and section.blocks.size < collections.size -%}
-      <div
-        class="center collection-list-view-all{% if show_mobile_slider %} small-hide medium-hide{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
-        {% if settings.animations_reveal_on_scroll %}
-          data-cascade
-        {% endif %}
-      >
-        <a
-          href="{{ routes.collections_url }}"
-          class="button"
-          id="ViewAllButton-{{ section.id }}"
-          aria-labelledby="ViewAllButton-{{ section.id }} SectionHeading-{{ section.id }}"
-        >
-          {{- 'sections.collection_list.view_all' | t -}}
+        <a class="panel-arrow" href="#" onclick="event.preventDefault();goPage('women')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
       </div>
-    {%- endif -%}
+    </div>
+
+    <!-- MEN -->
+    <div class="panel" data-g="men" onclick="goPage('men')">
+      <div class="panel-bg"></div>
+      <img class="panel-img" id="img-men" src="" alt="">
+      <canvas class="rcanvas" id="rc-men"></canvas>
+      <div class="panel-overlay"></div>
+      <label class="upload-btn" onclick="event.stopPropagation()" for="fu-men">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Change Photo
+      </label>
+      <input type="file" id="fu-men" accept="image/*" onchange="loadImg(this,'men')">
+      <div class="panel-title">MEN</div>
+      <div class="panel-bottom">
+        <div>
+          <div class="panel-sub">For Him · 14 Scents</div>
+          <div class="panel-cta-txt">Shop Now →</div>
+        </div>
+        <a class="panel-arrow" href="#" onclick="event.preventDefault();goPage('men')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- UNISEX -->
+    <div class="panel" data-g="unisex" onclick="goPage('unisex')">
+      <div class="panel-bg"></div>
+      <img class="panel-img" id="img-unisex" src="" alt="">
+      <canvas class="rcanvas" id="rc-unisex"></canvas>
+      <div class="panel-overlay"></div>
+      <label class="upload-btn" onclick="event.stopPropagation()" for="fu-unisex">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Change Photo
+      </label>
+      <input type="file" id="fu-unisex" accept="image/*" onchange="loadImg(this,'unisex')">
+      <div class="panel-title">UNISEX</div>
+      <div class="panel-bottom">
+        <div>
+          <div class="panel-sub">For All · 12 Scents</div>
+          <div class="panel-cta-txt">Shop Now →</div>
+        </div>
+        <a class="panel-arrow" href="#" onclick="event.preventDefault();goPage('unisex')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
   </div>
 </div>
 
-{% schema %}
-{
-  "name": "t:sections.collection-list.name",
-  "tag": "section",
-  "class": "section section-collection-list",
-  "max_blocks": 15,
-  "disabled_on": {
-    "groups": ["header", "footer"]
-  },
-  "settings": [
-    {
-      "type": "inline_richtext",
-      "id": "title",
-      "default": "t:sections.collection-list.settings.title.default",
-      "label": "t:sections.collection-list.settings.title.label"
-    },
-    {
-      "type": "select",
-      "id": "heading_size",
-      "options": [
-        {
-          "value": "h2",
-          "label": "t:sections.all.heading_size.options__1.label"
-        },
-        {
-          "value": "h1",
-          "label": "t:sections.all.heading_size.options__2.label"
-        },
-        {
-          "value": "h0",
-          "label": "t:sections.all.heading_size.options__3.label"
-        },
-        {
-          "value": "hxl",
-          "label": "t:sections.all.heading_size.options__4.label"
-        },
-        {
-          "value": "hxxl",
-          "label": "t:sections.all.heading_size.options__5.label"
-        }
-      ],
-      "default": "h1",
-      "label": "t:sections.all.heading_size.label"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.collection-list.settings.header_layout.content"
-    },    
-    {
-      "type": "select",
-      "id": "image_ratio",
-      "options": [
-        {
-          "value": "adapt",
-          "label": "t:sections.collection-list.settings.image_ratio.options__1.label"
-        },
-        {
-          "value": "portrait",
-          "label": "t:sections.collection-list.settings.image_ratio.options__2.label"
-        },
-        {
-          "value": "square",
-          "label": "t:sections.collection-list.settings.image_ratio.options__3.label"
-        }
-      ],
-      "default": "square",
-      "label": "t:sections.collection-list.settings.image_ratio.label"
-    },
-    {
-      "type": "range",
-      "id": "columns_desktop",
-      "min": 1,
-      "max": 6,
-      "step": 1,
-      "default": 3,
-      "label": "t:sections.collection-list.settings.columns_desktop.label"
-    },
-    {
-      "type": "color_scheme",
-      "id": "color_scheme",
-      "label": "t:sections.all.colors.label",
-      "info": "t:sections.all.colors.has_cards_info",
-      "default": "scheme-1"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_view_all",
-      "default": false,
-      "label": "t:sections.collection-list.settings.show_view_all.label",
-      "info": "t:sections.collection-list.settings.show_view_all.info"   
-    },
-    {
-      "type": "header",
-      "content": "t:sections.collection-list.settings.header_mobile.content"
-    },
-    {
-      "type": "select",
-      "id": "columns_mobile",
-      "options": [
-        {
-          "value": "1",
-          "label": "t:sections.collection-list.settings.columns_mobile.options__1.label"
-        },
-        {
-          "value": "2",
-          "label": "t:sections.collection-list.settings.columns_mobile.options__2.label"
-        }
-      ],
-      "default": "1",
-      "label": "t:sections.collection-list.settings.columns_mobile.label"
-    },
-    {
-      "type": "checkbox",
-      "id": "swipe_on_mobile",
-      "default": false,
-      "label": "t:sections.collection-list.settings.swipe_on_mobile.label"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.all.padding.section_padding_heading"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "t:sections.all.padding.padding_top",
-      "default": 36
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "t:sections.all.padding.padding_bottom",
-      "default": 36
-    }
-  ],
-  "blocks": [
-    {
-      "type": "featured_collection",
-      "name": "t:sections.collection-list.blocks.featured_collection.name",
-      "settings": [
-        {
-          "type": "collection",
-          "id": "collection",
-          "label": "t:sections.collection-list.blocks.featured_collection.settings.collection.label"
-        }
-      ]
-    }
-  ],
-  "presets": [
-    {
-      "name": "t:sections.collection-list.presets.name",
-      "blocks": [
-        {
-          "type": "featured_collection"
-        },
-        {
-          "type": "featured_collection"
-        },
-        {
-          "type": "featured_collection"
-        }
-      ]
-    }
-  ]
+<!-- WOMEN PAGE -->
+<div id="page-women" class="page" data-g="women">
+  <div class="page-hero">
+    <div class="page-hero-placeholder"></div>
+    <img class="page-hero-bg" id="hero-women" src="" alt="" style="display:none">
+    <div class="page-hero-content">
+      <button class="page-back" onclick="showHome()">← All Collections</button>
+      <div class="page-title">WOMEN</div>
+      <p class="page-tagline">Floral · Musky · Sensual — crafted for the modern woman</p>
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="section-label">16 Fragrances · For Her</div>
+    <div class="products-grid" id="pg-women"></div>
+  </div>
+</div>
+
+<!-- MEN PAGE -->
+<div id="page-men" class="page" data-g="men">
+  <div class="page-hero">
+    <div class="page-hero-placeholder"></div>
+    <img class="page-hero-bg" id="hero-men" src="" alt="" style="display:none">
+    <div class="page-hero-content">
+      <button class="page-back" onclick="showHome()">← All Collections</button>
+      <div class="page-title">MEN</div>
+      <p class="page-tagline">Woody · Smoky · Bold — commanding presence, refined edge</p>
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="section-label">14 Fragrances · For Him</div>
+    <div class="products-grid" id="pg-men"></div>
+  </div>
+</div>
+
+<!-- UNISEX PAGE -->
+<div id="page-unisex" class="page" data-g="unisex">
+  <div class="page-hero">
+    <div class="page-hero-placeholder"></div>
+    <img class="page-hero-bg" id="hero-unisex" src="" alt="" style="display:none">
+    <div class="page-hero-content">
+      <button class="page-back" onclick="showHome()">← All Collections</button>
+      <div class="page-title">UNISEX</div>
+      <p class="page-tagline">Earthy · Fresh · Timeless — beyond boundaries</p>
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="section-label">12 Fragrances · For All</div>
+    <div class="products-grid" id="pg-unisex"></div>
+  </div>
+</div>
+
+<script>
+const cur = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', e => {
+  mx=e.clientX; my=e.clientY;
+  cur.style.left=mx+'px'; cur.style.top=my+'px';
+});
+(function animRing(){ rx+=(mx-rx)*.13; ry+=(my-ry)*.13;
+  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+})();
+document.querySelectorAll('.panel,.panel-arrow,.upload-btn,.page-back,.header-nav a,.product-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('hovering'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('hovering'));
+});
+
+function initRipple(panel, canvasId) {
+  const cv = document.getElementById(canvasId);
+  const ctx = cv.getContext('2d');
+  let drops=[], raf;
+  function resize(){ cv.width=panel.offsetWidth; cv.height=panel.offsetHeight; }
+  resize(); window.addEventListener('resize', resize);
+  panel.addEventListener('mousemove', e => {
+    const r = panel.getBoundingClientRect();
+    drops.push({ x:e.clientX-r.left, y:e.clientY-r.top, rad:0, a:0.3, spd:2+Math.random()*2.5 });
+    if(drops.length>14) drops.shift();
+  });
+  function draw(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    drops=drops.filter(d=>d.a>0.008);
+    drops.forEach(d=>{
+      ctx.beginPath(); ctx.arc(d.x,d.y,d.rad,0,Math.PI*2);
+      ctx.strokeStyle=`rgba(255,255,255,${d.a})`; ctx.lineWidth=1.2; ctx.stroke();
+      d.rad+=d.spd; d.a*=0.92;
+    });
+    raf=requestAnimationFrame(draw);
+  }
+  panel.addEventListener('mouseenter',()=>{ drops=[]; draw(); });
+  panel.addEventListener('mouseleave',()=>setTimeout(()=>cancelAnimationFrame(raf),900));
 }
-{% endschema %}
+document.querySelectorAll('.panel').forEach(p => initRipple(p, 'rc-'+p.dataset.g));
+
+function loadImg(input, g) {
+  const url = URL.createObjectURL(input.files[0]);
+  const img = document.getElementById('img-'+g);
+  img.src=url; img.style.display='block';
+  const hero = document.getElementById('hero-'+g);
+  if(hero){ hero.src=url; hero.style.display='block'; }
+}
+
+const prods = {
+  women:[
+    {n:'ROSA NOIR',t:'Eau de Parfum',p:'₹2,499'},
+    {n:'PETAL SILK',t:'Parfum',p:'₹3,199'},
+    {n:'VELVET BLOOM',t:'Eau de Parfum',p:'₹2,799'},
+    {n:'AMBER LACE',t:'Eau de Toilette',p:'₹1,999'},
+    {n:'SAFFRON MIST',t:'Parfum',p:'₹3,499'},
+    {n:'IVORY DUSK',t:'Eau de Parfum',p:'₹2,299'},
+  ],
+  men:[
+    {n:'NOIR CEDAR',t:'Eau de Parfum',p:'₹2,799'},
+    {n:'DARK OUD',t:'Parfum',p:'₹3,799'},
+    {n:'IRON MUSK',t:'Eau de Parfum',p:'₹2,499'},
+    {n:'STONE FOG',t:'Eau de Toilette',p:'₹1,999'},
+    {n:'TEAK & SMOKE',t:'Parfum',p:'₹3,299'},
+    {n:'OBSIDIAN',t:'Eau de Parfum',p:'₹2,699'},
+  ],
+  unisex:[
+    {n:'WHITE TEA',t:'Eau de Parfum',p:'₹2,599'},
+    {n:'VETIVER 01',t:'Parfum',p:'₹3,499'},
+    {n:'BERGAMOT AIR',t:'Eau de Toilette',p:'₹1,899'},
+    {n:'SALT & PINE',t:'Eau de Parfum',p:'₹2,799'},
+    {n:'DRIFTWOOD',t:'Parfum',p:'₹3,199'},
+    {n:'GREY MOSS',t:'Eau de Parfum',p:'₹2,399'},
+  ]
+};
+['women','men','unisex'].forEach(g=>{
+  const grid = document.getElementById('pg-'+g);
+  prods[g].forEach(p=>{
+    grid.innerHTML+=`<div class="product-card">
+      <div class="prod-img">[ PRODUCT ]</div>
+      <div class="prod-name">${p.n}</div>
+      <div class="prod-type">${p.t}</div>
+      <div class="prod-price">${p.p}</div>
+    </div>`;
+  });
+});
+
+function goPage(g) {
+  const home = document.getElementById('home');
+  home.style.transition='opacity .35s'; home.style.opacity='0';
+  setTimeout(()=>{
+    home.style.display='none'; home.style.opacity='';
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById('page-'+g).classList.add('active');
+    window.scrollTo({top:0});
+    history.pushState({g},'','#'+g);
+  },320);
+}
+function showHome() {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const home = document.getElementById('home');
+  home.style.display=''; home.style.opacity='0';
+  requestAnimationFrame(()=>{ home.style.transition='opacity .35s'; home.style.opacity='1'; });
+  history.pushState({},'','#');
+  window.scrollTo({top:0});
+}
+window.addEventListener('popstate', e=>{
+  if(e.state&&e.state.g) goPage(e.state.g); else showHome();
+});
+const h=location.hash.replace('#','');
+if(['women','men','unisex'].includes(h)) goPage(h);
+</script>
+</body>
+</html>

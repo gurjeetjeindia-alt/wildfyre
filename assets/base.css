@@ -3594,4 +3594,14 @@ details-disclosure > details {
   100% {
     transform: translateX(100%) scaleX(0);
   }
+html,
+body,
+*{
+  cursor:auto !important;
 }
+
+}
+
+@font-face { font-family: derma; src: url('https://cdn.shopify.com/s/files/1/0906/2835/8514/files/Derma-E4zvr_32bc0786-d25a-429c-99a9-166f1ce1ceef.ttf?v=1782290033'); } 
+
+

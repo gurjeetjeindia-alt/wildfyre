@@ -1,32 +1,12 @@
 <!doctype html>
 <html class="js" lang="{{ request.locale.iso_code }}">
   <head>
-    ```html
-<link rel="preload" href="https://cdn.shopify.com/s/files/1/0906/2835/8514/files/Derma-E4zvr.woff2?v=1780504373" as="font" type="font/woff2" crossorigin>
-
-<style>
-@font-face {
-  font-family: 'Derma';
-  src: url('https://cdn.shopify.com/s/files/1/0906/2835/8514/files/Derma-E4zvr.woff2?v=1780504373') format('woff2');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-h1, h2, h3, h4, h5, h6,
-p, span, div, ul, ol, li, a,
-button, input, select, option,
-label, legend, textarea, small {
-  font-family: 'Derma', sans-serif !important;
-}
-</style>
-```
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="theme-color" content="">
     <link rel="canonical" href="{{ canonical_url }}">
+    {% section 'custom-fonts' %}
 
     {%- if settings.favicon != blank -%}
       <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
@@ -317,6 +297,17 @@ label, legend, textarea, small {
         document.documentElement.classList.add('shopify-design-mode');
       }
     </script>
+    <style>
+      @font-face {
+      font-family: 'Derma';
+      src: url('{{ "Derma.woff2" | asset_url }}') format('woff2');
+      font-display: swap;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  font-family: 'Derma', sans-serif !important;
+}
+</style>
   </head>
 
   <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
@@ -393,7 +384,50 @@ label, legend, textarea, small {
     {%- if settings.cart_type == 'drawer' -%}
       <script src="{{ 'cart-drawer.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
-
     
-  </body> 
+{% if template == 'index' %}
+ 
+<style>
+.shopify-section-group-header-group.announcement-bar-section{
+height: 5px;
+}
+.header-wrapper{
+position: absolute;
+width: 100%;
+background: transparent;
+}
+.header-wrapper .header{
+margin-top: 20px;
+}
+</style>
+ 
+{% endif %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+const cursor = document.createElement('div');
+
+cursor.style.width = '20px';
+cursor.style.height = '20px';
+cursor.style.border = '2px solid black';
+cursor.style.borderRadius = '50%';
+cursor.style.position = 'fixed';
+cursor.style.pointerEvents = 'none';
+cursor.style.zIndex = '999999';
+cursor.style.left = '0px';
+cursor.style.top = '0px';
+
+document.body.appendChild(cursor);
+
+document.addEventListener('mousemove', function(e){
+
+cursor.style.left = e.clientX + 'px';
+cursor.style.top = e.clientY + 'px';
+
+});
+
+});
+</script>
+  </body>
 </html>

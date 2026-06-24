@@ -1,0 +1,210 @@
+{% comment %}
+  Capsule Logo Header — Transparent, Centered, Dissier-style
+{% endcomment %}
+
+<header class="site-header" id="SiteHeader">
+  <div class="site-header__inner">
+
+    <!-- Left Nav -->
+    <nav class="site-header__nav site-header__nav--left">
+      {% for link in linklists[section.settings.menu].links limit: 3 %}
+        <a href="{{ link.url }}" class="site-header__link">{{ link.title }}</a>
+      {% endfor %}
+    </nav>
+
+    <!-- Capsule Logo (Center) -->
+    <a href="{{ routes.root_url }}" class="site-header__logo-wrap" aria-label="{{ shop.name }}">
+      <span class="site-header__logo-text">
+        {% if section.settings.logo != blank %}
+          {{ section.settings.logo | image_tag: class: 'site-header__logo-img', alt: shop.name }}
+        {% else %}
+          {{ section.settings.logo_text | default: shop.name }}
+        {% endif %}
+      </span>
+    </a>
+
+    <!-- Right Nav -->
+    <nav class="site-header__nav site-header__nav--right">
+      {% for link in linklists[section.settings.menu].links offset: 3 limit: 3 %}
+        <a href="{{ link.url }}" class="site-header__link">{{ link.title }}</a>
+      {% endfor %}
+      <a href="{{ routes.cart_url }}" class="site-header__link site-header__cart">
+        Cart
+        {% if cart.item_count > 0 %}
+          <span class="site-header__cart-count">{{ cart.item_count }}</span>
+        {% endif %}
+      </a>
+    </nav>
+
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    /* Subtle fade to black at the very top so links stay readable over video */
+    background: linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, transparent 100%);
+  }
+
+  .site-header__inner {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 1.5rem 3rem;
+    gap: 1.5rem;
+  }
+
+  /* ── Navigation Links ── */
+  .site-header__nav {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .site-header__nav--right {
+    justify-content: flex-end;
+  }
+
+  .site-header__link {
+    color: #fff;
+    text-decoration: none;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.88;
+    transition: opacity 0.2s ease;
+  }
+
+  .site-header__link:hover {
+    opacity: 1;
+  }
+
+  .site-header__cart {
+    position: relative;
+  }
+
+  .site-header__cart-count {
+    position: absolute;
+    top: -6px;
+    right: -10px;
+    background: #fff;
+    color: #000;
+    font-size: 0.6rem;
+    font-weight: 700;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  /* ── Capsule Logo ── */
+  .site-header__logo-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .site-header__logo-text {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.55rem 2rem;
+    border: 1.5px solid rgba(255, 255, 255, 0.75);
+    border-radius: 999px; /* capsule pill shape */
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+
+    color: #fff;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    white-space: nowrap;
+
+    transition: background 0.25s ease, border-color 0.25s ease;
+  }
+
+  .site-header__logo-wrap:hover .site-header__logo-text {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 1);
+  }
+
+  /* If using an image logo inside capsule */
+  .site-header__logo-img {
+    max-height: 22px;
+    width: auto;
+    display: block;
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 749px) {
+    .site-header__inner {
+      padding: 1.2rem 1.2rem;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 0.5rem;
+    }
+
+    .site-header__nav--left {
+      display: none;
+    }
+
+    .site-header__nav--right {
+      gap: 1rem;
+    }
+
+    .site-header__nav--right .site-header__link:not(.site-header__cart) {
+      display: none;
+    }
+
+    .site-header__logo-text {
+      font-size: 0.95rem;
+      letter-spacing: 0.22em;
+      padding: 0.45rem 1.4rem;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Capsule Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo Image (optional — leave blank to use text)"
+    },
+    {
+      "type": "text",
+      "id": "logo_text",
+      "label": "Logo Text",
+      "default": "WILDFYRE"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Navigation Menu",
+      "default": "main-menu"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Capsule Header"
+    }
+  ]
+}
+{% endschema %}
