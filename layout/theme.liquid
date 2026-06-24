@@ -403,31 +403,5 @@ margin-top: 20px;
  
 {% endif %}
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-
-const cursor = document.createElement('div');
-
-cursor.style.width = '20px';
-cursor.style.height = '20px';
-cursor.style.border = '2px solid black';
-cursor.style.borderRadius = '50%';
-cursor.style.position = 'fixed';
-cursor.style.pointerEvents = 'none';
-cursor.style.zIndex = '999999';
-cursor.style.left = '0px';
-cursor.style.top = '0px';
-
-document.body.appendChild(cursor);
-
-document.addEventListener('mousemove', function(e){
-
-cursor.style.left = e.clientX + 'px';
-cursor.style.top = e.clientY + 'px';
-
-});
-
-});
-</script>
   </body>
 </html>

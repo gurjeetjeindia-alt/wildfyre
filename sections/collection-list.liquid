@@ -20,7 +20,7 @@ html, body {
   background: #111;
   color: var(--white);
   font-family: var(--font-ui);
-  cursor: none;
+  cursor: auto;
   overflow-x: hidden;
 }
 
@@ -34,6 +34,7 @@ html, body {
   transform: translate(-50%,-50%);
   mix-blend-mode: screen;
   transition: width .18s, height .18s;
+  display: none;
 }
 #cursor-ring {
   position: fixed;
@@ -43,6 +44,7 @@ html, body {
   pointer-events: none;
   z-index: 99998;
   transform: translate(-50%,-50%);
+  display: none;
 }
 .hovering #cursor { width: 56px; height: 56px; }
 .hovering #cursor-ring { width: 76px; height: 76px; border-color: rgba(255,255,255,0.85); }
@@ -83,7 +85,7 @@ html, body {
 .panel {
   position: relative;
   overflow: hidden;
-  cursor: none;
+  cursor: pointer;
 }
 
 .panel-bg {
