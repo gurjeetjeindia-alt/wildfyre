@@ -13,11 +13,11 @@
   left:0;
   width:100%;
   z-index:9999;
-  background:rgba(255,255,255,.98);
+  background:transparent;
   backdrop-filter:blur(14px);
   -webkit-backdrop-filter:blur(14px);
   transition:all var(--wf-transition);
-  border-bottom:1px solid rgba(0,0,0,.06);
+  border-bottom:1px solid rgba(255,255,255,.18);
 }
 
 .wf-header-inner{
@@ -44,7 +44,7 @@
 
 .wf-menu-link{
   text-decoration:none;
-  color:#111;
+  color:#fff;
   font-size:13px;
   letter-spacing:1.5px;
   text-transform:uppercase;
@@ -58,7 +58,7 @@
 
 .wf-logo{
   text-decoration:none;
-  color:#000;
+  color:#fff;
   font-size:var(--wf-logo-size);
   font-weight:400;
   letter-spacing:0;
@@ -72,10 +72,19 @@
   width:20px;
   height:20px;
   cursor:pointer;
+  color:#fff;
 }
 
 .wf-header.scrolled{
+  background:rgba(255,255,255,.98);
+  border-bottom:1px solid rgba(0,0,0,.06);
   box-shadow:0 10px 40px rgba(0,0,0,.08);
+}
+
+.wf-header.scrolled .wf-menu-link,
+.wf-header.scrolled .wf-logo,
+.wf-header.scrolled .wf-icon{
+  color:#111;
 }
 
 .wf-header.scrolled .wf-header-inner{
@@ -88,7 +97,7 @@
 }
 
 .wf-spacer{
-  height:160px;
+  height:0;
 }
 
 @media(max-width:991px){
@@ -117,7 +126,7 @@
   }
 
   .wf-spacer{
-    height:100px;
+    height:0;
   }
 }
 
@@ -125,6 +134,12 @@
   display:none;
   font-size:26px;
   cursor:pointer;
+  color:#fff;
+  transition:color var(--wf-transition);
+}
+
+.wf-header.scrolled .wf-mobile-menu{
+  color:#111;
 }
 
 @media(max-width:991px){
