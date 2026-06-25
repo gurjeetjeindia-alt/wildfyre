@@ -1,0 +1,271 @@
+<style>
+.collection-cards-section {
+  padding: 80px 40px;
+  background: #fff;
+}
+
+.collection-cards-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.collection-cards-title {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #111;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.collection-cards-description {
+  font-size: 15px;
+  color: #666;
+  line-height: 1.5;
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 48px;
+}
+
+.collection-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.collection-card {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f8f8f8;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  aspect-ratio: 3/4;
+}
+
+.collection-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+}
+
+.collection-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.collection-card:hover .collection-card-image {
+  transform: scale(1.05);
+}
+
+.collection-card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 32px 24px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.7));
+  color: #fff;
+}
+
+.collection-card-title {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin: 0 0 8px;
+}
+
+.collection-card-subtitle {
+  font-size: 14px;
+  font-weight: 400;
+  opacity: 0.9;
+  margin: 0;
+}
+
+.collection-card-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+@media(max-width: 989px) {
+  .collection-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media(max-width: 749px) {
+  .collection-cards-section {
+    padding: 60px 20px;
+  }
+  
+  .collection-cards-title {
+    font-size: 24px;
+  }
+  
+  .collection-cards-description {
+    font-size: 14px;
+    margin-bottom: 32px;
+  }
+  
+  .collection-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .collection-card {
+    aspect-ratio: 16/9;
+  }
+  
+  .collection-card-overlay {
+    padding: 24px 20px;
+  }
+  
+  .collection-card-title {
+    font-size: 18px;
+  }
+  
+  .collection-card:hover {
+    transform: none;
+  }
+}
+</style>
+
+<div class="collection-cards-section">
+  <div class="collection-cards-container">
+    <h2 class="collection-cards-title">{{ section.settings.title }}</h2>
+    {% if section.settings.description != blank %}
+      <p class="collection-cards-description">{{ section.settings.description }}</p>
+    {% endif %}
+    
+    <div class="collection-cards-grid">
+      {% for block in section.blocks %}
+        <div class="collection-card" {{ block.shopify_attributes }}>
+          {% if block.settings.collection != blank and block.settings.collection.image != blank %}
+            <a href="{{ block.settings.collection.url }}" class="collection-card-link" aria-label="{{ block.settings.collection.title }}"></a>
+            <img 
+              src="{{ block.settings.collection.image | image_url: width: 600 }}"
+              alt="{{ block.settings.collection.title }}"
+              class="collection-card-image"
+              loading="lazy"
+              width="600"
+              height="800"
+            >
+          {% elsif block.settings.image != blank %}
+            <a href="{{ block.settings.link }}" class="collection-card-link" aria-label="{{ block.settings.title }}"></a>
+            <img 
+              src="{{ block.settings.image | image_url: width: 600 }}"
+              alt="{{ block.settings.title }}"
+              class="collection-card-image"
+              loading="lazy"
+              width="600"
+              height="800"
+            >
+          {% else %}
+            <a href="{{ block.settings.link }}" class="collection-card-link" aria-label="{{ block.settings.title }}"></a>
+            <div style="width: 100%; height: 100%; background: #e0e0e0; display: flex; align-items: center; justify-content: center;">
+              <span style="color: #999; font-size: 14px;">No image</span>
+            </div>
+          {% endif %}
+          
+          <div class="collection-card-overlay">
+            <h3 class="collection-card-title">{{ block.settings.title }}</h3>
+            {% if block.settings.subtitle != blank %}
+              <p class="collection-card-subtitle">{{ block.settings.subtitle }}</p>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collection Cards",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "Explore Our Collections"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Section Description",
+      "default": "Discover our curated collections of premium fragrances"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection_card",
+      "name": "Collection Card",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection (optional - will use collection image)"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Custom Image (overrides collection image)"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Card Title",
+          "default": "Collection Name"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Card Subtitle",
+          "default": "View all products"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "default": "/collections/all"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Cards",
+      "blocks": [
+        {
+          "type": "collection_card",
+          "settings": {
+            "title": "Women",
+            "subtitle": "Elegant fragrances for her"
+          }
+        },
+        {
+          "type": "collection_card",
+          "settings": {
+            "title": "Men",
+            "subtitle": "Sophisticated scents for him"
+          }
+        },
+        {
+          "type": "collection_card",
+          "settings": {
+            "title": "Unisex",
+            "subtitle": "Fragrances for everyone"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
