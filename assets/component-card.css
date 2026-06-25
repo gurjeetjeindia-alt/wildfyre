@@ -3,6 +3,11 @@
   height: 100%;
   position: relative;
   text-decoration: none;
+  transition: transform 0.3s ease;
+}
+
+.card-wrapper:hover {
+  transform: translateY(-2px);
 }
 
 .card {
@@ -44,22 +49,16 @@
 .card--standard .card__inner {
   position: relative;
   box-sizing: border-box;
-  border-radius: var(--border-radius);
-  border: var(--border-width) solid rgba(var(--color-foreground), var(--border-opacity));
+  border-radius: 4px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: #fff;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
-.card--card:after,
-.card--standard .card__inner:after {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  width: calc(var(--border-width) * 2 + 100%);
-  height: calc(var(--border-width) * 2 + 100%);
-  top: calc(var(--border-width) * -1);
-  left: calc(var(--border-width) * -1);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-horizontal-offset) var(--shadow-vertical-offset) var(--shadow-blur-radius)
-    rgba(var(--color-shadow), var(--shadow-opacity));
+.card--card:hover,
+.card--standard .card__inner:hover {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  border-color: rgba(0,0,0,0.12);
 }
 
 /* Needed for gradient continuity with or without animation, the transform scopes the gradient to its container which happens already when animation are turned on */
@@ -77,7 +76,7 @@
   overflow: hidden;
   /* Fix for Safari border bug on hover */
   z-index: 0;
-  border-radius: calc(var(--border-radius) - var(--border-width) - var(--image-padding));
+  border-radius: 4px 4px 0 0;
 }
 
 .card--card .card__inner .card__media {
@@ -125,7 +124,7 @@
 .card__content {
   display: grid;
   grid-template-rows: minmax(0, 1fr) max-content minmax(0, 1fr);
-  padding: 1rem;
+  padding: 1.2rem 1rem;
   width: 100%;
   flex-grow: 1;
 }
@@ -136,7 +135,7 @@
 
 .card__information {
   grid-row-start: 2;
-  padding: 1.3rem 1rem;
+  padding: 0.8rem 0 0 0;
 }
 
 .card:not(.ratio) > .card__content {
@@ -294,6 +293,7 @@
   object-fit: cover;
   object-position: center center;
   width: 100%;
+  transition: transform 0.4s ease;
 }
 
 .card__inner:not(.ratio) > .card__content {
@@ -302,7 +302,11 @@
 
 .card__heading {
   margin-top: 0;
-  margin-bottom: 0;
+  margin-bottom: 0.4rem;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  line-height: 1.4;
 }
 
 .card__heading:last-child {
@@ -388,7 +392,7 @@
 
   .card:hover .media.media--hover-effect > img:first-child:only-child,
   .card-wrapper:hover .media.media--hover-effect > img:first-child:only-child {
-    transform: scale(1.03);
+    transform: scale(1.05);
   }
 
   .card-wrapper:hover .media.media--hover-effect > img:first-child:not(:only-child) {
@@ -471,11 +475,13 @@
 
 .card-information > * {
   line-height: calc(1 + 0.4 / var(--font-body-scale));
-  color: rgb(var(--color-foreground));
+  color: #111;
 }
 
 .card-information > .price {
-  color: rgb(var(--color-foreground));
+  color: #111;
+  font-weight: 600;
+  font-size: 15px;
 }
 
 .card--horizontal .card-information > .price {
@@ -591,5 +597,42 @@
 
   .grid__item:nth-child(8n) .product-card-wrapper:hover .shape--blob {
     clip-path: polygon(var(--shape--blob-5));
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .card__heading {
+    font-size: 13px;
+    font-weight: 500;
+  }
+  
+  .card-information > .price {
+    font-size: 14px;
+  }
+  
+  .card__content {
+    padding: 1rem 0.8rem;
+  }
+  
+  .card--card,
+  .card--standard .card__inner {
+    border-radius: 4px;
+  }
+  
+  .card-wrapper:hover {
+    transform: none;
+  }
+  
+  .card--card:hover,
+  .card--standard .card__inner:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  }
+  
+  .card-wrapper {
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .card__heading a {
+    -webkit-tap-highlight-color: rgba(0,0,0,0.1);
   }
 }
