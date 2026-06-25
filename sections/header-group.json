@@ -1,1 +1,47 @@
-{"name":"t:sections.header.name","type":"header","sections":{"header":{"type":"header","settings":{}},"video_banner_YDnFci":{"type":"video-banner","name":"Video Banner","settings":{"video":"shopify:\/\/files\/videos\/20594036-hd_1920_1080_25fps.mp4","video_url":"","mobile_video_url":"","heading":"WILDFYRE","text":"","text_color":"#ffffff","height_desktop":100,"height_mobile":80}}},"order":["header","video_banner_YDnFci"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.header.name",
+  "type": "header",
+  "sections": {
+    "header": {
+      "type": "header",
+      "disabled": true,
+      "settings": {}
+    },
+    "video_banner_YDnFci": {
+      "type": "video-banner",
+      "name": "Video Banner",
+      "settings": {
+        "video": "shopify://files/videos/20594036-hd_1920_1080_25fps.mp4",
+        "video_url": "",
+        "mobile_video_url": "",
+        "heading": "WILDFYRE",
+        "text": "",
+        "text_color": "#ffffff",
+        "height_desktop": 100,
+        "height_mobile": 80
+      }
+    },
+    "header_capsule_KQ8rBL": {
+      "type": "header-capsule",
+      "name": "Capsule Header",
+      "settings": {
+        "logo_text": "WILDFYRE",
+        "menu": "main-menu"
+      }
+    }
+  },
+  "order": [
+    "header",
+    "video_banner_YDnFci",
+    "header_capsule_KQ8rBL"
+  ]
+}
