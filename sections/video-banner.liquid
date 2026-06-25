@@ -133,17 +133,29 @@
 }
 
 .video-banner__overlay h2 {
-  font-size: clamp(3rem, 6vw, 6rem);
+  font-size: clamp(2rem, 5vw, 5rem);
   font-family: 'Derma', sans-serif;
   font-weight: 400;
   letter-spacing: 0;
   text-transform: uppercase;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .video-banner__text {
-  max-width: 700px;
-  font-size: 1.1rem;
+  max-width: 90%;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+@media(min-width:750px){
+  .video-banner__overlay h2 {
+    font-size: clamp(3rem, 6vw, 6rem);
+    margin-bottom: 20px;
+  }
+
+  .video-banner__text {
+    font-size: 1.1rem;
+  }
 }
 </style>
 

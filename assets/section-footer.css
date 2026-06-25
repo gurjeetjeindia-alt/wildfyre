@@ -161,6 +161,12 @@
   }
 }
 
+@media screen and (min-width: 750px) and (max-width: 989px) {
+  .footer-block__heading {
+    font-size: calc(var(--font-heading-scale) * 1.7rem);
+  }
+}
+
 .footer__list-social:empty,
 .footer-block--newsletter:empty {
   display: none;
