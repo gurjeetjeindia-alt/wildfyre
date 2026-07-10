@@ -598,11 +598,37 @@
           class="card__media {% if image_shape and image_shape != 'default' %} shape--{{ image_shape }} color-{{ settings.card_color_scheme }} gradient{% endif %}"
         >
           <div class="card__placeholder media media--transparent">
-            {%- if placeholder_image -%}
-              {{ placeholder_image | placeholder_svg_tag: 'placeholder-svg' }}
-            {%- else -%}
-              {{ 'product-apparel-2' | placeholder_svg_tag: 'placeholder-svg' }}
-            {% endif %}
+            {%- assign placeholder_cycle = 'collection-placeholder-white.png,collection-placeholder-navy.png,collection-placeholder-obsidian.png,collection-placeholder-sage.png,collection-placeholder-amber.png' | split: ',' -%}
+            {%- assign placeholder_seed = card_product.id | default: 0 -%}
+            {%- assign placeholder_index = placeholder_seed | modulo: placeholder_cycle.size -%}
+            {%- assign placeholder_asset = placeholder_cycle[placeholder_index] -%}
+            {%- case placeholder_index -%}
+              {%- when 0 -%}
+                {%- assign placeholder_name = 'LUNA' -%}
+                {%- assign placeholder_note = 'Frosted white musk with airy citrus and clean aldehydes.' -%}
+              {%- when 1 -%}
+                {%- assign placeholder_name = 'AURA NOCTIS' -%}
+                {%- assign placeholder_note = 'Deep navy woods with incense, amber, and quiet smoke.' -%}
+              {%- when 2 -%}
+                {%- assign placeholder_name = 'OBSIDIANA' -%}
+                {%- assign placeholder_note = 'Matte noir oud balanced by warm spice and a polished trail.' -%}
+              {%- when 3 -%}
+                {%- assign placeholder_name = 'ÉLAN' -%}
+                {%- assign placeholder_note = 'Sage vetiver with green florals and a crisp, luminous finish.' -%}
+              {%- else -%}
+                {%- assign placeholder_name = 'AURUM & OAK' -%}
+                {%- assign placeholder_note = 'Golden woods, soft amber, and a smooth skin-close warmth.' -%}
+            {%- endcase -%}
+            <img
+              src="{{ placeholder_asset | asset_url }}"
+              alt="{{ placeholder_name | escape }}"
+              loading="lazy"
+              class="card__placeholder-image"
+            >
+            <div class="card__placeholder-copy">
+              <span class="card__placeholder-name">{{ placeholder_name }}</span>
+              <span class="card__placeholder-note">{{ placeholder_note }}</span>
+            </div>
           </div>
         </div>
       </div>

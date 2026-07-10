@@ -139,12 +139,46 @@
       radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.72), rgba(240, 240, 240, 0.96) 56%, rgba(231, 226, 220, 1) 100%);
   }
 
-  .section-{{ section.id }}-padding .card__placeholder .placeholder-svg {
+  .section-{{ section.id }}-padding .card__placeholder-image {
     width: 100%;
     height: 100%;
     display: block;
     object-fit: cover;
+    object-position: center center;
     transform: scale(1.01);
+  }
+
+  .section-{{ section.id }}-padding .card__placeholder-copy {
+    position: absolute;
+    left: 1.6rem;
+    right: 1.6rem;
+    bottom: 1.6rem;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 1rem 1.2rem;
+    background: rgba(253, 248, 248, 0.68);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(28, 27, 27, 0.08);
+  }
+
+  .section-{{ section.id }}-padding .card__placeholder-name {
+    color: #121212;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.8rem, 1.3vw, 2.3rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  .section-{{ section.id }}-padding .card__placeholder-note {
+    color: rgba(28, 27, 27, 0.72);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.96rem;
+    line-height: 1.45;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
   .section-{{ section.id }}-padding .media--hover-effect img,
@@ -248,9 +282,9 @@
       text-align: left;
     }
 
-  .section-{{ section.id }}-padding .card__heading a {
-    font-size: 2rem;
-  }
+    .section-{{ section.id }}-padding .card__heading a {
+      font-size: 2rem;
+    }
 
     .section-{{ section.id }}-padding .card__note {
       left: 1.2rem;
@@ -258,6 +292,17 @@
       bottom: 1.2rem;
       padding: 1rem 1.1rem;
       font-size: 0.95rem;
+    }
+
+    .section-{{ section.id }}-padding .card__placeholder-copy {
+      left: 1.2rem;
+      right: 1.2rem;
+      bottom: 1.2rem;
+      padding: 0.9rem 1rem;
+    }
+
+    .section-{{ section.id }}-padding .card__placeholder-note {
+      font-size: 0.88rem;
     }
   }
 {%- endstyle -%}
