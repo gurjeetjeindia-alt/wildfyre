@@ -224,6 +224,34 @@
     letter-spacing: -0.03em;
   }
 
+  .section-{{ section.id }}-padding .editorial-title {
+    color: #121212;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(2rem, 1.6vw, 2.6rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+
+  .section-{{ section.id }}-padding .editorial-price {
+    margin: 0;
+    color: rgba(18, 18, 18, 0.82);
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-align: right;
+  }
+
+  .section-{{ section.id }}-padding .editorial-subtitle {
+    margin: 0.6rem 0 0;
+    color: rgba(28, 27, 27, 0.62);
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
   .section-{{ section.id }}-padding .price {
     justify-self: end;
     text-align: right;
@@ -436,7 +464,7 @@
               "
             >
               {% assign skip_card_product_styles = false %}
-              {%- for product in collection.products -%}
+            {%- for product in collection.products -%}
                 {% assign lazy_load = false %}
                 {%- if forloop.index > 2 -%}
                   {%- assign lazy_load = true -%}
@@ -463,6 +491,51 @@
                 </li>
                 {%- assign skip_card_product_styles = true -%}
               {%- endfor -%}
+
+              {%- if collection.handle == 'all' and collection.products_count < 6 -%}
+                {%- assign editorial_titles = 'LUNA|AURA NOCTIS|OBSIDIANA|ÉLAN|AURUM & OAK' | split: '|' -%}
+                {%- assign editorial_notes = 'Frosted white musk with airy citrus and clean aldehydes.|Deep navy woods with incense, amber, and quiet smoke.|Matte noir oud balanced by warm spice and a polished trail.|Sage vetiver with green florals and a crisp, luminous finish.|Golden woods, soft amber, and a smooth skin-close warmth.' | split: '|' -%}
+                {%- assign editorial_prices = '₹2,490|₹2,790|₹2,990|₹2,650|₹2,890' | split: '|' -%}
+                {%- assign editorial_subtitles = 'Eau de Parfum|Extrait de Parfum|Parfum Intense|Eau de Parfum|Eau de Parfum' | split: '|' -%}
+                {%- assign editorial_assets = 'collection-placeholder-white.png|collection-placeholder-navy.png|collection-placeholder-obsidian.png|collection-placeholder-sage.png|collection-placeholder-amber.png' | split: '|' -%}
+
+                {%- for editorial_index in (0..4) -%}
+                  <li class="grid__item editorial-card grid__item--collection-editorial">
+                    <article class="card-wrapper product-card-wrapper underline-links-hover editorial-product-card">
+                      <div class="card card--standard card--media color-{{ settings.card_color_scheme }} gradient">
+                        <div class="card__inner ratio">
+                          <div class="card__media">
+                            <div class="media media--transparent media--hover-effect">
+                              <img
+                                src="{{ editorial_assets[editorial_index] | asset_url }}"
+                                alt="{{ editorial_titles[editorial_index] | escape }}"
+                                loading="lazy"
+                                class="motion-reduce"
+                                width="1200"
+                                height="1500"
+                              >
+                            </div>
+                            <div class="card__note">
+                              {{ editorial_notes[editorial_index] }}
+                            </div>
+                          </div>
+                        </div>
+                        <div class="card__content">
+                          <div class="card__information">
+                            <h3 class="card__heading">
+                              <span class="full-unstyled-link editorial-title">
+                                {{ editorial_titles[editorial_index] }}
+                              </span>
+                            </h3>
+                            <p class="card__price editorial-price">{{ editorial_prices[editorial_index] }}</p>
+                          </div>
+                          <p class="card__subtitle editorial-subtitle">{{ editorial_subtitles[editorial_index] }}</p>
+                        </div>
+                      </div>
+                    </article>
+                  </li>
+                {%- endfor -%}
+              {%- endif -%}
             </ul>
 
             {%- if paginate.pages > 1 -%}
