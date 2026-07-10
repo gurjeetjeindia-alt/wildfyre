@@ -553,49 +553,64 @@
                 {%- assign skip_card_product_styles = true -%}
               {%- endfor -%}
 
-              {%- if collection.handle == 'all' and collection.products_count < 6 -%}
-                {%- assign editorial_titles = 'LUNA|AURA NOCTIS|OBSIDIANA|ÉLAN|AURUM & OAK' | split: '|' -%}
-                {%- assign editorial_notes = 'Frosted white musk with airy citrus and clean aldehydes.|Deep navy woods with incense, amber, and quiet smoke.|Matte noir oud balanced by warm spice and a polished trail.|Sage vetiver with green florals and a crisp, luminous finish.|Golden woods, soft amber, and a smooth skin-close warmth.' | split: '|' -%}
-                {%- assign editorial_prices = '₹2,490|₹2,790|₹2,990|₹2,650|₹2,890' | split: '|' -%}
-                {%- assign editorial_subtitles = 'Eau de Parfum|Extrait de Parfum|Parfum Intense|Eau de Parfum|Eau de Parfum' | split: '|' -%}
-                {%- assign editorial_assets = 'collection-placeholder-white.png|collection-placeholder-navy.png|collection-placeholder-obsidian.png|collection-placeholder-sage.png|collection-placeholder-amber.png' | split: '|' -%}
-                {%- assign editorial_urls = '/collections/men|/collections/perfumes|/collections/women|/collections/unisex|/collections/all' | split: '|' -%}
-
-                {%- for editorial_index in (0..4) -%}
-                  <li class="grid__item editorial-card grid__item--collection-editorial">
-                    <a href="{{ editorial_urls[editorial_index] }}" class="card-wrapper product-card-wrapper underline-links-hover editorial-product-link editorial-product-card">
-                      <div class="card card--standard card--media color-{{ settings.card_color_scheme }} gradient">
-                        <div class="card__inner ratio" style="--ratio-percent: 125%;">
-                          <div class="card__media">
-                            <div class="media media--transparent media--hover-effect">
-                              <img
-                                src="{{ editorial_assets[editorial_index] | asset_url }}"
-                                alt="{{ editorial_titles[editorial_index] | escape }}"
-                                loading="lazy"
-                                class="motion-reduce"
-                                width="1200"
-                                height="1500"
-                              >
-                            </div>
-                            <div class="card__note">
-                              {{ editorial_notes[editorial_index] }}
+              {%- if collection.handle == 'all' and collection.products_count < 6 and section.blocks.size > 0 -%}
+                {%- for block in section.blocks -%}
+                  {%- if block.type == 'editorial_card' -%}
+                    <li class="grid__item editorial-card grid__item--collection-editorial" {{ block.shopify_attributes }}>
+                      <a href="{{ block.settings.link | default: collection.url }}" class="card-wrapper product-card-wrapper underline-links-hover editorial-product-link editorial-product-card">
+                        <div class="card card--standard card--media color-{{ settings.card_color_scheme }} gradient">
+                          <div class="card__inner ratio" style="--ratio-percent: 125%;">
+                            <div class="card__media">
+                              <div class="media media--transparent media--hover-effect">
+                                {%- if block.settings.image != blank -%}
+                                  <img
+                                    srcset="
+                                      {%- if block.settings.image.width >= 165 -%}{{ block.settings.image | image_url: width: 165 }} 165w,{%- endif -%}
+                                      {%- if block.settings.image.width >= 360 -%}{{ block.settings.image | image_url: width: 360 }} 360w,{%- endif -%}
+                                      {%- if block.settings.image.width >= 533 -%}{{ block.settings.image | image_url: width: 533 }} 533w,{%- endif -%}
+                                      {%- if block.settings.image.width >= 720 -%}{{ block.settings.image | image_url: width: 720 }} 720w,{%- endif -%}
+                                      {%- if block.settings.image.width >= 940 -%}{{ block.settings.image | image_url: width: 940 }} 940w,{%- endif -%}
+                                      {%- if block.settings.image.width >= 1066 -%}{{ block.settings.image | image_url: width: 1066 }} 1066w,{%- endif -%}
+                                      {{ block.settings.image | image_url }} {{ block.settings.image.width }}w
+                                    "
+                                    src="{{ block.settings.image | image_url: width: 533 }}"
+                                    sizes="(min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 130 | divided_by: 4 }}px, (min-width: 990px) calc((100vw - 130px) / 4), (min-width: 750px) calc((100vw - 120px) / 3), calc((100vw - 35px) / 2)"
+                                    alt="{{ block.settings.image.alt | default: block.settings.title | escape }}"
+                                    loading="lazy"
+                                    class="motion-reduce"
+                                    width="{{ block.settings.image.width }}"
+                                    height="{{ block.settings.image.height }}"
+                                  >
+                                {%- else -%}
+                                  {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                                {%- endif -%}
+                              </div>
+                              {%- if block.settings.note != blank -%}
+                                <div class="card__note">
+                                  {{ block.settings.note }}
+                                </div>
+                              {%- endif -%}
                             </div>
                           </div>
-                        </div>
-                        <div class="card__content">
-                          <div class="card__information">
-                            <h3 class="card__heading">
-                              <span class="full-unstyled-link editorial-title">
-                                {{ editorial_titles[editorial_index] }}
-                              </span>
-                            </h3>
-                            <p class="card__price editorial-price">{{ editorial_prices[editorial_index] }}</p>
+                          <div class="card__content">
+                            <div class="card__information">
+                              <h3 class="card__heading">
+                                <span class="full-unstyled-link editorial-title">
+                                  {{ block.settings.title | escape }}
+                                </span>
+                              </h3>
+                              {%- if block.settings.price != blank -%}
+                                <p class="card__price editorial-price">{{ block.settings.price | escape }}</p>
+                              {%- endif -%}
+                            </div>
+                            {%- if block.settings.subtitle != blank -%}
+                              <p class="card__subtitle editorial-subtitle">{{ block.settings.subtitle | escape }}</p>
+                            {%- endif -%}
                           </div>
-                          <p class="card__subtitle editorial-subtitle">{{ editorial_subtitles[editorial_index] }}</p>
                         </div>
-                      </div>
-                    </a>
-                  </li>
+                      </a>
+                    </li>
+                  {%- endif -%}
                 {%- endfor -%}
               {%- endif -%}
             </ul>
@@ -617,6 +632,49 @@
 {
   "name": "t:sections.main-collection-product-grid.name",
   "class": "section",
+  "blocks": [
+    {
+      "type": "editorial_card",
+      "name": "Editorial card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "default": "Card title",
+          "label": "Title"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "default": "Card subtitle",
+          "label": "Subtitle"
+        },
+        {
+          "type": "text",
+          "id": "price",
+          "default": "Price",
+          "label": "Price"
+        },
+        {
+          "type": "textarea",
+          "id": "note",
+          "default": "Card note",
+          "label": "Note"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 5,
   "settings": [
     {
       "type": "range",
@@ -822,6 +880,18 @@
       "unit": "px",
       "label": "t:sections.all.padding.padding_bottom",
       "default": 36
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.main-collection-product-grid.name",
+      "blocks": [
+        { "type": "editorial_card" },
+        { "type": "editorial_card" },
+        { "type": "editorial_card" },
+        { "type": "editorial_card" },
+        { "type": "editorial_card" }
+      ]
     }
   ]
 }
