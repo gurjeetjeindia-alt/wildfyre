@@ -556,30 +556,56 @@
               {%- if collection.handle == 'all' and collection.products_count < 6 and section.blocks.size > 0 -%}
                 {%- for block in section.blocks -%}
                   {%- if block.type == 'editorial_card' -%}
+                    {%- assign editorial_product = block.settings.product -%}
+                    {%- assign editorial_image = block.settings.image -%}
+                    {%- assign editorial_link = block.settings.link | default: editorial_product.url | default: collection.url -%}
+                    {%- assign editorial_title = block.settings.title -%}
+                    {%- if editorial_product != blank -%}
+                      {%- assign editorial_title = editorial_product.title -%}
+                    {%- endif -%}
                     <li class="grid__item editorial-card grid__item--collection-editorial" {{ block.shopify_attributes }}>
-                      <a href="{{ block.settings.link | default: collection.url }}" class="card-wrapper product-card-wrapper underline-links-hover editorial-product-link editorial-product-card">
+                      <a href="{{ editorial_link }}" class="card-wrapper product-card-wrapper underline-links-hover editorial-product-link editorial-product-card">
                         <div class="card card--standard card--media color-{{ settings.card_color_scheme }} gradient">
                           <div class="card__inner ratio" style="--ratio-percent: 125%;">
                             <div class="card__media">
                               <div class="media media--transparent media--hover-effect">
-                                {%- if block.settings.image != blank -%}
+                                {%- if editorial_product != blank and editorial_product.featured_media != blank -%}
                                   <img
                                     srcset="
-                                      {%- if block.settings.image.width >= 165 -%}{{ block.settings.image | image_url: width: 165 }} 165w,{%- endif -%}
-                                      {%- if block.settings.image.width >= 360 -%}{{ block.settings.image | image_url: width: 360 }} 360w,{%- endif -%}
-                                      {%- if block.settings.image.width >= 533 -%}{{ block.settings.image | image_url: width: 533 }} 533w,{%- endif -%}
-                                      {%- if block.settings.image.width >= 720 -%}{{ block.settings.image | image_url: width: 720 }} 720w,{%- endif -%}
-                                      {%- if block.settings.image.width >= 940 -%}{{ block.settings.image | image_url: width: 940 }} 940w,{%- endif -%}
-                                      {%- if block.settings.image.width >= 1066 -%}{{ block.settings.image | image_url: width: 1066 }} 1066w,{%- endif -%}
-                                      {{ block.settings.image | image_url }} {{ block.settings.image.width }}w
+                                      {%- if editorial_product.featured_media.width >= 165 -%}{{ editorial_product.featured_media | image_url: width: 165 }} 165w,{%- endif -%}
+                                      {%- if editorial_product.featured_media.width >= 360 -%}{{ editorial_product.featured_media | image_url: width: 360 }} 360w,{%- endif -%}
+                                      {%- if editorial_product.featured_media.width >= 533 -%}{{ editorial_product.featured_media | image_url: width: 533 }} 533w,{%- endif -%}
+                                      {%- if editorial_product.featured_media.width >= 720 -%}{{ editorial_product.featured_media | image_url: width: 720 }} 720w,{%- endif -%}
+                                      {%- if editorial_product.featured_media.width >= 940 -%}{{ editorial_product.featured_media | image_url: width: 940 }} 940w,{%- endif -%}
+                                      {%- if editorial_product.featured_media.width >= 1066 -%}{{ editorial_product.featured_media | image_url: width: 1066 }} 1066w,{%- endif -%}
+                                      {{ editorial_product.featured_media | image_url }} {{ editorial_product.featured_media.width }}w
                                     "
-                                    src="{{ block.settings.image | image_url: width: 533 }}"
+                                    src="{{ editorial_product.featured_media | image_url: width: 533 }}"
                                     sizes="(min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 130 | divided_by: 4 }}px, (min-width: 990px) calc((100vw - 130px) / 4), (min-width: 750px) calc((100vw - 120px) / 3), calc((100vw - 35px) / 2)"
-                                    alt="{{ block.settings.image.alt | default: block.settings.title | escape }}"
+                                    alt="{{ editorial_product.featured_media.alt | default: editorial_title | escape }}"
                                     loading="lazy"
                                     class="motion-reduce"
-                                    width="{{ block.settings.image.width }}"
-                                    height="{{ block.settings.image.height }}"
+                                    width="{{ editorial_product.featured_media.width }}"
+                                    height="{{ editorial_product.featured_media.height }}"
+                                  >
+                                {%- elsif editorial_image != blank -%}
+                                  <img
+                                    srcset="
+                                      {%- if editorial_image.width >= 165 -%}{{ editorial_image | image_url: width: 165 }} 165w,{%- endif -%}
+                                      {%- if editorial_image.width >= 360 -%}{{ editorial_image | image_url: width: 360 }} 360w,{%- endif -%}
+                                      {%- if editorial_image.width >= 533 -%}{{ editorial_image | image_url: width: 533 }} 533w,{%- endif -%}
+                                      {%- if editorial_image.width >= 720 -%}{{ editorial_image | image_url: width: 720 }} 720w,{%- endif -%}
+                                      {%- if editorial_image.width >= 940 -%}{{ editorial_image | image_url: width: 940 }} 940w,{%- endif -%}
+                                      {%- if editorial_image.width >= 1066 -%}{{ editorial_image | image_url: width: 1066 }} 1066w,{%- endif -%}
+                                      {{ editorial_image | image_url }} {{ editorial_image.width }}w
+                                    "
+                                    src="{{ editorial_image | image_url: width: 533 }}"
+                                    sizes="(min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 130 | divided_by: 4 }}px, (min-width: 990px) calc((100vw - 130px) / 4), (min-width: 750px) calc((100vw - 120px) / 3), calc((100vw - 35px) / 2)"
+                                    alt="{{ editorial_image.alt | default: editorial_title | escape }}"
+                                    loading="lazy"
+                                    class="motion-reduce"
+                                    width="{{ editorial_image.width }}"
+                                    height="{{ editorial_image.height }}"
                                   >
                                 {%- else -%}
                                   {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
@@ -596,10 +622,12 @@
                             <div class="card__information">
                               <h3 class="card__heading">
                                 <span class="full-unstyled-link editorial-title">
-                                  {{ block.settings.title | escape }}
+                                  {{ editorial_title | escape }}
                                 </span>
                               </h3>
-                              {%- if block.settings.price != blank -%}
+                              {%- if editorial_product != blank -%}
+                                <p class="card__price editorial-price">{{ editorial_product.price | money }}</p>
+                              {%- elsif block.settings.price != blank -%}
                                 <p class="card__price editorial-price">{{ block.settings.price | escape }}</p>
                               {%- endif -%}
                             </div>
@@ -641,6 +669,11 @@
           "type": "image_picker",
           "id": "image",
           "label": "Image"
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
         },
         {
           "type": "text",
