@@ -19,35 +19,6 @@
     },
     "product-grid": {
       "type": "main-collection-product-grid",
-      "blocks": {
-        "editorial_card_MVjpQT": {
-          "type": "editorial_card",
-          "settings": {
-            "image": "shopify://shop_images/black-glass-perfume-bottle-and-spritzer.jpg",
-            "product": "dawn",
-            "title": "Dawn",
-            "subtitle": "new article",
-            "price": "999",
-            "note": "Card note",
-            "link": ""
-          }
-        },
-        "editorial_card_FXwYkW": {
-          "type": "editorial_card",
-          "settings": {
-            "product": "",
-            "title": "Card title",
-            "subtitle": "Card subtitle",
-            "price": "999",
-            "note": "Card note",
-            "link": ""
-          }
-        }
-      },
-      "block_order": [
-        "editorial_card_MVjpQT",
-        "editorial_card_FXwYkW"
-      ],
       "settings": {
         "products_per_page": 24,
         "columns_desktop": 3,
