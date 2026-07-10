@@ -14,50 +14,50 @@
         "editorial_card_1": {
           "type": "editorial_card",
           "settings": {
-            "title": "Card title",
-            "subtitle": "Card subtitle",
-            "price": "Price",
-            "note": "Card note",
+            "title": "Ombre Leather",
+            "subtitle": "Eau de Parfum",
+            "price": "999",
+            "note": "Deep leather with smoky woods and a warm amber trail.",
             "link": ""
           }
         },
         "editorial_card_2": {
           "type": "editorial_card",
           "settings": {
-            "title": "Card title",
-            "subtitle": "Card subtitle",
-            "price": "Price",
-            "note": "Card note",
+            "title": "Aurum & Oak",
+            "subtitle": "Eau de Parfum",
+            "price": "999",
+            "note": "Golden woods, soft amber, and a smooth skin-close warmth.",
             "link": ""
           }
         },
         "editorial_card_3": {
           "type": "editorial_card",
           "settings": {
-            "title": "Card title",
-            "subtitle": "Card subtitle",
-            "price": "Price",
-            "note": "Card note",
+            "title": "Obsidiana",
+            "subtitle": "Parfum Intense",
+            "price": "999",
+            "note": "Matte noir oud balanced by warm spice and a polished trail.",
             "link": ""
           }
         },
         "editorial_card_4": {
           "type": "editorial_card",
           "settings": {
-            "title": "Card title",
-            "subtitle": "Card subtitle",
-            "price": "Price",
-            "note": "Card note",
+            "title": "Aura Noctis",
+            "subtitle": "Extrait de Parfum",
+            "price": "999",
+            "note": "Deep navy woods with incense, amber, and quiet smoke.",
             "link": ""
           }
         },
         "editorial_card_5": {
           "type": "editorial_card",
           "settings": {
-            "title": "Card title",
-            "subtitle": "Card subtitle",
-            "price": "Price",
-            "note": "Card note",
+            "title": "Luna",
+            "subtitle": "Eau de Parfum",
+            "price": "999",
+            "note": "Frosted white musk with airy citrus and clean aldehydes.",
             "link": ""
           }
         }
