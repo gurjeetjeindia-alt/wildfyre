@@ -2,24 +2,150 @@
 {{ 'component-collection-hero.css' | asset_url | stylesheet_tag }}
 
 {%- style -%}
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap');
+
+  .section-{{ section.id }}-collection-hero {
+    background:
+      radial-gradient(circle at top left, rgba(176, 161, 141, 0.14), transparent 28%),
+      linear-gradient(180deg, #fdf8f8 0%, #faf6f2 100%);
+    border-bottom: 1px solid rgba(28, 27, 27, 0.08);
+  }
+
+  .section-{{ section.id }}-collection-hero .collection-hero__inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 7.2rem 5vw 4.8rem;
+  }
+
+  .section-{{ section.id }}-collection-hero .collection-hero__text-wrapper {
+    display: grid;
+    gap: 1.8rem;
+    align-content: start;
+    max-width: 72rem;
+  }
+
+  .section-{{ section.id }}-collection-hero .collection-hero__eyebrow {
+    margin: 0;
+    color: rgba(28, 27, 27, 0.55);
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+  }
+
+  .section-{{ section.id }}-collection-hero .collection-hero__title {
+    margin: 0;
+    color: #121212;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(4rem, 7vw, 8.6rem);
+    font-weight: 600;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+  }
+
+  .section-{{ section.id }}-collection-hero .collection-hero__description {
+    max-width: 54rem;
+    color: rgba(28, 27, 27, 0.72);
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(1.5rem, 1.2vw, 1.8rem);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .section-{{ section.id }}-collection-hero .collection-hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem 2rem;
+    margin-top: 0.8rem;
+  }
+
+  .section-{{ section.id }}-collection-hero .collection-hero__meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+    color: rgba(28, 27, 27, 0.72);
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .section-{{ section.id }}-collection-hero .collection-hero__meta-item::before {
+    content: '';
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 999px;
+    background: #b0a18d;
+    box-shadow: 0 0 0 0.5rem rgba(176, 161, 141, 0.12);
+    flex: none;
+  }
+
+  .section-{{ section.id }}-collection-hero .collection-hero__image-container {
+    margin-top: 4.8rem;
+    max-width: 100%;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.06);
+  }
+
+  .section-{{ section.id }}-collection-hero .collection-hero__image-container img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+
+  @media screen and (min-width: 990px) {
+    .section-{{ section.id }}-collection-hero .collection-hero__inner {
+      padding-top: 8.8rem;
+      padding-bottom: 6.4rem;
+    }
+
+    .section-{{ section.id }}-collection-hero .collection-hero__text-wrapper {
+      gap: 2rem;
+    }
+  }
+
   @media screen and (max-width: 749px) {
-    .collection-hero--with-image .collection-hero__inner {
-      padding-bottom: calc({{ settings.media_shadow_vertical_offset | at_least: 0 }}px + 2rem);
+    .section-{{ section.id }}-collection-hero .collection-hero__inner {
+      padding: 5.2rem 5vw 3.6rem;
+    }
+
+    .section-{{ section.id }}-collection-hero .collection-hero__title {
+      max-width: 10ch;
+    }
+
+    .section-{{ section.id }}-collection-hero .collection-hero__description {
+      font-size: 1.5rem;
     }
   }
 {%- endstyle -%}
 
-<div class="collection-hero{% if section.settings.show_collection_image and collection.image %} collection-hero--with-image{% endif %} color-{{ section.settings.color_scheme }} gradient">
-  <div class="collection-hero__inner page-width {% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
+<div class="collection-hero section-{{ section.id }}-collection-hero{% if section.settings.show_collection_image and collection.image %} collection-hero--with-image{% endif %} color-{{ section.settings.color_scheme }} gradient">
+  <div class="collection-hero__inner page-width{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
     <div class="collection-hero__text-wrapper">
+      <p class="collection-hero__eyebrow">Curated selections</p>
       <h1 class="collection-hero__title">
         <span class="visually-hidden">{{ 'sections.collection_template.title' | t }}: </span>
         {{- collection.title | escape -}}
       </h1>
 
-      {%- if section.settings.show_collection_description -%}
+      {%- if section.settings.show_collection_description and collection.description != blank -%}
         <div class="collection-hero__description rte">{{ collection.description }}</div>
       {%- endif -%}
+
+      <div class="collection-hero__meta" aria-label="Collection details">
+        <span class="collection-hero__meta-item">
+          {{ collection.products_count }} products
+        </span>
+        {%- if collection.all_tags.size > 0 -%}
+          <span class="collection-hero__meta-item">
+            Fragrance edits
+          </span>
+        {%- endif -%}
+      </div>
     </div>
 
     {%- if section.settings.show_collection_image and collection.image -%}
@@ -34,8 +160,8 @@
             {%- if collection.image.width >= 1500 -%}{{ collection.image | image_url: width: 1500 }} 1500w,{%- endif -%}
             {{ collection.image | image_url }} {{ collection.image.width }}w
           "
-          src="{{ collection.image | image_url: width: 750 }}"
-          sizes="(min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 | divided_by: 2 }}px, (min-width: 750px) calc(50vw - 130px), calc(50vw - 55px)"
+          src="{{ collection.image | image_url: width: 1500 }}"
+          sizes="(min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 }}px, 100vw"
           alt="{{ collection.image.alt | escape }}"
           width="{{ collection.image.width }}"
           height="{{ collection.image.height }}"
