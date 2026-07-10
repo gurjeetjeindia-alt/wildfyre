@@ -19,35 +19,6 @@
     },
     "product-grid": {
       "type": "main-collection-product-grid",
-      "blocks": {
-        "editorial_card_1": {
-          "type": "editorial_card",
-          "settings": {}
-        },
-        "editorial_card_2": {
-          "type": "editorial_card",
-          "settings": {}
-        },
-        "editorial_card_3": {
-          "type": "editorial_card",
-          "settings": {}
-        },
-        "editorial_card_4": {
-          "type": "editorial_card",
-          "settings": {}
-        },
-        "editorial_card_5": {
-          "type": "editorial_card",
-          "settings": {}
-        }
-      },
-      "block_order": [
-        "editorial_card_1",
-        "editorial_card_2",
-        "editorial_card_3",
-        "editorial_card_4",
-        "editorial_card_5"
-      ],
       "settings": {
         "products_per_page": 12,
         "columns_desktop": 3,
