@@ -148,6 +148,15 @@
     transform: scale(1.01);
   }
 
+  .section-{{ section.id }}-padding .card__media .media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    transform: scale(1.08);
+    transform-origin: center;
+  }
+
   .section-{{ section.id }}-padding .card__placeholder-copy {
     position: absolute;
     left: 1.6rem;
@@ -188,7 +197,7 @@
 
   .section-{{ section.id }}-padding .card-wrapper:hover .media--hover-effect img,
   .section-{{ section.id }}-padding .card-wrapper:hover .card__media img {
-    transform: scale(1.03);
+    transform: scale(1.12);
   }
 
   .section-{{ section.id }}-padding .card__content {
@@ -238,10 +247,11 @@
     background: linear-gradient(180deg, rgba(253, 248, 248, 0) 0%, rgba(253, 248, 248, 0.82) 100%);
     color: rgba(28, 27, 27, 0.76);
     font-family: 'Inter', sans-serif;
-    font-size: 1rem;
+    font-size: 0.96rem;
+    font-weight: 500;
     line-height: 1.45;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    text-transform: none;
     opacity: 0;
     transform: translateY(1rem);
     transition: opacity 240ms ease, transform 240ms ease;
