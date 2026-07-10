@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "banner": {
@@ -14,50 +23,56 @@
         "editorial_card_1": {
           "type": "editorial_card",
           "settings": {
-            "title": "Ombre Leather",
-            "subtitle": "Eau de Parfum",
-            "price": "999",
-            "note": "Deep leather with smoky woods and a warm amber trail.",
+            "image": "shopify://shop_images/pexels-omale03-33295344.jpg",
+            "product": "black-piano",
+            "title": "Card title",
+            "subtitle": "Card subtitle",
+            "price": "Price",
+            "note": "Card note",
             "link": ""
           }
         },
         "editorial_card_2": {
           "type": "editorial_card",
           "settings": {
-            "title": "Aurum & Oak",
-            "subtitle": "Eau de Parfum",
-            "price": "999",
-            "note": "Golden woods, soft amber, and a smooth skin-close warmth.",
+            "product": "",
+            "title": "Card title",
+            "subtitle": "Card subtitle",
+            "price": "Price",
+            "note": "Card note",
             "link": ""
           }
         },
         "editorial_card_3": {
           "type": "editorial_card",
           "settings": {
-            "title": "Obsidiana",
-            "subtitle": "Parfum Intense",
-            "price": "999",
-            "note": "Matte noir oud balanced by warm spice and a polished trail.",
+            "product": "",
+            "title": "Card title",
+            "subtitle": "Card subtitle",
+            "price": "Price",
+            "note": "Card note",
             "link": ""
           }
         },
         "editorial_card_4": {
           "type": "editorial_card",
           "settings": {
-            "title": "Aura Noctis",
-            "subtitle": "Extrait de Parfum",
-            "price": "999",
-            "note": "Deep navy woods with incense, amber, and quiet smoke.",
+            "product": "",
+            "title": "Card title",
+            "subtitle": "Card subtitle",
+            "price": "Price",
+            "note": "Card note",
             "link": ""
           }
         },
         "editorial_card_5": {
           "type": "editorial_card",
           "settings": {
-            "title": "Luna",
-            "subtitle": "Eau de Parfum",
-            "price": "999",
-            "note": "Frosted white musk with airy citrus and clean aldehydes.",
+            "product": "",
+            "title": "Card title",
+            "subtitle": "Card subtitle",
+            "price": "Price",
+            "note": "Card note",
             "link": ""
           }
         }
@@ -72,6 +87,7 @@
       "settings": {
         "products_per_page": 12,
         "columns_desktop": 3,
+        "columns_mobile": "2",
         "color_scheme": "scheme-1",
         "image_ratio": "portrait",
         "image_shape": "default",
@@ -82,7 +98,6 @@
         "enable_filtering": true,
         "filter_type": "horizontal",
         "enable_sorting": true,
-        "columns_mobile": "2",
         "padding_top": 36,
         "padding_bottom": 36
       }

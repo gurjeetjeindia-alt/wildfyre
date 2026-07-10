@@ -563,6 +563,7 @@
                     {%- if editorial_product != blank -%}
                       {%- assign editorial_title = editorial_product.title -%}
                     {%- endif -%}
+                    {%- if editorial_product != blank or editorial_image != blank -%}
                     <li class="grid__item editorial-card grid__item--collection-editorial" {{ block.shopify_attributes }}>
                       <a href="{{ editorial_link }}" class="card-wrapper product-card-wrapper underline-links-hover editorial-product-link editorial-product-card">
                         <div class="card card--standard card--media color-{{ settings.card_color_scheme }} gradient">
@@ -638,6 +639,7 @@
                         </div>
                       </a>
                     </li>
+                    {%- endif -%}
                   {%- endif -%}
                 {%- endfor -%}
               {%- endif -%}
@@ -678,25 +680,25 @@
         {
           "type": "text",
           "id": "title",
-          "default": "Card title",
+          "default": "",
           "label": "Title"
         },
         {
           "type": "text",
           "id": "subtitle",
-          "default": "Card subtitle",
+          "default": "",
           "label": "Subtitle"
         },
         {
           "type": "text",
           "id": "price",
-          "default": "999",
+          "default": "",
           "label": "Price"
         },
         {
           "type": "textarea",
           "id": "note",
-          "default": "Card note",
+          "default": "",
           "label": "Note"
         },
         {
