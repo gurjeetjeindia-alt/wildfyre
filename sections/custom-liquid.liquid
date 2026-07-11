@@ -24,12 +24,12 @@
       overflow-x: auto !important;
       overflow-y: hidden !important;
       width: 100%;
-      scroll-snap-type: x proximity;
-      scroll-behavior: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
       overscroll-behavior-x: contain;
-      touch-action: pan-x pan-y pinch-zoom;
+      touch-action: pan-x pinch-zoom;
     }
 
     [data-custom-liquid-section="{{ section.id }}"] .wf-split::-webkit-scrollbar {
@@ -68,88 +68,93 @@
     if (!rail) return;
 
     const mobileQuery = window.matchMedia('(max-width: 749px)');
-    let rafId = 0;
+    let intervalId = 0;
     let pauseTimer = 0;
-    let loopWidth = 0;
-    let paused = false;
+    let syncTimer = 0;
+    let currentIndex = 0;
+    let userInteracting = false;
     let initialized = false;
+    let slides = [];
 
     function isMobile() {
       return mobileQuery.matches;
     }
 
     function clearTimers() {
-      if (rafId) {
-        cancelAnimationFrame(rafId);
-        rafId = 0;
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = 0;
       }
       if (pauseTimer) {
         clearTimeout(pauseTimer);
         pauseTimer = 0;
       }
+      if (syncTimer) {
+        clearTimeout(syncTimer);
+        syncTimer = 0;
+      }
     }
 
-    function updateLoopWidth() {
-      loopWidth = 0;
-      if (!initialized || !isMobile()) return;
-      loopWidth = Math.floor(rail.scrollWidth / 2);
+    function getSlides() {
+      return Array.from(rail.children).filter((node) => node.classList && node.classList.contains('wf-panel'));
     }
 
-    function ensureInfiniteTrack() {
-      if (!isMobile() || initialized) return;
+    function syncIndexFromScroll() {
+      if (!slides.length) return;
 
-      const children = Array.from(rail.children);
-      if (!children.length) return;
+      const scrollLeft = rail.scrollLeft;
+      let closestIndex = 0;
+      let closestDistance = Infinity;
 
-      children.forEach((node) => {
-        rail.appendChild(node.cloneNode(true));
+      slides.forEach((slide, index) => {
+        const distance = Math.abs(slide.offsetLeft - scrollLeft);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = index;
+        }
       });
 
-      initialized = true;
-      updateLoopWidth();
+      currentIndex = closestIndex;
+    }
+
+    function scrollToIndex(index, behavior) {
+      if (!slides.length) return;
+
+      const normalizedIndex = ((index % slides.length) + slides.length) % slides.length;
+      currentIndex = normalizedIndex;
+
+      const slide = slides[normalizedIndex];
+      if (!slide) return;
+
+      rail.scrollTo({
+        left: slide.offsetLeft,
+        behavior,
+      });
     }
 
     function startAutoScroll() {
       clearTimers();
-      ensureInfiniteTrack();
-      updateLoopWidth();
+      if (!isMobile() || slides.length === 0) return;
 
-      const speed = 0.45;
-
-      const tick = () => {
-        if (!isMobile() || paused || !loopWidth) {
-          rafId = requestAnimationFrame(tick);
-          return;
-        }
-
-        rail.scrollLeft += speed;
-
-        if (rail.scrollLeft >= loopWidth) {
-          rail.scrollLeft -= loopWidth;
-        }
-
-        rafId = requestAnimationFrame(tick);
-      };
-
-      rafId = requestAnimationFrame(tick);
-    }
-
-    function stopAutoScroll() {
-      clearTimers();
+      intervalId = window.setInterval(() => {
+        if (!isMobile() || userInteracting || slides.length === 0) return;
+        scrollToIndex(currentIndex + 1, 'smooth');
+      }, 1500);
     }
 
     function resumeSoon() {
       if (!isMobile()) return;
       if (pauseTimer) clearTimeout(pauseTimer);
       pauseTimer = window.setTimeout(() => {
-        paused = false;
+        userInteracting = false;
+        syncIndexFromScroll();
       }, 700);
     }
 
     function bindInteractionPause() {
       rail.addEventListener('pointerdown', () => {
         if (!isMobile()) return;
-        paused = true;
+        userInteracting = true;
         if (pauseTimer) clearTimeout(pauseTimer);
       });
 
@@ -157,26 +162,41 @@
       rail.addEventListener('pointercancel', resumeSoon);
       rail.addEventListener('touchstart', () => {
         if (!isMobile()) return;
-        paused = true;
+        userInteracting = true;
         if (pauseTimer) clearTimeout(pauseTimer);
       }, { passive: true });
       rail.addEventListener('touchend', resumeSoon);
+
+      rail.addEventListener('scroll', () => {
+        if (!isMobile()) return;
+        if (syncTimer) clearTimeout(syncTimer);
+        syncTimer = window.setTimeout(() => {
+          if (!userInteracting) {
+            syncIndexFromScroll();
+          }
+        }, 80);
+      });
     }
 
     function refresh() {
-      stopAutoScroll();
+      clearTimers();
       if (!isMobile()) {
+        rail.style.scrollSnapType = '';
         rail.scrollLeft = 0;
         return;
       }
 
       if (!initialized) {
-        ensureInfiniteTrack();
         bindInteractionPause();
+        initialized = true;
       }
 
-      paused = false;
-      updateLoopWidth();
+      slides = getSlides();
+      if (!slides.length) return;
+
+      userInteracting = false;
+      syncIndexFromScroll();
+      scrollToIndex(currentIndex, 'auto');
       startAutoScroll();
     }
 
