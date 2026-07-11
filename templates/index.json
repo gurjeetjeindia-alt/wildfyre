@@ -42,7 +42,7 @@
     "featured_collection_NErq4q": {
       "type": "featured-collection",
       "custom_css": [
-        ".card__note {display: none; }"
+        ".card__note {display: none;}"
       ],
       "name": "t:sections.featured-collection.presets.name",
       "settings": {
@@ -73,6 +73,9 @@
     },
     "featured_collection_VzF7CW": {
       "type": "featured-collection",
+      "custom_css": [
+        ".card__note {display: none;}"
+      ],
       "name": "t:sections.featured-collection.presets.name",
       "settings": {
         "collection": "for-her",
@@ -102,6 +105,9 @@
     },
     "featured_collection_BVwEgU": {
       "type": "featured-collection",
+      "custom_css": [
+        ".card__note {display: none;}"
+      ],
       "name": "t:sections.featured-collection.presets.name",
       "settings": {
         "collection": "for-him",
@@ -131,6 +137,9 @@
     },
     "featured_collection_dgeygk": {
       "type": "featured-collection",
+      "custom_css": [
+        ".card__note {display: none; }"
+      ],
       "name": "t:sections.featured-collection.presets.name",
       "settings": {
         "collection": "best-sellers",
