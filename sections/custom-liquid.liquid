@@ -75,6 +75,10 @@
     let userInteracting = false;
     let initialized = false;
     let baseCount = 0;
+    let trackStart = 0;
+    let trackEnd = 0;
+    let loopWidth = 0;
+    let slideStep = 0;
     let slides = [];
 
     function isMobile() {
@@ -122,33 +126,6 @@
       return true;
     }
 
-    function normalizeIndex(index) {
-      if (!baseCount) return Math.max(0, index);
-
-      const loopStart = baseCount;
-      const loopEnd = baseCount * 2;
-      if (index < loopStart) return index + baseCount;
-      if (index >= loopEnd) return index - baseCount;
-      return index;
-    }
-
-    function jumpToIndex(index) {
-      if (!slides.length) return;
-
-      const targetIndex = Math.max(0, Math.min(slides.length - 1, index));
-      currentIndex = targetIndex;
-
-      const slide = slides[targetIndex];
-      if (!slide) return;
-
-      const previousSnap = rail.style.scrollSnapType;
-      rail.style.scrollSnapType = 'none';
-      rail.scrollLeft = slide.offsetLeft;
-      window.requestAnimationFrame(() => {
-        rail.style.scrollSnapType = previousSnap || '';
-      });
-    }
-
     function syncIndexFromScroll() {
       if (!slides.length) return;
 
@@ -167,53 +144,57 @@
       currentIndex = closestIndex;
     }
 
-    function scrollToIndex(index, behavior) {
+    function measureLoop() {
       if (!slides.length) return;
 
-      const clampedIndex = Math.max(0, Math.min(slides.length - 1, index));
-      currentIndex = clampedIndex;
+      const middleStart = baseCount;
+      const middleEnd = baseCount * 2;
+      const startSlide = slides[middleStart];
+      const endSlide = slides[middleEnd - 1];
 
-      const slide = slides[clampedIndex];
-      if (!slide) return;
+      trackStart = startSlide ? startSlide.offsetLeft : 0;
+      trackEnd = endSlide ? endSlide.offsetLeft + endSlide.offsetWidth : 0;
+      loopWidth = Math.max(0, trackEnd - trackStart);
 
-      rail.scrollTo({
-        left: slide.offsetLeft,
-        behavior,
-      });
+      if (baseCount > 1) {
+        const nextSlide = slides[middleStart + 1];
+        slideStep = nextSlide ? Math.max(1, nextSlide.offsetLeft - startSlide.offsetLeft) : startSlide.offsetWidth || 0;
+      } else {
+        slideStep = startSlide ? startSlide.offsetWidth : 0;
+      }
     }
 
     function startAutoScroll() {
       clearTimers();
-      if (!isMobile() || slides.length === 0) return;
+      if (!isMobile() || slides.length === 0 || !slideStep) return;
 
-      stepTimer = window.setTimeout(function tick() {
-        if (!isMobile() || userInteracting || slides.length === 0) return;
-        const nextIndex = currentIndex + 1;
-        if (nextIndex >= baseCount * 2) {
-          scrollToIndex(nextIndex, 'smooth');
-          window.setTimeout(() => {
-            if (!isMobile() || userInteracting) return;
-            if (currentIndex === nextIndex) {
-              jumpToIndex(nextIndex - baseCount);
-            }
-          }, 350);
-        } else if (nextIndex >= slides.length) {
-          jumpToIndex(baseCount || 0);
-        } else {
-          scrollToIndex(nextIndex, 'smooth');
-        }
-
+      stepTimer = window.setInterval(() => {
         if (!isMobile() || userInteracting) return;
-        stepTimer = window.setTimeout(tick, 1500);
+        rail.scrollBy({
+          left: slideStep,
+          behavior: 'smooth',
+        });
       }, 1500);
     }
 
-    function snapToLoopAnchor() {
-      if (!isMobile() || !slides.length || !baseCount) return;
+    function wrapScrollPosition() {
+      if (!isMobile() || !slides.length || !loopWidth) return;
 
-      const normalizedIndex = normalizeIndex(currentIndex);
-      if (normalizedIndex !== currentIndex) {
-        jumpToIndex(normalizedIndex);
+      const scrollLeft = rail.scrollLeft;
+      if (scrollLeft >= trackEnd) {
+        const previousSnap = rail.style.scrollSnapType;
+        rail.style.scrollSnapType = 'none';
+        rail.scrollLeft = scrollLeft - loopWidth;
+        window.requestAnimationFrame(() => {
+          rail.style.scrollSnapType = previousSnap || '';
+        });
+      } else if (scrollLeft < trackStart) {
+        const previousSnap = rail.style.scrollSnapType;
+        rail.style.scrollSnapType = 'none';
+        rail.scrollLeft = scrollLeft + loopWidth;
+        window.requestAnimationFrame(() => {
+          rail.style.scrollSnapType = previousSnap || '';
+        });
         return;
       }
     }
@@ -224,7 +205,7 @@
       pauseTimer = window.setTimeout(() => {
         userInteracting = false;
         syncIndexFromScroll();
-        snapToLoopAnchor();
+        wrapScrollPosition();
         startAutoScroll();
       }, 700);
     }
@@ -247,6 +228,7 @@
 
       rail.addEventListener('scroll', () => {
         if (!isMobile()) return;
+        wrapScrollPosition();
         if (syncTimer) clearTimeout(syncTimer);
         syncTimer = window.setTimeout(() => {
           if (!userInteracting) {
@@ -272,13 +254,14 @@
       slides = getSlides();
       if (!slides.length) return;
 
+      measureLoop();
       userInteracting = false;
-      if (!currentIndex || currentIndex < baseCount || currentIndex >= baseCount * 2) {
-        currentIndex = baseCount || 0;
+      if (!initialized || rail.scrollLeft < trackStart || rail.scrollLeft >= trackEnd) {
+        rail.scrollLeft = trackStart || 0;
       }
+
       syncIndexFromScroll();
-      currentIndex = normalizeIndex(currentIndex);
-      jumpToIndex(currentIndex);
+      wrapScrollPosition();
       startAutoScroll();
     }
 
