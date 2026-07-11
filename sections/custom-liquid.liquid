@@ -68,7 +68,7 @@
     if (!rail) return;
 
     const mobileQuery = window.matchMedia('(max-width: 749px)');
-    let rafId = 0;
+    let stepTimer = 0;
     let pauseTimer = 0;
     let syncTimer = 0;
     let currentIndex = 0;
@@ -79,7 +79,6 @@
     let trackEnd = 0;
     let loopWidth = 0;
     let slideStep = 0;
-    let lastFrameTime = 0;
     let wrapLock = false;
     let slides = [];
 
@@ -88,9 +87,9 @@
     }
 
     function clearTimers() {
-      if (rafId) {
-        cancelAnimationFrame(rafId);
-        rafId = 0;
+      if (stepTimer) {
+        clearInterval(stepTimer);
+        stepTimer = 0;
       }
       if (pauseTimer) {
         clearTimeout(pauseTimer);
@@ -169,33 +168,18 @@
     function startAutoScroll() {
       if (!isMobile() || slides.length === 0 || !slideStep) return;
 
-      if (rafId) return;
+      if (stepTimer) return;
 
-      const speed = slideStep / 1500;
-      lastFrameTime = 0;
-
-      const tick = (timestamp) => {
-        if (!isMobile() || !slides.length) {
-          rafId = 0;
-          return;
-        }
-
-        if (!lastFrameTime) {
-          lastFrameTime = timestamp;
-        }
-
-        const delta = timestamp - lastFrameTime;
-        lastFrameTime = timestamp;
-
+      stepTimer = window.setInterval(() => {
+        if (!isMobile() || !slides.length) return;
         if (!userInteracting && !wrapLock) {
-          rail.scrollLeft += speed * delta;
+          rail.scrollBy({
+            left: slideStep,
+            behavior: 'smooth',
+          });
           wrapScrollPosition();
         }
-
-        rafId = window.requestAnimationFrame(tick);
-      };
-
-      rafId = window.requestAnimationFrame(tick);
+      }, 2000);
     }
 
     function wrapScrollPosition() {
