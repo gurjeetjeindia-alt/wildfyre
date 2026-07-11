@@ -50,7 +50,7 @@
     scrollbar-width: none;
     cursor: grab;
     user-select: none;
-    touch-action: pan-y;
+    touch-action: pan-y pinch-zoom;
     overscroll-behavior-x: contain;
   }
 
@@ -232,13 +232,15 @@
         this.activePointerId = null;
         this.startClientX = 0;
         this.startScrollLeft = 0;
-        this.startX = 0;
-        this.scrollLeft = 0;
         this.lastClientX = 0;
         this.lastMoveTime = 0;
         this.dragThreshold = 4;
         this.didDrag = false;
         this.suppressClick = false;
+        this.velocityX = 0;
+        this.inertiaFrame = 0;
+        this.wheelFrame = 0;
+        this.wheelTargetScrollLeft = 0;
       }
 
       connectedCallback() {
@@ -257,7 +259,54 @@
         window.addEventListener('pointercancel', this.onPointerUp);
       }
 
+      clampScrollLeft(value) {
+        const maxScrollLeft = this.wrapper.scrollWidth - this.wrapper.clientWidth;
+        return Math.max(0, Math.min(maxScrollLeft, value));
+      }
+
+      stopInertia() {
+        if (this.inertiaFrame) {
+          cancelAnimationFrame(this.inertiaFrame);
+          this.inertiaFrame = 0;
+        }
+      }
+
+      stopWheelAnimation() {
+        if (this.wheelFrame) {
+          cancelAnimationFrame(this.wheelFrame);
+          this.wheelFrame = 0;
+        }
+      }
+
+      startInertia() {
+        this.stopInertia();
+
+        const step = () => {
+          this.velocityX *= 0.94;
+
+          if (Math.abs(this.velocityX) < 0.15) {
+            this.velocityX = 0;
+            this.inertiaFrame = 0;
+            return;
+          }
+
+          const nextScrollLeft = this.clampScrollLeft(this.wrapper.scrollLeft + this.velocityX);
+          if (nextScrollLeft === this.wrapper.scrollLeft) {
+            this.velocityX = 0;
+            this.inertiaFrame = 0;
+            return;
+          }
+
+          this.wrapper.scrollLeft = nextScrollLeft;
+          this.inertiaFrame = requestAnimationFrame(step);
+        };
+
+        this.inertiaFrame = requestAnimationFrame(step);
+      }
+
       startDrag(clientX, pointerId) {
+        this.stopInertia();
+        this.stopWheelAnimation();
         this.isDragging = true;
         this.didDrag = false;
         this.activePointerId = pointerId;
@@ -265,6 +314,7 @@
         this.startScrollLeft = this.wrapper.scrollLeft;
         this.lastClientX = clientX;
         this.lastMoveTime = performance.now();
+        this.velocityX = 0;
         this.suppressClick = false;
         this.wrapper.classList.add('is-dragging');
       }
@@ -296,11 +346,13 @@
         if (Math.abs(deltaX) < this.dragThreshold) return;
 
         this.didDrag = true;
-        this.wrapper.scrollLeft = this.startScrollLeft - deltaX;
+        this.wrapper.scrollLeft = this.clampScrollLeft(this.startScrollLeft - deltaX);
 
         const now = performance.now();
         const elapsed = now - this.lastMoveTime;
         if (elapsed > 0) {
+          const deltaFromLast = e.clientX - this.lastClientX;
+          this.velocityX = (-deltaFromLast / elapsed) * 16;
           this.lastClientX = e.clientX;
           this.lastMoveTime = now;
         }
@@ -328,6 +380,8 @@
           window.setTimeout(() => {
             this.suppressClick = false;
           }, 0);
+
+          this.startInertia();
         }
       }
 
@@ -341,25 +395,40 @@
       onWheel(e) {
         if (!this.wrapper) return;
 
-        const shouldTranslateVertically = Math.abs(e.deltaY) > Math.abs(e.deltaX);
-        if (!shouldTranslateVertically) return;
+        if (this.isDragging) return;
 
-        const maxScrollLeft = this.wrapper.scrollWidth - this.wrapper.clientWidth;
-        if (maxScrollLeft <= 0) return;
+        const useHorizontalIntent = Math.abs(e.deltaX) > Math.abs(e.deltaY);
+        const delta = useHorizontalIntent ? e.deltaX : e.deltaY;
+        if (delta === 0) return;
 
-        const nextScrollLeft = this.wrapper.scrollLeft + e.deltaY;
-        const clampedScrollLeft = Math.max(0, Math.min(maxScrollLeft, nextScrollLeft));
-        if (clampedScrollLeft === this.wrapper.scrollLeft) return;
+        this.stopWheelAnimation();
+        this.wheelTargetScrollLeft = this.clampScrollLeft(this.wrapper.scrollLeft + delta * 1.15);
 
         if (e.cancelable) {
           e.preventDefault();
         }
-        this.wrapper.scrollLeft = clampedScrollLeft;
+
+        const animateWheel = () => {
+          const diff = this.wheelTargetScrollLeft - this.wrapper.scrollLeft;
+
+          if (Math.abs(diff) < 0.5) {
+            this.wrapper.scrollLeft = this.wheelTargetScrollLeft;
+            this.wheelFrame = 0;
+            return;
+          }
+
+          this.wrapper.scrollLeft = this.clampScrollLeft(this.wrapper.scrollLeft + diff * 0.18);
+          this.wheelFrame = requestAnimationFrame(animateWheel);
+        };
+
+        this.wheelFrame = requestAnimationFrame(animateWheel);
       }
 
       disconnectedCallback() {
         if (!this.wrapper) return;
 
+        this.stopInertia();
+        this.stopWheelAnimation();
         this.wrapper.removeEventListener('pointerdown', this.onPointerDown);
         this.wrapper.removeEventListener('click', this.onClick, true);
         this.wrapper.removeEventListener('wheel', this.onWheel);
