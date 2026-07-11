@@ -270,7 +270,10 @@
         const x = pageX - this.wrapper.offsetLeft;
         const walk = (x - this.startX) * 1.0;
         
+        if (Math.abs(x - this.startX) > 5) {
         this.wrapper.scrollLeft = this.scrollLeft - walk;
+        }
+
 
         const now = Date.now();
         const dt = now - this.lastTime;
