@@ -190,16 +190,6 @@
         "accessibility_info": "Slideshow about our brand"
       }
     },
-    "custom_liquid_hMTQRi": {
-      "type": "custom-liquid",
-      "name": "SCROLLING TEXT",
-      "settings": {
-        "custom_liquid": "<style>\n.wildfyre-marquee-section{\n    width:100%;\n    background:#000;\n    overflow:hidden;\n    padding:10px 0;\n    border-top:px solid rgba(255,255,255,.08);\n    border-bottom:1px solid rgba(255,255,255,.08);\n}\n\n.wildfyre-marquee{\n    display:flex;\n    width:max-content;\n    animation:wildfyre-scroll 20s linear infinite;\n}\n\n.wildfyre-marquee:hover{\n    animation-play-state:paused;\n}\n\n.wildfyre-item{\n    color:#fff;\n    font-size:54px;\n    font-weight:500;\n    letter-spacing:.08em;\n    text-transform:uppercase;\n    white-space:nowrap;\n    padding:0 50px;\n    line-height:1;\n}\n\n.wildfyre-dot{\n    opacity:.35;\n    margin-left:30px;\n}\n\n@keyframes wildfyre-scroll{\n\n    0%{\n        transform:translateX(0);\n    }\n\n    100%{\n        transform:translateX(-50%);\n    }\n\n}\n\n@media(max-width:768px){\n\n.wildfyre-marquee-section{\n    padding:22px 0;\n}\n\n.wildfyre-item{\n    font-size:28px;\n    padding:0 30px;\n}\n\n.wildfyre-dot{\n    margin-left:30px;\n}\n\n}\n</style>\n\n<section class=\"wildfyre-marquee-section\">\n\n<div class=\"wildfyre-marquee\">\n\n<div class=\"wildfyre-item\">\nDESIGNER INSPIRED FRAGRANCES\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nCRAFTED IN FRANCE\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nLONG LASTING PERFORMANCE\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nLIMITED BATCH PRODUCTION\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nFREE SHIPPING ABOVE ₹999\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nPREMIUM GLASS BOTTLES\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nEAU DE PARFUM CONCENTRATION\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nMADE FOR MODERN ICONS\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<!-- Duplicate for seamless infinite scroll -->\n\n<div class=\"wildfyre-item\">\nDESIGNER INSPIRED FRAGRANCES\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nCRAFTED IN FRANCE\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nLONG LASTING PERFORMANCE\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nLIMITED BATCH PRODUCTION\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nFREE SHIPPING ABOVE ₹999\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nPREMIUM GLASS BOTTLES\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nEAU DE PARFUM CONCENTRATION\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nMADE FOR MODERN ICONS\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n</div>\n\n</section>",
-        "color_scheme": "",
-        "padding_top": 0,
-        "padding_bottom": 0
-      }
-    },
     "1783755980e5fcd4a4": {
       "type": "_blocks",
       "blocks": {
@@ -243,6 +233,16 @@
         "ai_gen_block_42638e0_gWTUnt"
       ],
       "settings": {}
+    },
+    "custom_liquid_hMTQRi": {
+      "type": "custom-liquid",
+      "name": "SCROLLING TEXT",
+      "settings": {
+        "custom_liquid": "<style>\n.wildfyre-marquee-section{\n    width:100%;\n    background:#000;\n    overflow:hidden;\n    padding:10px 0;\n    border-top:px solid rgba(255,255,255,.08);\n    border-bottom:1px solid rgba(255,255,255,.08);\n}\n\n.wildfyre-marquee{\n    display:flex;\n    width:max-content;\n    animation:wildfyre-scroll 20s linear infinite;\n}\n\n.wildfyre-marquee:hover{\n    animation-play-state:paused;\n}\n\n.wildfyre-item{\n    color:#fff;\n    font-size:54px;\n    font-weight:500;\n    letter-spacing:.08em;\n    text-transform:uppercase;\n    white-space:nowrap;\n    padding:0 50px;\n    line-height:1;\n}\n\n.wildfyre-dot{\n    opacity:.35;\n    margin-left:30px;\n}\n\n@keyframes wildfyre-scroll{\n\n    0%{\n        transform:translateX(0);\n    }\n\n    100%{\n        transform:translateX(-50%);\n    }\n\n}\n\n@media(max-width:768px){\n\n.wildfyre-marquee-section{\n    padding:22px 0;\n}\n\n.wildfyre-item{\n    font-size:28px;\n    padding:0 30px;\n}\n\n.wildfyre-dot{\n    margin-left:30px;\n}\n\n}\n</style>\n\n<section class=\"wildfyre-marquee-section\">\n\n<div class=\"wildfyre-marquee\">\n\n<div class=\"wildfyre-item\">\nDESIGNER INSPIRED FRAGRANCES\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nCRAFTED IN FRANCE\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nLONG LASTING PERFORMANCE\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nLIMITED BATCH PRODUCTION\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nFREE SHIPPING ABOVE ₹999\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nPREMIUM GLASS BOTTLES\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nEAU DE PARFUM CONCENTRATION\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nMADE FOR MODERN ICONS\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<!-- Duplicate for seamless infinite scroll -->\n\n<div class=\"wildfyre-item\">\nDESIGNER INSPIRED FRAGRANCES\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nCRAFTED IN FRANCE\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nLONG LASTING PERFORMANCE\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nLIMITED BATCH PRODUCTION\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nFREE SHIPPING ABOVE ₹999\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nPREMIUM GLASS BOTTLES\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nEAU DE PARFUM CONCENTRATION\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nMADE FOR MODERN ICONS\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n</div>\n\n</section>",
+        "color_scheme": "",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
     }
   },
   "order": [
