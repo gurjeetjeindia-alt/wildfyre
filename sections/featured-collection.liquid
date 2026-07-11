@@ -83,6 +83,26 @@
     opacity: 1;
   }
 
+  .collection .card__inner,
+  .collection .card--card,
+  .collection .card--standard .card__inner,
+  .collection .card__media,
+  .collection .card .media {
+    background-color: transparent !important;
+  }
+
+  .collection .card-wrapper:hover .media.media--hover-effect > img:first-child:only-child,
+  .collection .card-wrapper:hover .media.media--hover-effect > img:first-child:not(:only-child),
+  .collection .card-wrapper:hover .media.media--hover-effect > img + img {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  .collection .card-wrapper:hover .media.media--hover-effect > img + img {
+    opacity: 0 !important;
+  }
+
   @media(max-width: 749px) {
     .collection__title .title {
       font-size: 22px;

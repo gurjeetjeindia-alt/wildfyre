@@ -3458,6 +3458,16 @@ details-disclosure > details {
     z-index: 2;
   }
 
+  .animate--hover-3d-lift .collection .card-wrapper:hover .card--card:before,
+  .animate--hover-3d-lift .collection .card-wrapper:hover .card--standard .card__media:after,
+  .animate--hover-3d-lift .collection-list .card-wrapper:hover .card--card:before,
+  .animate--hover-3d-lift .collection-list .card-wrapper:hover .card--standard .card__media:after {
+    content: none !important;
+    opacity: 0 !important;
+    background-image: none !important;
+    mix-blend-mode: normal !important;
+  }
+
   :root {
     --easter-egg: none;
     --sparkle: url('./sparkle.gif');
@@ -3617,5 +3627,4 @@ body{
 }
 
 @font-face { font-family: derma; src: url('https://cdn.shopify.com/s/files/1/0906/2835/8514/files/Derma-E4zvr_32bc0786-d25a-429c-99a9-166f1ce1ceef.ttf?v=1782290033'); } 
-
 
