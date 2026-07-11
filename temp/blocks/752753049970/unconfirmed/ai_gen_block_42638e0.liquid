@@ -1,6 +1,608 @@
+{% doc %}
+  @prompt
+    Create a horizontally scrollable product carousel section for the featured collection. It should have large portrait-style product images, smooth drag-to-scroll on both desktop and mobile, minimal card info showing only product name and price, no pagination arrows or buttons — just free horizontal scrolling. The style should be clean, modern and editorial like a luxury fragrance brand. Cards should be tall with a portrait aspect ratio, consistent sizing, and subtle hover effects.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-carousel-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.section_padding }}px 0;
+  }
+
+  .ai-carousel-container-{{ ai_gen_id }} {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .ai-carousel-header-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: {{ block.settings.header_spacing }}px;
+    padding: 0 20px;
+  }
+
+  .ai-carousel-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    color: {{ block.settings.title_color }};
+    margin: 0 0 12px;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .ai-carousel-subtitle-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subtitle_size }}px;
+    color: {{ block.settings.subtitle_color }};
+    margin: 0;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  .ai-carousel-scroll-wrapper-{{ ai_gen_id }} {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    cursor: grab;
+    user-select: none;
+  }
+
+  .ai-carousel-scroll-wrapper-{{ ai_gen_id }}::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ai-carousel-scroll-wrapper-{{ ai_gen_id }}.is-dragging {
+    cursor: grabbing;
+  }
+
+  .ai-carousel-track-{{ ai_gen_id }} {
+    display: flex;
+    gap: {{ block.settings.card_gap }}px;
+    padding: 0 {{ block.settings.edge_padding }}px;
+    width: max-content;
+  }
+
+  .ai-carousel-card-{{ ai_gen_id }} {
+    flex-shrink: 0;
+    width: {{ block.settings.card_width }}px;
+    background-color: {{ block.settings.card_background }};
+    border-radius: {{ block.settings.card_border_radius }}px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .ai-carousel-card-{{ ai_gen_id }}:hover {
+    transform: translateY(-{{ block.settings.hover_lift }}px);
+    box-shadow: 0 {{ block.settings.hover_shadow_offset }}px {{ block.settings.hover_shadow_blur }}px rgba(0, 0, 0, {{ block.settings.hover_shadow_opacity }});
+  }
+
+  .ai-carousel-card-link-{{ ai_gen_id }} {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .ai-carousel-image-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    padding-bottom: {{ block.settings.image_aspect_ratio }}%;
+    overflow: hidden;
+    background-color: #f5f5f5;
+  }
+
+  .ai-carousel-image-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .ai-carousel-card-{{ ai_gen_id }}:hover .ai-carousel-image-{{ ai_gen_id }} {
+    transform: scale(1.05);
+  }
+
+  .ai-carousel-card-info-{{ ai_gen_id }} {
+    padding: {{ block.settings.card_info_padding }}px;
+    text-align: {{ block.settings.text_alignment }};
+  }
+
+  .ai-carousel-product-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.product_title_size }}px;
+    color: {{ block.settings.product_title_color }};
+    margin: 0 0 8px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    line-height: 1.3;
+  }
+
+  .ai-carousel-product-price-{{ ai_gen_id }} {
+    font-size: {{ block.settings.product_price_size }}px;
+    color: {{ block.settings.product_price_color }};
+    margin: 0;
+    font-weight: 300;
+    letter-spacing: 0.03em;
+  }
+
+  .ai-carousel-empty-state-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+    font-size: 16px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-carousel-card-{{ ai_gen_id }} {
+      width: {{ block.settings.card_width_mobile }}px;
+    }
+
+    .ai-carousel-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.title_size | times: 0.8 }}px;
+    }
+
+    .ai-carousel-subtitle-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subtitle_size | times: 0.85 }}px;
+    }
+  }
+{% endstyle %}
+
+<product-carousel-{{ ai_gen_id }}
+  class="ai-carousel-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-carousel-container-{{ ai_gen_id }}">
+    {% if block.settings.show_header %}
+      <div class="ai-carousel-header-{{ ai_gen_id }}">
+        {% if block.settings.title != blank %}
+          <h2 class="ai-carousel-title-{{ ai_gen_id }}">{{ block.settings.title }}</h2>
+        {% endif %}
+        {% if block.settings.subtitle != blank %}
+          <p class="ai-carousel-subtitle-{{ ai_gen_id }}">{{ block.settings.subtitle }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if block.settings.collection != blank and block.settings.collection.products.size > 0 %}
+      <div class="ai-carousel-scroll-wrapper-{{ ai_gen_id }}" data-carousel-wrapper>
+        <div class="ai-carousel-track-{{ ai_gen_id }}">
+          {% for product in block.settings.collection.products limit: block.settings.products_limit %}
+            <div class="ai-carousel-card-{{ ai_gen_id }}">
+              <a href="{{ product.url }}" class="ai-carousel-card-link-{{ ai_gen_id }}">
+                <div class="ai-carousel-image-wrapper-{{ ai_gen_id }}">
+                  {% if product.featured_image %}
+                    <img
+                      src="{{ product.featured_image | image_url: width: 800 }}"
+                      alt="{{ product.featured_image.alt | escape }}"
+                      class="ai-carousel-image-{{ ai_gen_id }}"
+                      loading="lazy"
+                      width="800"
+                      height="{{ 800 | times: block.settings.image_aspect_ratio | divided_by: 100 }}"
+                    >
+                  {% else %}
+                    <div class="ai-carousel-image-wrapper-{{ ai_gen_id }}">
+                      {{ 'product-1' | placeholder_svg_tag }}
+                    </div>
+                  {% endif %}
+                </div>
+                <div class="ai-carousel-card-info-{{ ai_gen_id }}">
+                  <h3 class="ai-carousel-product-title-{{ ai_gen_id }}">{{ product.title }}</h3>
+                  <div class="ai-carousel-product-price-{{ ai_gen_id }}">{{ product.price | money }}</div>
+                </div>
+              </a>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% else %}
+      <div class="ai-carousel-empty-state-{{ ai_gen_id }}">
+        Next, select a collection to display products
+      </div>
+    {% endif %}
+  </div>
+</product-carousel-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class ProductCarousel{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.wrapper = null;
+        this.isDragging = false;
+        this.startX = 0;
+        this.scrollLeft = 0;
+        this.velocity = 0;
+        this.lastX = 0;
+        this.lastTime = 0;
+        this.animationFrame = null;
+      }
+
+      connectedCallback() {
+        this.wrapper = this.querySelector('[data-carousel-wrapper]');
+        if (!this.wrapper) return;
+
+        this.setupEventListeners();
+      }
+
+      setupEventListeners() {
+        this.wrapper.addEventListener('mousedown', this.handleDragStart.bind(this));
+        this.wrapper.addEventListener('mousemove', this.handleDragMove.bind(this));
+        this.wrapper.addEventListener('mouseup', this.handleDragEnd.bind(this));
+        this.wrapper.addEventListener('mouseleave', this.handleDragEnd.bind(this));
+
+        this.wrapper.addEventListener('touchstart', this.handleDragStart.bind(this), { passive: true });
+        this.wrapper.addEventListener('touchmove', this.handleDragMove.bind(this), { passive: true });
+        this.wrapper.addEventListener('touchend', this.handleDragEnd.bind(this));
+
+        this.wrapper.addEventListener('click', this.handleClick.bind(this), true);
+      }
+
+      handleDragStart(e) {
+        this.isDragging = true;
+        this.wrapper.classList.add('is-dragging');
+        
+        const pageX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+        this.startX = pageX - this.wrapper.offsetLeft;
+        this.scrollLeft = this.wrapper.scrollLeft;
+        this.lastX = pageX;
+        this.lastTime = Date.now();
+        this.velocity = 0;
+
+        if (this.animationFrame) {
+          cancelAnimationFrame(this.animationFrame);
+        }
+      }
+
+      handleDragMove(e) {
+        if (!this.isDragging) return;
+
+        const pageX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+        const x = pageX - this.wrapper.offsetLeft;
+        const walk = (x - this.startX) * 1.5;
+        
+        this.wrapper.scrollLeft = this.scrollLeft - walk;
+
+        const now = Date.now();
+        const dt = now - this.lastTime;
+        if (dt > 0) {
+          this.velocity = (pageX - this.lastX) / dt;
+        }
+        this.lastX = pageX;
+        this.lastTime = now;
+      }
+
+      handleDragEnd(e) {
+        if (!this.isDragging) return;
+        
+        this.isDragging = false;
+        this.wrapper.classList.remove('is-dragging');
+
+        const momentumScroll = () => {
+          if (Math.abs(this.velocity) > 0.01) {
+            this.wrapper.scrollLeft -= this.velocity * 16;
+            this.velocity *= 0.95;
+            this.animationFrame = requestAnimationFrame(momentumScroll);
+          }
+        };
+
+        if (Math.abs(this.velocity) > 0.1) {
+          momentumScroll();
+        }
+      }
+
+      handleClick(e) {
+        if (Math.abs(this.velocity) > 0.5) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }
+
+      disconnectedCallback() {
+        if (this.animationFrame) {
+          cancelAnimationFrame(this.animationFrame);
+        }
+      }
+    }
+
+    customElements.define('product-carousel-{{ ai_gen_id }}', ProductCarousel{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Product carousel",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Collection"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_limit",
+      "min": 4,
+      "max": 20,
+      "step": 1,
+      "label": "Maximum products",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_header",
+      "label": "Show header",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Featured Collection"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Discover our curated selection"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 16,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "min": 12,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle size",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "header_spacing",
+      "min": 20,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Header spacing",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Section padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "edge_padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Edge padding",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Card gap",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Card style"
+    },
+    {
+      "type": "range",
+      "id": "card_width",
+      "min": 200,
+      "max": 400,
+      "step": 10,
+      "unit": "px",
+      "label": "Card width (desktop)",
+      "default": 280
+    },
+    {
+      "type": "range",
+      "id": "card_width_mobile",
+      "min": 150,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "label": "Card width (mobile)",
+      "default": 220
+    },
+    {
+      "type": "range",
+      "id": "image_aspect_ratio",
+      "min": 100,
+      "max": 200,
+      "step": 5,
+      "unit": "%",
+      "label": "Image aspect ratio",
+      "default": 140
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Card border radius",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "card_info_padding",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Card info padding",
+      "default": 20
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Product info"
+    },
+    {
+      "type": "range",
+      "id": "product_title_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Title size",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "product_price_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Price size",
+      "default": 13
+    },
+    {
+      "type": "color",
+      "id": "product_title_color",
+      "label": "Title color",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "product_price_color",
+      "label": "Price color",
+      "default": "#666666"
+    },
+    {
+      "type": "header",
+      "content": "Hover effects"
+    },
+    {
+      "type": "range",
+      "id": "hover_lift",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Lift amount",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "hover_shadow_offset",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Shadow offset",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "hover_shadow_blur",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Shadow blur",
+      "default": 25
+    },
+    {
+      "type": "range",
+      "id": "hover_shadow_opacity",
+      "min": 0,
+      "max": 0.5,
+      "step": 0.1,
+      "label": "Shadow opacity",
+      "default": 0.1
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product carousel"
+    }
+  ]
+}
 {% endschema %}
