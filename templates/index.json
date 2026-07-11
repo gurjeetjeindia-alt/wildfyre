@@ -42,7 +42,7 @@
     "featured_collection_NErq4q": {
       "type": "featured-collection",
       "custom_css": [
-        ".card__description {display: none; }"
+        ".card__note {display: none; }"
       ],
       "name": "t:sections.featured-collection.presets.name",
       "settings": {
