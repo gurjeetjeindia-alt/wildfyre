@@ -262,7 +262,7 @@
 
         const pageX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
         const x = pageX - this.wrapper.offsetLeft;
-        const walk = (x - this.startX) * 1.5;
+        const walk = (x - this.startX) * 1.0;
         
         this.wrapper.scrollLeft = this.scrollLeft - walk;
 
@@ -282,9 +282,9 @@
         this.wrapper.classList.remove('is-dragging');
 
         const momentumScroll = () => {
-          if (Math.abs(this.velocity) > 0.01) {
+          if (Math.abs(this.velocity) > 0.05) {
             this.wrapper.scrollLeft -= this.velocity * 16;
-            this.velocity *= 0.95;
+            this.velocity *= 0.85;
             this.animationFrame = requestAnimationFrame(momentumScroll);
           }
         };
