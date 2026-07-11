@@ -67,6 +67,22 @@
     background: #333;
   }
 
+  .collection .card-wrapper:hover .card--card:before,
+  .collection .card-wrapper:hover .card--standard .card__media:after {
+    opacity: 0 !important;
+    background-image: none !important;
+  }
+
+  .collection .card-wrapper:hover .card--card,
+  .collection .card-wrapper:hover .card--standard .card__inner {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  .collection .card-wrapper:hover .media.media--hover-effect > img:first-child:only-child {
+    transform: scale(1.03);
+    opacity: 1;
+  }
+
   @media(max-width: 749px) {
     .collection__title .title {
       font-size: 22px;

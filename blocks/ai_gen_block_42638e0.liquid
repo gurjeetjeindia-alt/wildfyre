@@ -223,10 +223,22 @@
       constructor() {
         super();
         this.wrapper = null;
+        this.onPointerDown = this.onPointerDown.bind(this);
+        this.onPointerMove = this.onPointerMove.bind(this);
+        this.onPointerUp = this.onPointerUp.bind(this);
+        this.onClick = this.onClick.bind(this);
+        this.onWheel = this.onWheel.bind(this);
         this.isDragging = false;
+        this.activePointerId = null;
+        this.startClientX = 0;
+        this.startScrollLeft = 0;
         this.startX = 0;
         this.scrollLeft = 0;
-        this.hasDragged = false;
+        this.lastClientX = 0;
+        this.lastMoveTime = 0;
+        this.dragThreshold = 4;
+        this.didDrag = false;
+        this.suppressClick = false;
       }
 
       connectedCallback() {
@@ -237,96 +249,130 @@
       }
 
       setupEventListeners() {
-        this.wrapper.addEventListener('mousedown', this.handleMouseDown.bind(this));
-        this.wrapper.addEventListener('mousemove', this.handleMouseMove.bind(this));
-        this.wrapper.addEventListener('mouseup', this.handleMouseEnd.bind(this));
-        this.wrapper.addEventListener('mouseleave', this.handleMouseEnd.bind(this));
-
-        this.wrapper.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: true });
-        this.wrapper.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
-        this.wrapper.addEventListener('touchend', this.handleTouchEnd.bind(this));
-        this.wrapper.addEventListener('touchcancel', this.handleTouchEnd.bind(this));
-
-        this.wrapper.addEventListener('click', this.handleClick.bind(this), true);
+        this.wrapper.addEventListener('pointerdown', this.onPointerDown);
+        this.wrapper.addEventListener('click', this.onClick, true);
+        this.wrapper.addEventListener('wheel', this.onWheel, { passive: false });
+        window.addEventListener('pointermove', this.onPointerMove);
+        window.addEventListener('pointerup', this.onPointerUp);
+        window.addEventListener('pointercancel', this.onPointerUp);
       }
 
-      getPageX(e) {
-        return e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
-      }
-
-      startDrag(x) {
+      startDrag(clientX, pointerId) {
         this.isDragging = true;
-        this.hasDragged = false;
-        this.startX = x;
-        this.scrollLeft = this.wrapper.scrollLeft;
+        this.didDrag = false;
+        this.activePointerId = pointerId;
+        this.startClientX = clientX;
+        this.startScrollLeft = this.wrapper.scrollLeft;
+        this.lastClientX = clientX;
+        this.lastMoveTime = performance.now();
+        this.suppressClick = false;
         this.wrapper.classList.add('is-dragging');
       }
 
-      endDrag() {
+      stopDrag() {
         this.isDragging = false;
+        this.activePointerId = null;
         this.wrapper.classList.remove('is-dragging');
       }
 
-      handleMouseDown(e) {
-        if (e.button !== 0) return;
+      onPointerDown(e) {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
 
-        const wrapperRect = this.wrapper.getBoundingClientRect();
-        this.startDrag(e.clientX - wrapperRect.left);
-      }
+        this.startDrag(e.clientX, e.pointerId);
 
-      handleTouchStart(e) {
-        const wrapperRect = this.wrapper.getBoundingClientRect();
-        this.startDrag(this.getPageX(e) - wrapperRect.left);
-      }
-
-      handleMouseMove(e) {
-        if (!this.isDragging) return;
-
-        const x = e.clientX;
-        const wrapperRect = this.wrapper.getBoundingClientRect();
-        const delta = x - wrapperRect.left - this.startX;
-
-        if (Math.abs(delta) > 3) {
-          this.hasDragged = true;
-          e.preventDefault();
-          this.wrapper.scrollLeft = this.scrollLeft - delta;
+        if (this.wrapper.setPointerCapture) {
+          try {
+            this.wrapper.setPointerCapture(e.pointerId);
+          } catch (error) {
+            // Pointer capture is optional; dragging still works through the window listeners.
+          }
         }
       }
 
-      handleTouchMove(e) {
-        if (!this.isDragging) return;
+      onPointerMove(e) {
+        if (!this.isDragging || e.pointerId !== this.activePointerId) return;
 
-        const x = this.getPageX(e);
-        const wrapperRect = this.wrapper.getBoundingClientRect();
-        const delta = x - wrapperRect.left - this.startX;
+        const deltaX = e.clientX - this.startClientX;
+        if (Math.abs(deltaX) < this.dragThreshold) return;
 
-        if (Math.abs(delta) > 3) {
-          this.hasDragged = true;
+        this.didDrag = true;
+        this.wrapper.scrollLeft = this.startScrollLeft - deltaX;
+
+        const now = performance.now();
+        const elapsed = now - this.lastMoveTime;
+        if (elapsed > 0) {
+          this.lastClientX = e.clientX;
+          this.lastMoveTime = now;
+        }
+
+        if (e.cancelable) {
           e.preventDefault();
-          this.wrapper.scrollLeft = this.scrollLeft - delta;
         }
       }
 
-      handleMouseEnd() {
-        if (!this.isDragging) return;
-        this.endDrag();
+      onPointerUp(e) {
+        if (!this.isDragging || e.pointerId !== this.activePointerId) return;
+
+        if (this.wrapper.releasePointerCapture) {
+          try {
+            this.wrapper.releasePointerCapture(e.pointerId);
+          } catch (error) {
+            // Ignore capture release failures.
+          }
+        }
+
+        this.stopDrag();
+
+        if (this.didDrag) {
+          this.suppressClick = true;
+          window.setTimeout(() => {
+            this.suppressClick = false;
+          }, 0);
+        }
       }
 
-      handleTouchEnd() {
-        if (!this.isDragging) return;
-        this.endDrag();
-      }
-
-      handleClick(e) {
-        if (this.hasDragged) {
+      onClick(e) {
+        if (this.suppressClick) {
           e.preventDefault();
           e.stopPropagation();
-          this.hasDragged = false;
         }
+      }
+
+      onWheel(e) {
+        if (!this.wrapper) return;
+
+        const shouldTranslateVertically = Math.abs(e.deltaY) > Math.abs(e.deltaX);
+        if (!shouldTranslateVertically) return;
+
+        const maxScrollLeft = this.wrapper.scrollWidth - this.wrapper.clientWidth;
+        if (maxScrollLeft <= 0) return;
+
+        const nextScrollLeft = this.wrapper.scrollLeft + e.deltaY;
+        const clampedScrollLeft = Math.max(0, Math.min(maxScrollLeft, nextScrollLeft));
+        if (clampedScrollLeft === this.wrapper.scrollLeft) return;
+
+        if (e.cancelable) {
+          e.preventDefault();
+        }
+        this.wrapper.scrollLeft = clampedScrollLeft;
+      }
+
+      disconnectedCallback() {
+        if (!this.wrapper) return;
+
+        this.wrapper.removeEventListener('pointerdown', this.onPointerDown);
+        this.wrapper.removeEventListener('click', this.onClick, true);
+        this.wrapper.removeEventListener('wheel', this.onWheel);
+        window.removeEventListener('pointermove', this.onPointerMove);
+        window.removeEventListener('pointerup', this.onPointerUp);
+        window.removeEventListener('pointercancel', this.onPointerUp);
       }
     }
 
-    customElements.define('product-carousel-{{ ai_gen_id }}', ProductCarousel{{ ai_gen_id }});
+    const elementName = 'product-carousel-{{ ai_gen_id }}';
+    if (!customElements.get(elementName)) {
+      customElements.define(elementName, ProductCarousel{{ ai_gen_id }});
+    }
   })();
 </script>
 
