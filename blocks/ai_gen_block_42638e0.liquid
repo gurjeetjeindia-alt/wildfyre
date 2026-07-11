@@ -45,6 +45,8 @@
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
+    scroll-behavior: auto;
+    scroll-snap-type: none;
     scrollbar-width: none;
     cursor: grab;
     user-select: none;
@@ -222,14 +224,9 @@
         super();
         this.wrapper = null;
         this.isDragging = false;
-        this.activePointerId = null;
         this.startX = 0;
         this.scrollLeft = 0;
-        this.velocity = 0;
-        this.lastX = 0;
-        this.lastTime = 0;
         this.hasDragged = false;
-        this.animationFrame = null;
       }
 
       connectedCallback() {
@@ -240,90 +237,84 @@
       }
 
       setupEventListeners() {
-        this.wrapper.addEventListener('pointerdown', this.handlePointerDown.bind(this));
-        this.wrapper.addEventListener('pointermove', this.handlePointerMove.bind(this));
-        this.wrapper.addEventListener('pointerup', this.handlePointerEnd.bind(this));
-        this.wrapper.addEventListener('pointercancel', this.handlePointerEnd.bind(this));
+        this.wrapper.addEventListener('mousedown', this.handleMouseDown.bind(this));
+        this.wrapper.addEventListener('mousemove', this.handleMouseMove.bind(this));
+        this.wrapper.addEventListener('mouseup', this.handleMouseEnd.bind(this));
+        this.wrapper.addEventListener('mouseleave', this.handleMouseEnd.bind(this));
+
+        this.wrapper.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: true });
+        this.wrapper.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
+        this.wrapper.addEventListener('touchend', this.handleTouchEnd.bind(this));
+        this.wrapper.addEventListener('touchcancel', this.handleTouchEnd.bind(this));
 
         this.wrapper.addEventListener('click', this.handleClick.bind(this), true);
       }
 
-      handlePointerDown(e) {
-        if (e.pointerType === 'mouse' && e.button !== 0) return;
+      getPageX(e) {
+        return e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
+      }
 
+      startDrag(x) {
         this.isDragging = true;
         this.hasDragged = false;
-        this.activePointerId = e.pointerId;
-        this.wrapper.classList.add('is-dragging');
-
-        const wrapperRect = this.wrapper.getBoundingClientRect();
-        this.startX = e.clientX - wrapperRect.left;
+        this.startX = x;
         this.scrollLeft = this.wrapper.scrollLeft;
-        this.lastX = e.clientX;
-        this.lastTime = performance.now();
-        this.velocity = 0;
-
-        if (this.wrapper.setPointerCapture) {
-          try {
-            this.wrapper.setPointerCapture(e.pointerId);
-          } catch (error) {
-            // Some browsers may throw if capture is unavailable; fall back to native handling.
-          }
-        }
-
-        if (this.animationFrame) {
-          cancelAnimationFrame(this.animationFrame);
-        }
+        this.wrapper.classList.add('is-dragging');
       }
 
-      handlePointerMove(e) {
-        if (!this.isDragging || e.pointerId !== this.activePointerId) return;
+      endDrag() {
+        this.isDragging = false;
+        this.wrapper.classList.remove('is-dragging');
+      }
+
+      handleMouseDown(e) {
+        if (e.button !== 0) return;
 
         const wrapperRect = this.wrapper.getBoundingClientRect();
-        const x = e.clientX - wrapperRect.left;
-        const walk = (x - this.startX) * 1.0;
-
-        if (Math.abs(x - this.startX) > 3) {
-          this.hasDragged = true;
-          this.wrapper.scrollLeft = this.scrollLeft - walk;
-        }
-
-        const now = performance.now();
-        const dt = now - this.lastTime;
-        if (dt > 0) {
-          this.velocity = (e.clientX - this.lastX) / dt;
-        }
-        this.lastX = e.clientX;
-        this.lastTime = now;
+        this.startDrag(e.clientX - wrapperRect.left);
       }
 
-      handlePointerEnd(e) {
+      handleTouchStart(e) {
+        const wrapperRect = this.wrapper.getBoundingClientRect();
+        this.startDrag(this.getPageX(e) - wrapperRect.left);
+      }
+
+      handleMouseMove(e) {
         if (!this.isDragging) return;
-        if (e.pointerId !== undefined && this.activePointerId !== null && e.pointerId !== this.activePointerId) return;
-        
-        this.isDragging = false;
-        this.activePointerId = null;
-        this.wrapper.classList.remove('is-dragging');
 
-        if (this.wrapper.releasePointerCapture) {
-          try {
-            this.wrapper.releasePointerCapture(e.pointerId);
-          } catch (error) {
-            // Ignore release failures and let the browser clean up naturally.
-          }
+        const x = e.clientX;
+        const wrapperRect = this.wrapper.getBoundingClientRect();
+        const delta = x - wrapperRect.left - this.startX;
+
+        if (Math.abs(delta) > 3) {
+          this.hasDragged = true;
+          e.preventDefault();
+          this.wrapper.scrollLeft = this.scrollLeft - delta;
         }
+      }
 
-        const momentumScroll = () => {
-          if (Math.abs(this.velocity) > 0.05) {
-            this.wrapper.scrollLeft -= this.velocity * 16;
-            this.velocity *= 0.85;
-            this.animationFrame = requestAnimationFrame(momentumScroll);
-          }
-        };
+      handleTouchMove(e) {
+        if (!this.isDragging) return;
 
-        if (Math.abs(this.velocity) > 0.1) {
-          momentumScroll();
+        const x = this.getPageX(e);
+        const wrapperRect = this.wrapper.getBoundingClientRect();
+        const delta = x - wrapperRect.left - this.startX;
+
+        if (Math.abs(delta) > 3) {
+          this.hasDragged = true;
+          e.preventDefault();
+          this.wrapper.scrollLeft = this.scrollLeft - delta;
         }
+      }
+
+      handleMouseEnd() {
+        if (!this.isDragging) return;
+        this.endDrag();
+      }
+
+      handleTouchEnd() {
+        if (!this.isDragging) return;
+        this.endDrag();
       }
 
       handleClick(e) {
@@ -331,12 +322,6 @@
           e.preventDefault();
           e.stopPropagation();
           this.hasDragged = false;
-        }
-      }
-
-      disconnectedCallback() {
-        if (this.animationFrame) {
-          cancelAnimationFrame(this.animationFrame);
         }
       }
     }
