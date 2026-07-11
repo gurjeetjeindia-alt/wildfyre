@@ -41,6 +41,9 @@
     },
     "featured_collection_NErq4q": {
       "type": "featured-collection",
+      "custom_css": [
+        ".card__description {display: none; }"
+      ],
       "name": "t:sections.featured-collection.presets.name",
       "settings": {
         "collection": "new-arrivals",
