@@ -126,8 +126,27 @@
       if (!baseCount) return Math.max(0, index);
 
       const loopStart = baseCount;
+      const loopEnd = baseCount * 2;
       if (index < loopStart) return index + baseCount;
+      if (index >= loopEnd) return index - baseCount;
       return index;
+    }
+
+    function jumpToIndex(index) {
+      if (!slides.length) return;
+
+      const targetIndex = Math.max(0, Math.min(slides.length - 1, index));
+      currentIndex = targetIndex;
+
+      const slide = slides[targetIndex];
+      if (!slide) return;
+
+      const previousSnap = rail.style.scrollSnapType;
+      rail.style.scrollSnapType = 'none';
+      rail.scrollLeft = slide.offsetLeft;
+      window.requestAnimationFrame(() => {
+        rail.style.scrollSnapType = previousSnap || '';
+      });
     }
 
     function syncIndexFromScroll() {
@@ -170,8 +189,16 @@
       stepTimer = window.setTimeout(function tick() {
         if (!isMobile() || userInteracting || slides.length === 0) return;
         const nextIndex = currentIndex + 1;
-        if (nextIndex >= slides.length) {
-          scrollToIndex(baseCount || 0, 'auto');
+        if (nextIndex >= baseCount * 2) {
+          scrollToIndex(nextIndex, 'smooth');
+          window.setTimeout(() => {
+            if (!isMobile() || userInteracting) return;
+            if (currentIndex === nextIndex) {
+              jumpToIndex(nextIndex - baseCount);
+            }
+          }, 350);
+        } else if (nextIndex >= slides.length) {
+          jumpToIndex(baseCount || 0);
         } else {
           scrollToIndex(nextIndex, 'smooth');
         }
@@ -186,7 +213,7 @@
 
       const normalizedIndex = normalizeIndex(currentIndex);
       if (normalizedIndex !== currentIndex) {
-        scrollToIndex(normalizedIndex, 'auto');
+        jumpToIndex(normalizedIndex);
         return;
       }
     }
@@ -246,12 +273,12 @@
       if (!slides.length) return;
 
       userInteracting = false;
-      if (!currentIndex || currentIndex < baseCount || currentIndex >= slides.length) {
+      if (!currentIndex || currentIndex < baseCount || currentIndex >= baseCount * 2) {
         currentIndex = baseCount || 0;
       }
       syncIndexFromScroll();
       currentIndex = normalizeIndex(currentIndex);
-      scrollToIndex(currentIndex, 'auto');
+      jumpToIndex(currentIndex);
       startAutoScroll();
     }
 
