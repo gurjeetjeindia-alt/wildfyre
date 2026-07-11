@@ -120,6 +120,11 @@
     letter-spacing: 0.02em;
     line-height: 1.3;
   }
+  .ai-carousel-image { 
+  -webkit-user-drag: none; 
+  user-select: none; 
+  pointer-events: none;
+  }
 
   .ai-carousel-product-price-{{ ai_gen_id }} {
     font-size: {{ block.settings.product_price_size }}px;
