@@ -24,8 +24,8 @@
       overflow-x: auto !important;
       overflow-y: hidden !important;
       width: 100%;
-      scroll-snap-type: x mandatory;
-      scroll-behavior: smooth;
+      scroll-snap-type: none;
+      scroll-behavior: auto;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
       overscroll-behavior-x: contain;
@@ -68,7 +68,7 @@
     if (!rail) return;
 
     const mobileQuery = window.matchMedia('(max-width: 749px)');
-    let stepTimer = 0;
+    let rafId = 0;
     let pauseTimer = 0;
     let syncTimer = 0;
     let currentIndex = 0;
@@ -79,6 +79,8 @@
     let trackEnd = 0;
     let loopWidth = 0;
     let slideStep = 0;
+    let lastFrameTime = 0;
+    let wrapLock = false;
     let slides = [];
 
     function isMobile() {
@@ -86,9 +88,9 @@
     }
 
     function clearTimers() {
-      if (stepTimer) {
-        clearTimeout(stepTimer);
-        stepTimer = 0;
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = 0;
       }
       if (pauseTimer) {
         clearTimeout(pauseTimer);
@@ -165,35 +167,59 @@
     }
 
     function startAutoScroll() {
-      clearTimers();
       if (!isMobile() || slides.length === 0 || !slideStep) return;
 
-      stepTimer = window.setInterval(() => {
-        if (!isMobile() || userInteracting) return;
-        rail.scrollBy({
-          left: slideStep,
-          behavior: 'smooth',
-        });
-      }, 1500);
+      if (rafId) return;
+
+      const speed = slideStep / 1500;
+      lastFrameTime = 0;
+
+      const tick = (timestamp) => {
+        if (!isMobile() || !slides.length) {
+          rafId = 0;
+          return;
+        }
+
+        if (!lastFrameTime) {
+          lastFrameTime = timestamp;
+        }
+
+        const delta = timestamp - lastFrameTime;
+        lastFrameTime = timestamp;
+
+        if (!userInteracting && !wrapLock) {
+          rail.scrollLeft += speed * delta;
+          wrapScrollPosition();
+        }
+
+        rafId = window.requestAnimationFrame(tick);
+      };
+
+      rafId = window.requestAnimationFrame(tick);
     }
 
     function wrapScrollPosition() {
       if (!isMobile() || !slides.length || !loopWidth) return;
+      if (wrapLock) return;
 
       const scrollLeft = rail.scrollLeft;
       if (scrollLeft >= trackEnd) {
+        wrapLock = true;
         const previousSnap = rail.style.scrollSnapType;
         rail.style.scrollSnapType = 'none';
         rail.scrollLeft = scrollLeft - loopWidth;
         window.requestAnimationFrame(() => {
           rail.style.scrollSnapType = previousSnap || '';
+          wrapLock = false;
         });
       } else if (scrollLeft < trackStart) {
+        wrapLock = true;
         const previousSnap = rail.style.scrollSnapType;
         rail.style.scrollSnapType = 'none';
         rail.scrollLeft = scrollLeft + loopWidth;
         window.requestAnimationFrame(() => {
           rail.style.scrollSnapType = previousSnap || '';
+          wrapLock = false;
         });
         return;
       }
@@ -206,7 +232,6 @@
         userInteracting = false;
         syncIndexFromScroll();
         wrapScrollPosition();
-        startAutoScroll();
       }, 700);
     }
 
