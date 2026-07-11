@@ -12,6 +12,12 @@
   }
 
   @media screen and (max-width: 749px) {
+    [data-custom-liquid-section="{{ section.id }}"] .wf-luxury {
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
+    }
+
     [data-custom-liquid-section="{{ section.id }}"] .wf-split {
       display: flex !important;
       flex-wrap: nowrap !important;
@@ -31,9 +37,19 @@
     }
 
     [data-custom-liquid-section="{{ section.id }}"] .wf-split > * {
-      flex: 0 0 82vw;
-      min-width: 82vw;
+      flex: 0 0 100vw;
+      min-width: 100vw;
       scroll-snap-align: start;
+    }
+
+    [data-custom-liquid-section="{{ section.id }}"] .wf-panel {
+      height: 72vh;
+    }
+
+    [data-custom-liquid-section="{{ section.id }}"] .wf-content {
+      left: 18px;
+      right: 18px;
+      bottom: 18px;
     }
   }
 {%- endstyle -%}
