@@ -69,6 +69,25 @@
       </div>
     {% endif %}
   </div>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var videos = document.querySelectorAll('.video-banner__video');
+    videos.forEach(function (video) {
+      video.muted = true;
+      video.setAttribute('playsinline', '');
+      var playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(function () {
+          document.addEventListener('touchstart', function () {
+            video.play();
+          }, { once: true });
+        });
+      }
+    });
+  });
+</script>
+
 </section>
 
 <style>
