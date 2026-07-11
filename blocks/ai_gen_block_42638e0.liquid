@@ -176,6 +176,7 @@
                 <div class="ai-carousel-image-wrapper-{{ ai_gen_id }}">
                   {% if product.featured_image %}
                     <img
+                      draggable="false"
                       src="{{ product.featured_image | image_url: width: 800 }}"
                       alt="{{ product.featured_image.alt | escape }}"
                       class="ai-carousel-image-{{ ai_gen_id }}"
