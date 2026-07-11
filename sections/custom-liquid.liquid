@@ -68,12 +68,13 @@
     if (!rail) return;
 
     const mobileQuery = window.matchMedia('(max-width: 749px)');
-    let intervalId = 0;
+    let stepTimer = 0;
     let pauseTimer = 0;
     let syncTimer = 0;
     let currentIndex = 0;
     let userInteracting = false;
     let initialized = false;
+    let baseCount = 0;
     let slides = [];
 
     function isMobile() {
@@ -81,9 +82,9 @@
     }
 
     function clearTimers() {
-      if (intervalId) {
-        clearInterval(intervalId);
-        intervalId = 0;
+      if (stepTimer) {
+        clearTimeout(stepTimer);
+        stepTimer = 0;
       }
       if (pauseTimer) {
         clearTimeout(pauseTimer);
@@ -97,6 +98,36 @@
 
     function getSlides() {
       return Array.from(rail.children).filter((node) => node.classList && node.classList.contains('wf-panel'));
+    }
+
+    function ensureInfiniteTrack() {
+      if (!isMobile() || initialized) return false;
+
+      const originalSlides = getSlides();
+      if (!originalSlides.length) return false;
+      baseCount = originalSlides.length;
+
+      const before = document.createDocumentFragment();
+      const after = document.createDocumentFragment();
+
+      originalSlides.forEach((node) => {
+        before.appendChild(node.cloneNode(true));
+        after.appendChild(node.cloneNode(true));
+      });
+
+      rail.insertBefore(before, rail.firstChild);
+      rail.appendChild(after);
+
+      initialized = true;
+      return true;
+    }
+
+    function normalizeIndex(index) {
+      if (!baseCount) return Math.max(0, index);
+
+      const loopStart = baseCount;
+      if (index < loopStart) return index + baseCount;
+      return index;
     }
 
     function syncIndexFromScroll() {
@@ -120,10 +151,10 @@
     function scrollToIndex(index, behavior) {
       if (!slides.length) return;
 
-      const normalizedIndex = ((index % slides.length) + slides.length) % slides.length;
-      currentIndex = normalizedIndex;
+      const clampedIndex = Math.max(0, Math.min(slides.length - 1, index));
+      currentIndex = clampedIndex;
 
-      const slide = slides[normalizedIndex];
+      const slide = slides[clampedIndex];
       if (!slide) return;
 
       rail.scrollTo({
@@ -136,10 +167,28 @@
       clearTimers();
       if (!isMobile() || slides.length === 0) return;
 
-      intervalId = window.setInterval(() => {
+      stepTimer = window.setTimeout(function tick() {
         if (!isMobile() || userInteracting || slides.length === 0) return;
-        scrollToIndex(currentIndex + 1, 'smooth');
+        const nextIndex = currentIndex + 1;
+        if (nextIndex >= slides.length) {
+          scrollToIndex(baseCount || 0, 'auto');
+        } else {
+          scrollToIndex(nextIndex, 'smooth');
+        }
+
+        if (!isMobile() || userInteracting) return;
+        stepTimer = window.setTimeout(tick, 1500);
       }, 1500);
+    }
+
+    function snapToLoopAnchor() {
+      if (!isMobile() || !slides.length || !baseCount) return;
+
+      const normalizedIndex = normalizeIndex(currentIndex);
+      if (normalizedIndex !== currentIndex) {
+        scrollToIndex(normalizedIndex, 'auto');
+        return;
+      }
     }
 
     function resumeSoon() {
@@ -148,6 +197,8 @@
       pauseTimer = window.setTimeout(() => {
         userInteracting = false;
         syncIndexFromScroll();
+        snapToLoopAnchor();
+        startAutoScroll();
       }, 700);
     }
 
@@ -187,15 +238,19 @@
       }
 
       if (!initialized) {
+        ensureInfiniteTrack();
         bindInteractionPause();
-        initialized = true;
       }
 
       slides = getSlides();
       if (!slides.length) return;
 
       userInteracting = false;
+      if (!currentIndex || currentIndex < baseCount || currentIndex >= slides.length) {
+        currentIndex = baseCount || 0;
+      }
       syncIndexFromScroll();
+      currentIndex = normalizeIndex(currentIndex);
       scrollToIndex(currentIndex, 'auto');
       startAutoScroll();
     }
