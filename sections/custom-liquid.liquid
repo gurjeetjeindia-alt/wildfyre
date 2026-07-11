@@ -10,12 +10,171 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  @media screen and (max-width: 749px) {
+    [data-custom-liquid-section="{{ section.id }}"] .wf-split {
+      display: flex !important;
+      flex-wrap: nowrap !important;
+      overflow-x: auto !important;
+      overflow-y: hidden !important;
+      width: 100%;
+      scroll-snap-type: x proximity;
+      scroll-behavior: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      overscroll-behavior-x: contain;
+      touch-action: pan-x pan-y pinch-zoom;
+    }
+
+    [data-custom-liquid-section="{{ section.id }}"] .wf-split::-webkit-scrollbar {
+      display: none;
+    }
+
+    [data-custom-liquid-section="{{ section.id }}"] .wf-split > * {
+      flex: 0 0 82vw;
+      min-width: 82vw;
+      scroll-snap-align: start;
+    }
+  }
 {%- endstyle -%}
-<div class="color-{{ section.settings.color_scheme }} gradient">
+<div class="color-{{ section.settings.color_scheme }} gradient" data-custom-liquid-section="{{ section.id }}">
   <div class="section-{{ section.id }}-padding">
     {{ section.settings.custom_liquid }}
   </div>
 </div>
+
+<script>
+  (function () {
+    const section = document.querySelector('[data-custom-liquid-section="{{ section.id }}"]');
+    if (!section) return;
+
+    const rail = section.querySelector('.wf-split');
+    if (!rail) return;
+
+    const mobileQuery = window.matchMedia('(max-width: 749px)');
+    let rafId = 0;
+    let pauseTimer = 0;
+    let loopWidth = 0;
+    let paused = false;
+    let initialized = false;
+
+    function isMobile() {
+      return mobileQuery.matches;
+    }
+
+    function clearTimers() {
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+      if (pauseTimer) {
+        clearTimeout(pauseTimer);
+        pauseTimer = 0;
+      }
+    }
+
+    function updateLoopWidth() {
+      loopWidth = 0;
+      if (!initialized || !isMobile()) return;
+      loopWidth = Math.floor(rail.scrollWidth / 2);
+    }
+
+    function ensureInfiniteTrack() {
+      if (!isMobile() || initialized) return;
+
+      const children = Array.from(rail.children);
+      if (!children.length) return;
+
+      children.forEach((node) => {
+        rail.appendChild(node.cloneNode(true));
+      });
+
+      initialized = true;
+      updateLoopWidth();
+    }
+
+    function startAutoScroll() {
+      clearTimers();
+      ensureInfiniteTrack();
+      updateLoopWidth();
+
+      const speed = 0.45;
+
+      const tick = () => {
+        if (!isMobile() || paused || !loopWidth) {
+          rafId = requestAnimationFrame(tick);
+          return;
+        }
+
+        rail.scrollLeft += speed;
+
+        if (rail.scrollLeft >= loopWidth) {
+          rail.scrollLeft -= loopWidth;
+        }
+
+        rafId = requestAnimationFrame(tick);
+      };
+
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function stopAutoScroll() {
+      clearTimers();
+    }
+
+    function resumeSoon() {
+      if (!isMobile()) return;
+      if (pauseTimer) clearTimeout(pauseTimer);
+      pauseTimer = window.setTimeout(() => {
+        paused = false;
+      }, 700);
+    }
+
+    function bindInteractionPause() {
+      rail.addEventListener('pointerdown', () => {
+        if (!isMobile()) return;
+        paused = true;
+        if (pauseTimer) clearTimeout(pauseTimer);
+      });
+
+      rail.addEventListener('pointerup', resumeSoon);
+      rail.addEventListener('pointercancel', resumeSoon);
+      rail.addEventListener('touchstart', () => {
+        if (!isMobile()) return;
+        paused = true;
+        if (pauseTimer) clearTimeout(pauseTimer);
+      }, { passive: true });
+      rail.addEventListener('touchend', resumeSoon);
+    }
+
+    function refresh() {
+      stopAutoScroll();
+      if (!isMobile()) {
+        rail.scrollLeft = 0;
+        return;
+      }
+
+      if (!initialized) {
+        ensureInfiniteTrack();
+        bindInteractionPause();
+      }
+
+      paused = false;
+      updateLoopWidth();
+      startAutoScroll();
+    }
+
+    mobileQuery.addEventListener?.('change', refresh);
+    window.addEventListener('resize', refresh);
+    document.addEventListener('shopify:section:load', (event) => {
+      if (event.detail && event.detail.sectionId === '{{ section.id }}') {
+        refresh();
+      }
+    });
+
+    refresh();
+  })();
+</script>
 
 {% schema %}
 {
