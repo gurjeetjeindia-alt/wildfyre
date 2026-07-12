@@ -8,7 +8,7 @@
     <!-- Left Nav -->
     <nav class="site-header__nav site-header__nav--left">
       {% for link in linklists[section.settings.menu].links limit: 3 %}
-        <a href="{{ link.url }}" class="site-header__link">{{ link.title }}</a>
+        <a href="{% if link.title == 'Perfume' %}/collections{% else %}{{ link.url }}{% endif %}" class="site-header__link">{{ link.title }}</a>
       {% endfor %}
     </nav>
 
@@ -26,7 +26,7 @@
     <!-- Right Nav -->
     <nav class="site-header__nav site-header__nav--right">
       {% for link in linklists[section.settings.menu].links offset: 3 limit: 3 %}
-        <a href="{{ link.url }}" class="site-header__link">{{ link.title }}</a>
+        <a href="{% if link.title == 'Perfume' %}/collections{% else %}{{ link.url }}{% endif %}" class="site-header__link">{{ link.title }}</a>
       {% endfor %}
       <a href="{{ routes.cart_url }}" class="site-header__link site-header__cart">
         Cart
