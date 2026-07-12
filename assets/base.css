@@ -1577,6 +1577,11 @@ details[open] > .share-button__fallback {
   display: none;
 }
 
+#shopify-section-template--27957908439410__featured_collection_NErq4q .card-wrapper {
+  margin: 1px;
+}
+
+
 /* component-form */
 .field__input,
 .select__select,
