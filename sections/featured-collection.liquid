@@ -170,8 +170,21 @@
     border-radius: 0 !important;
   }
 
-  .collection.section-{{ section.id }}-padding .card__media {
+  .collection.section-{{ section.id }}-padding .card__media,
+  .collection.section-{{ section.id }}-padding .card__media .media,
+  .collection.section-{{ section.id }}-padding .card__media .media img {
+    border: none !important;
     border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .collection.section-{{ section.id }}-padding .card__badge {
+    margin: 0.75rem !important;
+  }
+
+  .collection.section-{{ section.id }}-padding .card__badge .badge {
+    padding: 0.5rem 1rem !important;
+    line-height: 1 !important;
   }
 
   .collection .card-wrapper:hover .media.media--hover-effect > img:first-child:only-child,
