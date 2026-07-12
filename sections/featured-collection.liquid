@@ -70,7 +70,7 @@
   }
 
   .collection .card {
-    border: 1px solid #969696; 
+    border: 1px solid #a9a9a9; 
   }
 
   .collection .card-wrapper:hover .card--card:before,
@@ -178,7 +178,7 @@
         class="grid product-grid contains-card contains-card--product{% if settings.card_style == 'standard' %} contains-card--standard{% endif %} grid--{{ section.settings.columns_desktop }}-col-desktop{% if section.settings.collection == blank %} grid--2-col-tablet-down{% else %} grid--{{ section.settings.columns_mobile }}-col-tablet-down{% endif %}{% if show_mobile_slider or show_desktop_slider %} slider{% if show_desktop_slider %} slider--desktop{% endif %}{% if show_mobile_slider %} slider--tablet grid--peek{% endif %}{% endif %}"
         role="list"
         aria-label="{{ 'general.slider.name' | t }}"
-        style="gap: 24px;"
+        style="gap: 0;"
       >
         {% assign skip_card_product_styles = false %}
 
