@@ -29,7 +29,7 @@
   .section-{{ section.id }}-padding {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
-    margin: 0 !important;
+    margin: 2rem 0 0 0 !important;
   }
 
   .section-{{ section.id }}-padding,
@@ -161,6 +161,17 @@
   .collection .card__media,
   .collection .card .media {
     background-color: transparent !important;
+    border: none !important;
+  }
+
+  .collection.section-{{ section.id }}-padding .card__content {
+    border: 1px solid #a9a9a9 !important;
+    border-top: none !important;
+    border-radius: 0 0 4px 4px !important;
+  }
+
+  .collection.section-{{ section.id }}-padding .card__media {
+    border-radius: 0 !important;
   }
 
   .collection .card-wrapper:hover .media.media--hover-effect > img:first-child:only-child,
