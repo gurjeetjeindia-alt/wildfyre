@@ -143,10 +143,10 @@
           "settings": {
             "image": "shopify://shop_images/eiffel-tower-on-cloudy-day.jpg",
             "image_overlay_opacity": 0,
-            "heading": "Discover Your Next Favorite",
+            "heading": "EPITOME OF LUXURY",
             "heading_size": "h1",
             "subheading": "FOR THE SCENTMAXXING YOUTH",
-            "button_label": "Button label",
+            "button_label": "Click for more",
             "link": "",
             "button_style_secondary": false,
             "show_text_box": true,
@@ -159,10 +159,11 @@
         "slide_4hHdFQ": {
           "type": "slide",
           "settings": {
+            "image": "shopify://shop_images/horse-statue-on-trailer.jpg",
             "image_overlay_opacity": 0,
-            "heading": "Image slide",
+            "heading": "STORY OF CRAFTSMANSHIP",
             "heading_size": "h1",
-            "subheading": "Tell your brand's story through images",
+            "subheading": "WILDFYRE captures the essence of modern luxury through carefully curated fragrance and visual storytelling.",
             "button_label": "Button label",
             "link": "",
             "button_style_secondary": false,
