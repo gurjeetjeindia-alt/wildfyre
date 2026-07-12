@@ -79,10 +79,15 @@
   }
 
   .collection.section-{{ section.id }}-padding .grid__item {
-    width: 25% !important;
-    max-width: 25% !important;
     margin: 0 !important;
     padding: 0 !important;
+  }
+
+  @media screen and (min-width: 990px) {
+    .collection.section-{{ section.id }}-padding .grid__item {
+      width: 25% !important;
+      max-width: 25% !important;
+    }
   }
 
   .collection.section-{{ section.id }}-padding .card-wrapper,
