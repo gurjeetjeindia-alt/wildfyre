@@ -1,6 +1,85 @@
+{% doc %}
+  @prompt
+    Add CSS to force the Collections list page section (shopify-section ID: template--27957908472178__main) to display 2 columns on mobile devices (max-width 749px). The grid container likely uses a class like .collections-list or similar. Inspect the section's rendered HTML structure and apply the correct CSS to override any existing single-column layout on mobile using !important if needed.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-collections-mobile-grid-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-template--27957908472178__main .collection-list,
+    #shopify-section-template--27957908472178__main .collections-list,
+    #shopify-section-template--27957908472178__main .collection-list-wrapper,
+    #shopify-section-template--27957908472178__main .grid,
+    #shopify-section-template--27957908472178__main ul.grid,
+    #shopify-section-template--27957908472178__main .collection-list__grid {
+      display: grid !important;
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: {{ block.settings.mobile_gap }}px !important;
+      column-gap: {{ block.settings.mobile_column_gap }}px !important;
+      row-gap: {{ block.settings.mobile_row_gap }}px !important;
+    }
+
+    #shopify-section-template--27957908472178__main .collection-list__item,
+    #shopify-section-template--27957908472178__main .collection-card-wrapper,
+    #shopify-section-template--27957908472178__main .grid__item,
+    #shopify-section-template--27957908472178__main .collection-item {
+      width: 100% !important;
+      max-width: 100% !important;
+      flex: none !important;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-collections-mobile-grid-{{ ai_gen_id }}" {{ block.shopify_attributes }}></div>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Collections 2-col mobile",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Mobile grid spacing"
+    },
+    {
+      "type": "range",
+      "id": "mobile_gap",
+      "label": "Overall gap",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "mobile_column_gap",
+      "label": "Column gap",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "mobile_row_gap",
+      "label": "Row gap",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collections 2-col mobile"
+    }
+  ]
+}
 {% endschema %}
