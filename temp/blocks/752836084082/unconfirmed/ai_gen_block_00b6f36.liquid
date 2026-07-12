@@ -1,6 +1,63 @@
+{% doc %}
+  @prompt
+    Add CSS to force the Collections list page section (shopify-section ID: template--27957908472178__main) to display 2 columns on mobile devices (max-width 749px). The grid container likely uses a class like .collections-list or similar. Inspect the section's rendered HTML structure and apply the correct CSS to override any existing single-column layout on mobile using !important if needed.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  @media screen and (max-width: 749px) {
+    #shopify-section-template--27957908472178__main .collection-list,
+    #shopify-section-template--27957908472178__main .collection-list-wrapper,
+    #shopify-section-template--27957908472178__main .collections-list,
+    #shopify-section-template--27957908472178__main .grid,
+    #shopify-section-template--27957908472178__main ul {
+      display: grid !important;
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: {{ block.settings.mobile_gap }}px !important;
+    }
+
+    #shopify-section-template--27957908472178__main .collection-list__item,
+    #shopify-section-template--27957908472178__main .collection-item,
+    #shopify-section-template--27957908472178__main .grid__item,
+    #shopify-section-template--27957908472178__main li {
+      width: 100% !important;
+      max-width: 100% !important;
+      flex: none !important;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-collections-mobile-fix-{{ ai_gen_id }}" {{ block.shopify_attributes }}></div>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Collections mobile 2-col",
+  "settings": [
+    {
+      "type": "range",
+      "id": "mobile_gap",
+      "label": "Gap between columns",
+      "min": 8,
+      "max": 32,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collections mobile 2-col"
+    }
+  ]
+}
 {% endschema %}
