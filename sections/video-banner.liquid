@@ -92,6 +92,7 @@
 </section>
 {%- endif -%}
 
+{%- if request.page_type == 'index' -%}
 <style>
 .video-banner {
   position: relative;
@@ -193,6 +194,7 @@
   }
 }
 </style>
+{%- endif -%}
 
 {% schema %}
 {
