@@ -244,6 +244,23 @@
         "padding_top": 0,
         "padding_bottom": 0
       }
+    },
+    "178385716416096ac0": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_00b6f36_BawBe6": {
+          "type": "ai_gen_block_00b6f36",
+          "settings": {
+            "mobile_gap": 16,
+            "desktop_width_percent": 100
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_00b6f36_BawBe6"
+      ],
+      "settings": {}
     }
   },
   "order": [
@@ -255,6 +272,7 @@
     "featured_collection_BVwEgU",
     "slideshow_pBUmHk",
     "1783755980e5fcd4a4",
-    "custom_liquid_hMTQRi"
+    "custom_liquid_hMTQRi",
+    "178385716416096ac0"
   ]
 }
