@@ -1,7 +1,4 @@
-*{
-  padding:0;
-  margin:0
-}
+
 {{ 'component-card.css' | asset_url | stylesheet_tag }}
 {{ 'component-price.css' | asset_url | stylesheet_tag }}
 
@@ -30,14 +27,72 @@
 
 {%- style -%}
   .section-{{ section.id }}-padding {
-    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
-    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin: 0 !important;
+  }
+
+  .section-{{ section.id }}-padding,
+  .collection.section-{{ section.id }}-padding,
+  .collection.section-{{ section.id }}-padding *,
+  .collection.section-{{ section.id }}-padding *::before,
+  .collection.section-{{ section.id }}-padding *::after {
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+  }
+
+  .collection.section-{{ section.id }}-padding {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw !important;
+    margin-right: -50vw !important;
+  }
+
+  .collection.section-{{ section.id }}-padding .slider-mobile-gutter,
+  .collection.section-{{ section.id }}-padding .page-width,
+  .collection.section-{{ section.id }}-padding .page-width-desktop,
+  .collection.section-{{ section.id }}-padding .slider-component-full-width,
+  .collection.section-{{ section.id }}-padding .slider-component-desktop {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .collection.section-{{ section.id }}-padding .collection__title.title-wrapper {
+    width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .collection.section-{{ section.id }}-padding .grid.product-grid {
+    gap: 0 !important;
+    grid-gap: 0 !important;
+    width: 100% !important;
+  }
+
+  .collection.section-{{ section.id }}-padding .grid--4-col-desktop {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+
+  .collection.section-{{ section.id }}-padding .grid__item,
+  .collection.section-{{ section.id }}-padding .card-wrapper,
+  .collection.section-{{ section.id }}-padding .card {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .collection.section-{{ section.id }}-padding .collection__view-all .button {
+    padding: 12px 32px !important;
   }
 
   @media screen and (min-width: 750px) {
     .section-{{ section.id }}-padding {
-      padding-top: {{ section.settings.padding_top }}px;
-      padding-bottom: {{ section.settings.padding_bottom }}px;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
     }
   }
 
