@@ -89,6 +89,10 @@
     padding: 0 !important;
   }
 
+  .collection.section-{{ section.id }}-padding .card__inner.ratio::before {
+    padding-bottom: calc(var(--ratio-percent) + 12%) !important;
+  }
+
   .collection.section-{{ section.id }}-padding .collection__view-all .button {
     padding: 12px 32px !important;
   }
