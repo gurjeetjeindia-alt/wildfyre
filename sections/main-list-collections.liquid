@@ -1,8 +1,144 @@
 {{ 'component-card.css' | asset_url | stylesheet_tag }}
 {{ 'section-collection-list.css' | asset_url | stylesheet_tag }}
 
-<div class="page-width">
-  <h1 class="title title--primary inline-richtext{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
+{%- style -%}
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap');
+
+  .wf-collection-index {
+    background: #fdf8f8;
+    color: #1c1b1b;
+    padding-top: clamp(2.5rem, 5vw, 5rem);
+    padding-bottom: clamp(4rem, 7vw, 7rem);
+  }
+
+  .wf-collection-index__shell {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 clamp(1.5rem, 5vw, 5rem);
+  }
+
+  .wf-collection-index__eyebrow {
+    margin: 0 0 0.75rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(28, 27, 27, 0.58);
+  }
+
+  .wf-collection-index__title {
+    margin: 0;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(3rem, 6vw, 6.25rem);
+    line-height: 0.95;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    color: #121212;
+    max-width: 12ch;
+  }
+
+  .wf-collection-index__grid {
+    margin-top: clamp(2.5rem, 5vw, 4.5rem);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 2vw, 1.75rem);
+  }
+
+  .wf-collection-index__item {
+    min-width: 0;
+  }
+
+  .wf-collection-index .card-wrapper {
+    height: 100%;
+  }
+
+  .wf-collection-index .card {
+    background: #f0f0f0;
+    border: 1px solid rgba(18, 18, 18, 0.08);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.03);
+    overflow: hidden;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .wf-collection-index .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 28px 60px rgba(0, 0, 0, 0.06);
+  }
+
+  .wf-collection-index .card__media img {
+    transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .wf-collection-index .card:hover .card__media img {
+    transform: scale(1.03);
+  }
+
+  .wf-collection-index .card__content {
+    padding: 1.25rem 0.1rem 0;
+  }
+
+  .wf-collection-index .card__heading a {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.45rem, 1.8vw, 2.1rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: #121212;
+  }
+
+  .wf-collection-index .card__caption {
+    margin-top: 0.55rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: rgba(28, 27, 27, 0.6);
+  }
+
+  .wf-collection-index .icon-wrap {
+    opacity: 0.55;
+  }
+
+  @media screen and (max-width: 989px) {
+    .wf-collection-index__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .wf-collection-index {
+      padding-top: 2rem;
+      padding-bottom: 4rem;
+    }
+
+    .wf-collection-index__shell {
+      padding: 0 1.25rem;
+    }
+
+    .wf-collection-index__title {
+      font-size: clamp(2.6rem, 12vw, 4rem);
+      max-width: none;
+    }
+
+    .wf-collection-index__grid {
+      margin-top: 2rem;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+
+    .wf-collection-index .card__content {
+      padding: 1rem 0 0;
+    }
+
+    .wf-collection-index .card__heading a {
+      font-size: 1.7rem;
+    }
+  }
+{%- endstyle -%}
+
+<div class="wf-collection-index">
+  <div class="wf-collection-index__shell">
+  <p class="wf-collection-index__eyebrow">Curated selections</p>
+  <h1 class="wf-collection-index__title{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
     {{ section.settings.title }}
   </h1>
   {%- liquid
@@ -24,13 +160,10 @@
     endif
   -%}
   {%- paginate collections by paginate_by -%}
-    <ul
-      class="collection-list grid grid--{{ section.settings.columns_desktop }}-col-desktop grid--{{ section.settings.columns_mobile }}-col-tablet-down"
-      role="list"
-    >
+    <ul class="wf-collection-index__grid" role="list">
       {%- for collection in collections -%}
         <li
-          class="collection-list__item grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+          class="wf-collection-index__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
           {% if settings.animations_reveal_on_scroll %}
             data-cascade
             style="--animation-order: {{ forloop.index }};"
@@ -46,6 +179,7 @@
     </ul>
     {% render 'pagination', paginate: paginate %}
   {%- endpaginate -%}
+  </div>
 </div>
 {% schema %}
 {
