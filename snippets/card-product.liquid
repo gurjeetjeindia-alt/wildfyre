@@ -103,7 +103,7 @@
                   height="{{ card_product.media[1].height }}"
                 >
               {%- endif -%}
-              {%- if card_product.description != blank -%}
+              {%- if card_product.description != blank and show_description_overlay != false -%}
                 <div class="card__note">
                   {{ card_product.description | strip_html | truncatewords: 14 }}
                 </div>
