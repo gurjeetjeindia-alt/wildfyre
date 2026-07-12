@@ -69,16 +69,20 @@
   }
 
   .collection.section-{{ section.id }}-padding .grid.product-grid {
-    gap: 0 !important;
-    grid-gap: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    column-gap: 0 !important;
+    row-gap: 0 !important;
     width: 100% !important;
   }
 
-  .collection.section-{{ section.id }}-padding .grid--4-col-desktop {
-    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  .collection.section-{{ section.id }}-padding .grid__item {
+    width: 25% !important;
+    max-width: 25% !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
-  .collection.section-{{ section.id }}-padding .grid__item,
   .collection.section-{{ section.id }}-padding .card-wrapper,
   .collection.section-{{ section.id }}-padding .card {
     margin: 0 !important;
@@ -166,17 +170,6 @@
     opacity: 0 !important;
     transform: none !important;
     filter: none !important;
-  }
-
-  .collection,
-  .collection .card,
-  .collection .card-wrapper,
-  .collection .card__inner,
-  .collection .card__media,
-  .collection .card .media {
-    height: auto !important;
-    min-height: auto !important;
-    max-height: none !important;
   }
 
   @media(max-width: 749px) {
