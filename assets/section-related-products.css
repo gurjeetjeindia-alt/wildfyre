@@ -7,19 +7,19 @@
 
 .related-products__heading {
   margin: 0;
-  font-family: var(--font-heading-family);
+  font-family: 'Inter', sans-serif;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: -0.03em;
   color: var(--color-foreground, #111111);
-  text-transform: uppercase;
-  font-size: clamp(2rem, 2.5vw, 2.8rem);
+  text-transform: none;
+  font-size: clamp(2.2rem, 3vw, 3rem);
   line-height: 1.05;
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.25rem;
   position: relative;
 }
 
 .related-products__heading::after {
-  content: '';
+  content: "";
   display: block;
   width: 4rem;
   height: 0.25rem;
@@ -33,7 +33,9 @@
 }
 
 .related-products .product-card-wrapper {
-  transition: transform 220ms ease, box-shadow 220ms ease;
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease;
 }
 
 .related-products .product-card-wrapper:hover {
