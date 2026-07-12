@@ -2,6 +2,7 @@
   Video Banner Section
 {% endcomment %}
 
+{%- if request.page_type == 'index' -%}
 <section
   class="video-banner"
   style="
@@ -89,6 +90,7 @@
 </script>
 
 </section>
+{%- endif -%}
 
 <style>
 .video-banner {
@@ -266,4 +268,3 @@
   ]
 }
 {% endschema %}
-
