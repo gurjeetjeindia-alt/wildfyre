@@ -18,9 +18,28 @@
         "columns_desktop": 4,
         "columns_mobile": "2"
       }
+    },
+    "17838573730df82a6e": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_5a1a82f_Cft94N": {
+          "type": "ai_gen_block_5a1a82f",
+          "settings": {
+            "mobile_gap": 12,
+            "mobile_column_gap": 12,
+            "mobile_row_gap": 20
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_5a1a82f_Cft94N"
+      ],
+      "settings": {}
     }
   },
   "order": [
-    "main"
+    "main",
+    "17838573730df82a6e"
   ]
 }
