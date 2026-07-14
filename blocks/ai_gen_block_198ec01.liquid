@@ -5,319 +5,533 @@
 {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
 
 {% style %}
-  .ai-reviews-section-{{ ai_gen_id }} {
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  .dossier-reviews-{{ ai_gen_id }} {
     display: block;
     width: {{ block.settings.desktop_width_percent }}%;
     max-width: 100%;
     margin: 0 auto;
     padding: {{ block.settings.section_padding }}px 20px;
     background-color: {{ block.settings.background_color }};
+    font-family: 'Inter', sans-serif;
+    color: #000;
   }
 
-  .ai-reviews-header-{{ ai_gen_id }} {
-    text-align: center;
-    margin-bottom: 60px;
-  }
-
-  .ai-reviews-rating-summary-{{ ai_gen_id }} {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-
-  .ai-reviews-average-{{ ai_gen_id }} {
-    font-size: 56px;
-    font-weight: 700;
-    color: {{ block.settings.text_color }};
-    line-height: 1;
-  }
-
-  .ai-reviews-stars-{{ ai_gen_id }} {
-    display: flex;
-    gap: 6px;
-  }
-
-  .ai-reviews-star-{{ ai_gen_id }} {
-    width: 24px;
-    height: 24px;
-    fill: {{ block.settings.star_color }};
-  }
-
-  .ai-reviews-star-{{ ai_gen_id }}.empty {
-    fill: {{ block.settings.empty_star_color }};
-  }
-
-  .ai-reviews-count-{{ ai_gen_id }} {
-    font-size: 14px;
-    color: {{ block.settings.secondary_text_color }};
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  .ai-reviews-title-{{ ai_gen_id }} {
+  .dossier-reviews-{{ ai_gen_id }} .dossier-reviews-title {
+    font-family: 'EB Garamond', serif;
     font-size: {{ block.settings.title_size }}px;
-    font-weight: 700;
-    color: {{ block.settings.text_color }};
-    margin: 0 0 12px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+    font-weight: 500;
+    margin: 0 0 {{ block.settings.section_padding | divided_by: 2 }}px 0;
+    line-height: 1.2;
+    color: #000;
   }
 
-  .ai-reviews-subtitle-{{ ai_gen_id }} {
-    font-size: 16px;
-    color: {{ block.settings.secondary_text_color }};
-    margin: 0;
-    line-height: 1.6;
-  }
-
-  .ai-reviews-list-{{ ai_gen_id }} {
+  .dossier-reviews-layout-{{ ai_gen_id }} {
     display: flex;
     flex-direction: column;
-    gap: 0;
-    margin-bottom: 60px;
+    gap: 3rem;
   }
 
-  .ai-review-item-{{ ai_gen_id }} {
-    padding: {{ block.settings.review_padding }}px 0;
-    border-bottom: {{ block.settings.divider_width }}px solid {{ block.settings.divider_color }};
+  @media screen and (min-width: 990px) {
+    .dossier-reviews-layout-{{ ai_gen_id }} {
+      flex-direction: row;
+      gap: 5rem;
+    }
   }
 
-  .ai-review-item-{{ ai_gen_id }}:first-child {
-    border-top: {{ block.settings.divider_width }}px solid {{ block.settings.divider_color }};
+  .dossier-reviews-sidebar-{{ ai_gen_id }} {
+    width: 100%;
   }
 
-  .ai-review-item-header-{{ ai_gen_id }} {
+  @media screen and (min-width: 990px) {
+    .dossier-reviews-sidebar-{{ ai_gen_id }} {
+      width: 33.333%;
+      flex-shrink: 0;
+    }
+  }
+
+  .dossier-reviews-main-{{ ai_gen_id }} {
+    width: 100%;
+  }
+
+  @media screen and (min-width: 990px) {
+    .dossier-reviews-main-{{ ai_gen_id }} {
+      width: 66.666%;
+    }
+  }
+
+  .dossier-rating-large-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .dossier-rating-number-{{ ai_gen_id }} {
+    font-family: 'EB Garamond', serif;
+    font-size: 4rem;
+    font-weight: 500;
+    line-height: 1;
+    color: #000;
+  }
+
+  .dossier-rating-stars-{{ ai_gen_id }} {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .dossier-rating-star-{{ ai_gen_id }} {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: #fbbf24;
+  }
+
+  .dossier-rating-star-{{ ai_gen_id }}.empty {
+    fill: #e5e7eb;
+  }
+
+  .dossier-rating-label-{{ ai_gen_id }} {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+  }
+
+  .dossier-rating-bars-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .dossier-rating-bar-row-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .dossier-rating-bar-label-{{ ai_gen_id }} {
+    width: 1rem;
+    font-size: 0.875rem;
+    color: #000;
+  }
+
+  .dossier-rating-bar-track-{{ ai_gen_id }} {
+    flex: 1;
+    height: 0.5rem;
+    background: #f3f4f6;
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+
+  .dossier-rating-bar-fill-{{ ai_gen_id }} {
+    height: 100%;
+    background: #000;
+    border-radius: 9999px;
+  }
+
+  .dossier-rating-bar-count-{{ ai_gen_id }} {
+    width: 3rem;
+    text-align: right;
+    font-size: 0.875rem;
+    color: #9ca3af;
+  }
+
+  .dossier-write-review-btn-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    background: #fff;
+    color: #000;
+    border: 1px solid #000;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .dossier-write-review-btn-{{ ai_gen_id }}:hover {
+    background: #000;
+    color: #fff;
+  }
+
+  .dossier-reviews-tabs-{{ ai_gen_id }} {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f3f4f6;
+    margin-bottom: 0;
   }
 
-  .ai-review-item-stars-{{ ai_gen_id }} {
+  .dossier-reviews-tab-group-{{ ai_gen_id }} {
     display: flex;
-    gap: 4px;
+    gap: 1rem;
   }
 
-  .ai-review-item-star-{{ ai_gen_id }} {
-    width: 18px;
-    height: 18px;
-    fill: {{ block.settings.star_color }};
+  .dossier-reviews-tab-{{ ai_gen_id }} {
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #000;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
   }
 
-  .ai-review-item-star-{{ ai_gen_id }}.empty {
-    fill: {{ block.settings.empty_star_color }};
+  .dossier-reviews-tab-{{ ai_gen_id }}.inactive {
+    color: #9ca3af;
+    text-decoration: none;
+    font-weight: 400;
   }
 
-  .ai-review-verified-{{ ai_gen_id }} {
-    font-size: 11px;
-    color: {{ block.settings.verified_color }};
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: 600;
-  }
-
-  .ai-review-title-{{ ai_gen_id }} {
-    font-size: 18px;
-    font-weight: 600;
-    color: {{ block.settings.text_color }};
-    margin: 0 0 12px;
-    line-height: 1.4;
-  }
-
-  .ai-review-text-{{ ai_gen_id }} {
-    font-size: 15px;
-    color: {{ block.settings.text_color }};
-    line-height: 1.7;
-    margin: 0 0 16px;
-    max-width: 800px;
-  }
-
-  .ai-review-author-{{ ai_gen_id }} {
+  .dossier-reviews-sort-{{ ai_gen_id }} {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
   }
 
-  .ai-review-author-name-{{ ai_gen_id }} {
-    font-size: 13px;
-    font-weight: 600;
-    color: {{ block.settings.text_color }};
-    text-transform: uppercase;
-    letter-spacing: 1px;
+  .dossier-reviews-sort-select-{{ ai_gen_id }} {
+    border: none;
+    background: transparent;
+    font-weight: 700;
+    color: #000;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-family: 'Inter', sans-serif;
+    padding: 0;
   }
 
-  .ai-review-author-separator-{{ ai_gen_id }} {
-    width: 4px;
-    height: 4px;
-    background-color: {{ block.settings.secondary_text_color }};
+  .dossier-reviews-sort-select-{{ ai_gen_id }}:focus {
+    outline: none;
+  }
+
+  .dossier-reviews-list-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .dossier-review-item-{{ ai_gen_id }} {
+    padding: 2.5rem 0;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  .dossier-review-item-{{ ai_gen_id }}:last-child {
+    border-bottom: none;
+  }
+
+  .dossier-review-item-header-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .dossier-review-author-block-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .dossier-review-avatar-{{ ai_gen_id }} {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: #f3f4f6;
     border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: #9ca3af;
+    flex-shrink: 0;
   }
 
-  .ai-review-author-date-{{ ai_gen_id }} {
-    font-size: 13px;
-    color: {{ block.settings.secondary_text_color }};
+  .dossier-review-author-info-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
   }
 
-  .ai-reviews-cta-{{ ai_gen_id }} {
-    text-align: center;
+  .dossier-review-author-name-{{ ai_gen_id }} {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #000;
   }
 
-  .ai-reviews-button-{{ ai_gen_id }} {
-    display: inline-block;
-    padding: 18px 48px;
-    background-color: {{ block.settings.button_background }};
-    color: {{ block.settings.button_text_color }};
-    text-decoration: none;
-    font-size: 13px;
+  .dossier-review-author-name-{{ ai_gen_id }} .verified-badge {
+    margin-left: 0.5rem;
+    font-size: 0.625rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
-    border: {{ block.settings.button_border_width }}px solid {{ block.settings.button_border_color }};
-    cursor: pointer;
-    transition: all 0.3s ease;
+    color: #3b82f6;
+    border: 1px solid #3b82f6;
+    padding: 0.0625rem 0.25rem;
+    letter-spacing: 0.05em;
   }
 
-  .ai-reviews-button-{{ ai_gen_id }}:hover {
-    background-color: {{ block.settings.button_hover_background }};
-    color: {{ block.settings.button_hover_text_color }};
-    border-color: {{ block.settings.button_hover_border_color }};
+  .dossier-review-stars-{{ ai_gen_id }} {
+    display: flex;
+    gap: 0.125rem;
+  }
+
+  .dossier-review-star-{{ ai_gen_id }} {
+    width: 0.875rem;
+    height: 0.875rem;
+    fill: #fbbf24;
+  }
+
+  .dossier-review-star-{{ ai_gen_id }}.empty {
+    fill: #e5e7eb;
+  }
+
+  .dossier-review-date-{{ ai_gen_id }} {
+    font-size: 0.75rem;
+    color: #9ca3af;
+  }
+
+  .dossier-review-item-title-{{ ai_gen_id }} {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #000;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .dossier-review-item-text-{{ ai_gen_id }} {
+    font-size: 0.875rem;
+    color: #4b5563;
+    line-height: 1.6;
+    margin: 0 0 1.5rem 0;
+  }
+
+  .dossier-review-response-{{ ai_gen_id }} {
+    background: #f9fafb;
+    padding: 1rem;
+    border-radius: 0.125rem;
+  }
+
+  .dossier-review-response-label-{{ ai_gen_id }} {
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+    color: #000;
+  }
+
+  .dossier-review-response-text-{{ ai_gen_id }} {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+  }
+
+  .dossier-reviews-cta-{{ ai_gen_id }} {
+    text-align: center;
+    margin-top: 2rem;
+  }
+
+  .dossier-reviews-cta-button-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: 0.75rem 3rem;
+    border: 1px solid #000;
+    background: #fff;
+    color: #000;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .dossier-reviews-cta-button-{{ ai_gen_id }}:hover {
+    background: #000;
+    color: #fff;
   }
 
   @media screen and (max-width: 749px) {
-    .ai-reviews-average-{{ ai_gen_id }} {
-      font-size: 42px;
-    }
-
-    .ai-reviews-title-{{ ai_gen_id }} {
-      font-size: {{ block.settings.title_size | times: 0.75 }}px;
-    }
-
-    .ai-review-item-{{ ai_gen_id }} {
-      padding: {{ block.settings.review_padding | times: 0.75 }}px 0;
-    }
-
-    .ai-review-item-header-{{ ai_gen_id }} {
+    .dossier-rating-large-{{ ai_gen_id }} {
       flex-direction: column;
       align-items: flex-start;
-      gap: 8px;
     }
 
-    .ai-review-author-{{ ai_gen_id }} {
+    .dossier-reviews-tabs-{{ ai_gen_id }} {
       flex-direction: column;
       align-items: flex-start;
-      gap: 4px;
+      gap: 0.75rem;
     }
 
-    .ai-review-author-separator-{{ ai_gen_id }} {
-      display: none;
+    .dossier-review-item-header-{{ ai_gen_id }} {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
     }
   }
 {% endstyle %}
 
-<reviews-section-{{ ai_gen_id }} class="ai-reviews-section-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
-  <div class="ai-reviews-header-{{ ai_gen_id }}">
-    <div class="ai-reviews-rating-summary-{{ ai_gen_id }}">
-      <div class="ai-reviews-average-{{ ai_gen_id }}">{{ block.settings.average_rating }}</div>
-      <div class="ai-reviews-stars-{{ ai_gen_id }}">
-        {% for i in (1..5) %}
-          {% if i <= block.settings.average_rating %}
-            <svg class="ai-reviews-star-{{ ai_gen_id }}" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-            </svg>
-          {% else %}
-            <svg class="ai-reviews-star-{{ ai_gen_id }} empty" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-            </svg>
-          {% endif %}
-        {% endfor %}
-      </div>
-      <div class="ai-reviews-count-{{ ai_gen_id }}">Based on {{ block.settings.review_count }} reviews</div>
-    </div>
-    
-    {% if block.settings.section_title != blank %}
-      <h2 class="ai-reviews-title-{{ ai_gen_id }}">{{ block.settings.section_title }}</h2>
-    {% endif %}
-    
-    {% if block.settings.section_subtitle != blank %}
-      <p class="ai-reviews-subtitle-{{ ai_gen_id }}">{{ block.settings.section_subtitle }}</p>
-    {% endif %}
-  </div>
+<reviews-section-{{ ai_gen_id }} class="dossier-reviews-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  {% if block.settings.section_title != blank %}
+    <h2 class="dossier-reviews-title">{{ block.settings.section_title }}</h2>
+  {% endif %}
 
-  <div class="ai-reviews-list-{{ ai_gen_id }}">
-    {% for i in (1..3) %}
-      {% liquid
-        assign review_rating_key = 'review_' | append: i | append: '_rating'
-        assign review_title_key = 'review_' | append: i | append: '_title'
-        assign review_text_key = 'review_' | append: i | append: '_text'
-        assign review_author_key = 'review_' | append: i | append: '_author'
-        assign review_date_key = 'review_' | append: i | append: '_date'
-        assign review_verified_key = 'review_' | append: i | append: '_verified'
-
-        assign review_rating = block.settings[review_rating_key]
-        assign review_title = block.settings[review_title_key]
-        assign review_text = block.settings[review_text_key]
-        assign review_author = block.settings[review_author_key]
-        assign review_date = block.settings[review_date_key]
-        assign review_verified = block.settings[review_verified_key]
-      %}
-
-      <div class="ai-review-item-{{ ai_gen_id }}">
-        <div class="ai-review-item-header-{{ ai_gen_id }}">
-          <div class="ai-review-item-stars-{{ ai_gen_id }}">
-            {% for star in (1..5) %}
-              {% if star <= review_rating %}
-                <svg class="ai-review-item-star-{{ ai_gen_id }}" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+  <div class="dossier-reviews-layout-{{ ai_gen_id }}">
+    <!-- Left Sidebar: Rating Summary -->
+    <div class="dossier-reviews-sidebar-{{ ai_gen_id }}">
+      <div class="dossier-rating-large-{{ ai_gen_id }}">
+        <div class="dossier-rating-number-{{ ai_gen_id }}">{{ block.settings.average_rating }}</div>
+        <div>
+          <div class="dossier-rating-stars-{{ ai_gen_id }}">
+            {% assign full_stars = block.settings.average_rating | floor %}
+            {% for i in (1..5) %}
+              {% if i <= full_stars %}
+                <svg class="dossier-rating-star-{{ ai_gen_id }}" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                   <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
                 </svg>
               {% else %}
-                <svg class="ai-review-item-star-{{ ai_gen_id }} empty" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <svg class="dossier-rating-star-{{ ai_gen_id }} empty" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                   <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
                 </svg>
               {% endif %}
             {% endfor %}
           </div>
-          {% if review_verified %}
-            <span class="ai-review-verified-{{ ai_gen_id }}">Verified Purchase</span>
-          {% endif %}
-        </div>
-
-        {% if review_title != blank %}
-          <h3 class="ai-review-title-{{ ai_gen_id }}">{{ review_title }}</h3>
-        {% endif %}
-
-        {% if review_text != blank %}
-          <p class="ai-review-text-{{ ai_gen_id }}">{{ review_text }}</p>
-        {% endif %}
-
-        <div class="ai-review-author-{{ ai_gen_id }}">
-          {% if review_author != blank %}
-            <div class="ai-review-author-name-{{ ai_gen_id }}">{{ review_author }}</div>
-          {% endif %}
-          {% if review_author != blank and review_date != blank %}
-            <div class="ai-review-author-separator-{{ ai_gen_id }}"></div>
-          {% endif %}
-          {% if review_date != blank %}
-            <div class="ai-review-author-date-{{ ai_gen_id }}">{{ review_date }}</div>
-          {% endif %}
+          <div class="dossier-rating-label-{{ ai_gen_id }}">Based on {{ block.settings.review_count }} reviews</div>
         </div>
       </div>
-    {% endfor %}
-  </div>
 
-  {% if block.settings.show_cta_button %}
-    <div class="ai-reviews-cta-{{ ai_gen_id }}">
-      <a href="{{ block.settings.button_link }}" class="ai-reviews-button-{{ ai_gen_id }}">
-        {{ block.settings.button_text }}
-      </a>
+      <!-- Rating Distribution Bars -->
+      <div class="dossier-rating-bars-{{ ai_gen_id }}">
+        {% assign bar_values = block.settings.rating_bar_5 | append: ',' | append: block.settings.rating_bar_4 | append: ',' | append: block.settings.rating_bar_3 | append: ',' | append: block.settings.rating_bar_2 | append: ',' | append: block.settings.rating_bar_1 | split: ',' %}
+        {% assign bar_labels = "5,4,3,2,1" | split: ',' %}
+        {% for label in bar_labels %}
+          {% assign bar_value = bar_values[forloop.index0] | plus: 0 %}
+          <div class="dossier-rating-bar-row-{{ ai_gen_id }}">
+            <span class="dossier-rating-bar-label-{{ ai_gen_id }}">{{ label }}</span>
+            <span>★</span>
+            <div class="dossier-rating-bar-track-{{ ai_gen_id }}">
+              <div class="dossier-rating-bar-fill-{{ ai_gen_id }}" style="width: {{ bar_value }}%"></div>
+            </div>
+            <span class="dossier-rating-bar-count-{{ ai_gen_id }}">{{ bar_value | divided_by: 100 | times: block.settings.review_count | remove: '.' | truncate: 5, '' }}</span>
+          </div>
+        {% endfor %}
+      </div>
+
+      <button class="dossier-write-review-btn-{{ ai_gen_id }}">Write a Review</button>
     </div>
-  {% endif %}
+
+    <!-- Right Main: Reviews List -->
+    <div class="dossier-reviews-main-{{ ai_gen_id }}">
+      <div class="dossier-reviews-tabs-{{ ai_gen_id }}">
+        <div class="dossier-reviews-tab-group-{{ ai_gen_id }}">
+          <button class="dossier-reviews-tab-{{ ai_gen_id }}">Reviews ({{ block.settings.review_count }})</button>
+          <button class="dossier-reviews-tab-{{ ai_gen_id }} inactive">Questions (10)</button>
+        </div>
+        <div class="dossier-reviews-sort-{{ ai_gen_id }}">
+          <span>Sort:</span>
+          <select class="dossier-reviews-sort-select-{{ ai_gen_id }}">
+            <option>Highest Rating</option>
+            <option>Most Recent</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="dossier-reviews-list-{{ ai_gen_id }}">
+        {% for i in (1..3) %}
+          {% liquid
+            assign review_rating_key = 'review_' | append: i | append: '_rating'
+            assign review_title_key = 'review_' | append: i | append: '_title'
+            assign review_text_key = 'review_' | append: i | append: '_text'
+            assign review_author_key = 'review_' | append: i | append: '_author'
+            assign review_date_key = 'review_' | append: i | append: '_date'
+            assign review_verified_key = 'review_' | append: i | append: '_verified'
+            assign review_response_key = 'review_' | append: i | append: '_response'
+
+            assign review_rating = block.settings[review_rating_key]
+            assign review_title = block.settings[review_title_key]
+            assign review_text = block.settings[review_text_key]
+            assign review_author = block.settings[review_author_key]
+            assign review_date = block.settings[review_date_key]
+            assign review_verified = block.settings[review_verified_key]
+            assign review_response = block.settings[review_response_key]
+
+            assign initials = review_author | split: ' ' | first | slice: 0 | upcase
+            if review_author contains ' '
+              assign last_initial = review_author | split: ' ' | last | slice: 0 | upcase
+              assign initials = initials | append: last_initial
+            endif
+          %}
+
+          <div class="dossier-review-item-{{ ai_gen_id }}">
+            <div class="dossier-review-item-header-{{ ai_gen_id }}">
+              <div class="dossier-review-author-block-{{ ai_gen_id }}">
+                <div class="dossier-review-avatar-{{ ai_gen_id }}">{{ initials }}</div>
+                <div class="dossier-review-author-info-{{ ai_gen_id }}">
+                  <div class="dossier-review-author-name-{{ ai_gen_id }}">
+                    {{ review_author }}
+                    {% if review_verified %}
+                      <span class="verified-badge">Verified Buyer</span>
+                    {% endif %}
+                  </div>
+                  <div class="dossier-review-stars-{{ ai_gen_id }}">
+                    {% for star in (1..5) %}
+                      {% if star <= review_rating %}
+                        <svg class="dossier-review-star-{{ ai_gen_id }}" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                        </svg>
+                      {% else %}
+                        <svg class="dossier-review-star-{{ ai_gen_id }} empty" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                        </svg>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+              <div class="dossier-review-date-{{ ai_gen_id }}">{{ review_date }}</div>
+            </div>
+
+            {% if review_title != blank %}
+              <h4 class="dossier-review-item-title-{{ ai_gen_id }}">{{ review_title }}</h4>
+            {% endif %}
+
+            {% if review_text != blank %}
+              <p class="dossier-review-item-text-{{ ai_gen_id }}">{{ review_text }}</p>
+            {% endif %}
+
+            {% if review_response != blank %}
+              <div class="dossier-review-response-{{ ai_gen_id }}">
+                <p class="dossier-review-response-label-{{ ai_gen_id }}">{{ block.settings.brand_name | default: 'Wildfyre' }} Perfumes</p>
+                <p class="dossier-review-response-text-{{ ai_gen_id }}">{{ review_response }}</p>
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+
+      {% if block.settings.show_cta_button %}
+        <div class="dossier-reviews-cta-{{ ai_gen_id }}">
+          <a href="{{ block.settings.button_link }}" class="dossier-reviews-cta-button-{{ ai_gen_id }}">
+            {{ block.settings.button_text }}
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
 </reviews-section-{{ ai_gen_id }}>
 
 {% schema %}
 {
-  "name": "Reviews section",
+  "name": "Dossier Reviews",
   "settings": [
     {
       "type": "header",
@@ -359,14 +573,14 @@
       "label": "Average rating",
       "min": 1,
       "max": 5,
-      "step": 1,
-      "default": 5
+      "step": 0.1,
+      "default": 4.8
     },
     {
       "type": "text",
       "id": "review_count",
       "label": "Total review count",
-      "default": "1,247"
+      "default": "13,299"
     },
     {
       "type": "inline_richtext",
@@ -375,20 +589,73 @@
       "default": "Customer Reviews"
     },
     {
-      "type": "inline_richtext",
-      "id": "section_subtitle",
-      "label": "Subtitle",
-      "default": "See what our customers are saying"
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size (px)",
+      "min": 24,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "header",
+      "content": "Rating Distribution (percentage)"
     },
     {
       "type": "range",
-      "id": "title_size",
-      "label": "Title size",
-      "min": 16,
-      "max": 48,
-      "step": 2,
-      "unit": "px",
-      "default": 28
+      "id": "rating_bar_5",
+      "label": "5★ bar width %",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 92
+    },
+    {
+      "type": "range",
+      "id": "rating_bar_4",
+      "label": "4★ bar width %",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "rating_bar_3",
+      "label": "3★ bar width %",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "rating_bar_2",
+      "label": "2★ bar width %",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "rating_bar_1",
+      "label": "1★ bar width %",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Brand"
+    },
+    {
+      "type": "text",
+      "id": "brand_name",
+      "label": "Brand name for responses",
+      "default": "Wildfyre"
     },
     {
       "type": "header",
@@ -407,31 +674,37 @@
       "type": "text",
       "id": "review_1_title",
       "label": "Review title",
-      "default": "Absolutely stunning fragrance"
+      "default": "Amazing"
     },
     {
       "type": "textarea",
       "id": "review_1_text",
       "label": "Review text",
-      "default": "This perfume exceeded all my expectations. The scent is sophisticated, long-lasting, and receives compliments everywhere I go. Worth every penny."
+      "default": "This is my 3rd bottle and couldn't be more happy with the scent."
     },
     {
       "type": "text",
       "id": "review_1_author",
       "label": "Author name",
-      "default": "Sarah M."
+      "default": "Julie G."
     },
     {
       "type": "text",
       "id": "review_1_date",
       "label": "Review date",
-      "default": "January 15, 2026"
+      "default": "7/13/24"
     },
     {
       "type": "checkbox",
       "id": "review_1_verified",
       "label": "Verified purchase",
       "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "review_1_response",
+      "label": "Brand response",
+      "default": "We can't get enough either, three bottles and counting! Thanks for sharing 😊"
     },
     {
       "type": "header",
@@ -450,19 +723,19 @@
       "type": "text",
       "id": "review_2_title",
       "label": "Review title",
-      "default": "My new signature scent"
+      "default": "Absolutely stunning fragrance"
     },
     {
       "type": "textarea",
       "id": "review_2_text",
       "label": "Review text",
-      "default": "I've been searching for the perfect fragrance for years, and I finally found it. The blend is unique and elegant. Highly recommend!"
+      "default": "This perfume exceeded all my expectations. The scent is sophisticated, long-lasting, and receives compliments everywhere I go. Worth every penny."
     },
     {
       "type": "text",
       "id": "review_2_author",
       "label": "Author name",
-      "default": "Michael R."
+      "default": "Sarah M."
     },
     {
       "type": "text",
@@ -475,6 +748,11 @@
       "id": "review_2_verified",
       "label": "Verified purchase",
       "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "review_2_response",
+      "label": "Brand response"
     },
     {
       "type": "header",
@@ -517,71 +795,12 @@
       "type": "checkbox",
       "id": "review_3_verified",
       "label": "Verified purchase",
-      "default": true
+      "default": false
     },
     {
-      "type": "header",
-      "content": "Layout"
-    },
-    {
-      "type": "range",
-      "id": "review_padding",
-      "label": "Review spacing",
-      "min": 20,
-      "max": 60,
-      "step": 5,
-      "unit": "px",
-      "default": 40
-    },
-    {
-      "type": "range",
-      "id": "divider_width",
-      "label": "Divider width",
-      "min": 0,
-      "max": 4,
-      "step": 1,
-      "unit": "px",
-      "default": 1
-    },
-    {
-      "type": "color",
-      "id": "divider_color",
-      "label": "Divider color",
-      "default": "#e5e5e5"
-    },
-    {
-      "type": "header",
-      "content": "Colors"
-    },
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "Text color",
-      "default": "#121212"
-    },
-    {
-      "type": "color",
-      "id": "secondary_text_color",
-      "label": "Secondary text color",
-      "default": "#666666"
-    },
-    {
-      "type": "color",
-      "id": "star_color",
-      "label": "Star color",
-      "default": "#000000"
-    },
-    {
-      "type": "color",
-      "id": "empty_star_color",
-      "label": "Empty star color",
-      "default": "#e5e5e5"
-    },
-    {
-      "type": "color",
-      "id": "verified_color",
-      "label": "Verified badge color",
-      "default": "#008060"
+      "type": "textarea",
+      "id": "review_3_response",
+      "label": "Brand response"
     },
     {
       "type": "header",
@@ -590,70 +809,24 @@
     {
       "type": "checkbox",
       "id": "show_cta_button",
-      "label": "Show button",
+      "label": "Show \"Show More\" button",
       "default": true
     },
     {
       "type": "text",
       "id": "button_text",
       "label": "Button text",
-      "default": "Read all reviews"
+      "default": "Show More"
     },
     {
       "type": "url",
       "id": "button_link",
       "label": "Button link"
-    },
-    {
-      "type": "color",
-      "id": "button_background",
-      "label": "Button background",
-      "default": "#121212"
-    },
-    {
-      "type": "color",
-      "id": "button_text_color",
-      "label": "Button text color",
-      "default": "#ffffff"
-    },
-    {
-      "type": "range",
-      "id": "button_border_width",
-      "label": "Button border width",
-      "min": 0,
-      "max": 4,
-      "step": 1,
-      "unit": "px",
-      "default": 1
-    },
-    {
-      "type": "color",
-      "id": "button_border_color",
-      "label": "Button border color",
-      "default": "#121212"
-    },
-    {
-      "type": "color",
-      "id": "button_hover_background",
-      "label": "Button hover background",
-      "default": "#ffffff"
-    },
-    {
-      "type": "color",
-      "id": "button_hover_text_color",
-      "label": "Button hover text color",
-      "default": "#121212"
-    },
-    {
-      "type": "color",
-      "id": "button_hover_border_color",
-      "label": "Button hover border color",
-      "default": "#121212"
     }
   ],
   "presets": [
     {
-      "name": "Reviews section"
+      "name": "Dossier Reviews"
     }
   ]
 }
