@@ -95,17 +95,17 @@
     }
 
     .dossier-title {
-      font-size: 2.5rem;
-      font-weight: 500;
+      font-size: 2.75rem;
+      font-weight: 600;
       line-height: 1.1;
-      margin-bottom: 0.75rem;
+      margin-bottom: 1rem;
       letter-spacing: -0.02em;
       font-family: 'EB Garamond', serif;
     }
 
     @media screen and (min-width: 750px) {
       .dossier-title {
-        font-size: 4rem;
+        font-size: 4.5rem;
       }
     }
 
@@ -121,14 +121,15 @@
     .dossier-rating {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      font-size: 1rem;
-      margin-bottom: 0.75rem;
+      gap: 0.875rem;
+      font-size: 1.125rem;
+      margin-bottom: 1rem;
     }
 
     .dossier-rating .stars {
-      color: #fbbf24;
-      font-size: 1.125rem;
+      color: #f59e0b;
+      font-size: 1.25rem;
+      letter-spacing: 0.05em;
     }
 
     .dossier-rating .reviews-link {
@@ -142,42 +143,44 @@
     }
 
     .dossier-subtitle {
-      font-size: 1rem;
+      font-size: 1.125rem;
       color: #4b5563;
       margin-bottom: 0;
+      line-height: 1.5;
     }
 
     .dossier-price-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-top: 1.25rem;
-      margin-bottom: 0.75rem;
+      margin-top: 1.5rem;
+      margin-bottom: 1rem;
     }
 
     .dossier-price-guest {
-      font-size: 1rem;
+      font-size: 1.125rem;
       color: #6b7280;
     }
 
     .dossier-price-guest .price-value {
       color: #000;
       font-weight: 700;
+      font-size: 1.25rem;
     }
 
     .dossier-price-member {
-      font-size: 1rem;
+      font-size: 1.125rem;
       color: #dc2626;
       font-weight: 700;
       display: flex;
       align-items: center;
       justify-content: flex-end;
+      gap: 0.25rem;
     }
 
     .dossier-price-member svg {
-      width: 1.25rem;
-      height: 1.25rem;
-      margin-right: 0.375rem;
+      width: 1.375rem;
+      height: 1.375rem;
       flex-shrink: 0;
     }
 
@@ -186,12 +189,12 @@
     }
 
     .dossier-inspired {
-      font-size: 1rem;
+      font-size: 1.125rem;
       font-style: italic;
       color: #374151;
-      margin-top: 1.5rem;
-      margin-bottom: 2rem;
-      line-height: 1.5;
+      margin-top: 1.75rem;
+      margin-bottom: 2.5rem;
+      line-height: 1.6;
     }
 
     .dossier-inspired strong {
@@ -289,34 +292,38 @@
       width: 100%;
       background: #000;
       color: #fff;
-      padding: 1.25rem;
-      font-size: 1rem;
+      padding: 1.375rem;
+      font-size: 1.0625rem;
       font-weight: 700;
       text-transform: uppercase;
       border: none;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.25s ease;
       font-family: 'Inter', sans-serif;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.12em;
     }
 
     .dossier-add-to-cart:hover {
       background: #1f2937;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
     .dossier-add-to-cart:disabled {
       background: #9ca3af;
       cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
     }
 
     /* Accordions - Dossier Style */
     .dossier-accordions {
-      margin-top: 3rem;
+      margin-top: 3.5rem;
     }
 
     .dossier-accordion-item {
       border-top: 1px solid #e5e7eb;
-      padding: 1rem 0;
+      padding: 1.25rem 0;
     }
 
     .dossier-accordion-item:last-child {
@@ -329,22 +336,27 @@
       align-items: center;
       cursor: pointer;
       user-select: none;
+      padding: 0.25rem 0;
+    }
+
+    .dossier-accordion-header:hover {
+      opacity: 0.7;
     }
 
     .dossier-accordion-title {
-      font-size: 0.875rem;
+      font-size: 0.9375rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.12em;
       margin: 0;
       font-family: 'Inter', sans-serif;
     }
 
     .dossier-accordion-icon {
-      width: 1.25rem;
-      height: 1.25rem;
+      width: 1.375rem;
+      height: 1.375rem;
       flex-shrink: 0;
-      transition: transform 0.2s ease;
+      transition: transform 0.3s ease;
     }
 
     .dossier-accordion-item.open .dossier-accordion-icon {
@@ -366,76 +378,86 @@
 
     /* Scent Notes Content */
     .dossier-scent-description {
-      font-size: 1rem;
+      font-size: 1.125rem;
       background: #f9fafb;
-      padding: 1.125rem 1.75rem;
+      padding: 1.25rem 2rem;
       display: inline-block;
       border-radius: 9999px;
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
+      line-height: 1.5;
     }
 
     .dossier-scent-description strong {
       font-style: italic;
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .dossier-notes-label {
-      font-size: 0.875rem;
+      font-size: 0.9375rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin: 0 0 1.25rem 0;
+      letter-spacing: 0.12em;
+      margin: 0 0 1.5rem 0;
       font-family: 'Inter', sans-serif;
     }
 
     .dossier-notes-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 1.5rem;
+      gap: 2rem;
       text-align: center;
-      margin-bottom: 3rem;
+      margin-bottom: 3.5rem;
     }
 
     .dossier-note-item img {
-      width: 3.5rem;
-      height: 3.5rem;
+      width: 4rem;
+      height: 4rem;
       border-radius: 50%;
       margin: 0 auto 0.75rem;
       display: block;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
 
     .dossier-note-name {
-      font-size: 0.75rem;
+      font-size: 0.8125rem;
       font-weight: 700;
       text-transform: uppercase;
       margin: 0;
       font-family: 'Inter', sans-serif;
+      letter-spacing: 0.05em;
     }
 
     .dossier-note-pyramid {
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 1.75rem;
     }
 
     .dossier-note-level {
       display: flex;
       align-items: flex-start;
-      gap: 1rem;
+      gap: 1.125rem;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      transition: background 0.2s ease;
+    }
+
+    .dossier-note-level:hover {
+      background: #fafafa;
     }
 
     .dossier-note-level svg {
-      width: 1.25rem;
-      height: 1.25rem;
+      width: 1.375rem;
+      height: 1.375rem;
       margin-top: 0.25rem;
       flex-shrink: 0;
     }
 
     .dossier-note-level-label {
-      font-size: 0.8125rem;
+      font-size: 0.875rem;
       font-weight: 700;
       text-transform: uppercase;
-      margin: 0;
+      margin: 0 0 0.1875rem 0;
       font-family: 'Inter', sans-serif;
     }
 
@@ -443,14 +465,15 @@
       font-weight: 400;
       text-transform: none;
       color: #4b5563;
-      margin-left: 0.25rem;
+      margin-left: 0.375rem;
     }
 
     .dossier-note-level-value {
-      font-size: 1rem;
+      font-size: 1.0625rem;
       font-weight: 500;
-      margin: 0.125rem 0 0 0;
+      margin: 0;
       font-family: 'Inter', sans-serif;
+      color: #000;
     }
 
     /* Breadcrumbs */
@@ -458,7 +481,7 @@
       display: flex;
       font-size: 0.875rem;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.12em;
       color: #9ca3af;
       margin-bottom: 2rem;
     }
@@ -538,50 +561,59 @@
       .dossier-floating-cart {
         display: block;
         position: fixed;
-        bottom: 1.25rem;
-        right: 1.25rem;
+        bottom: 1.5rem;
+        right: 1.5rem;
         z-index: 40;
       }
 
       .dossier-floating-cart button {
         background: #000;
         color: #fff;
-        padding: 0.875rem 1.75rem;
+        padding: 1rem 2rem;
         border-radius: 9999px;
         font-weight: 700;
-        font-size: 0.875rem;
+        font-size: 0.9375rem;
         text-transform: uppercase;
         border: none;
         cursor: pointer;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
         font-family: 'Inter', sans-serif;
         white-space: nowrap;
+        transition: all 0.2s ease;
       }
 
       .dossier-floating-cart button:hover {
         background: #1f2937;
+        transform: translateY(-1px);
+        box-shadow: 0 12px 28px -5px rgba(0, 0, 0, 0.25);
       }
 
       .dossier-floating-promo {
         position: fixed;
-        bottom: 1.25rem;
-        left: 1.25rem;
+        bottom: 1.5rem;
+        left: 1.5rem;
         z-index: 40;
       }
 
       .dossier-floating-promo button {
         background: #fff;
-        border: 1px solid #e5e7eb;
-        padding: 0.625rem 1.25rem;
+        border: 1px solid #d1d5db;
+        padding: 0.75rem 1.375rem;
         border-radius: 9999px;
         font-weight: 700;
         font-size: 0.875rem;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         cursor: pointer;
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.625rem;
         font-family: 'Inter', sans-serif;
+        transition: all 0.2s ease;
+      }
+
+      .dossier-floating-promo button:hover {
+        border-color: #000;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
       }
 
       .dossier-floating-promo .dot {
