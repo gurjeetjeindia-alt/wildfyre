@@ -94,7 +94,7 @@
     "1784011241d29dbaf9": {
       "type": "_blocks",
       "blocks": {
-        "ai_gen_block_198ec01_eUnyxe": {
+        "ai_gen_block_198ec01_jhKzMp": {
           "type": "ai_gen_block_198ec01",
           "name": "Dossier Reviews",
           "settings": {
@@ -138,16 +138,17 @@
           },
           "blocks": {}
         },
-        "ai_gen_block_198ec01_63tek6": {
+        "ai_gen_block_198ec01_eUnyxe": {
           "type": "ai_gen_block_198ec01",
+          "name": "Dossier Reviews",
           "settings": {
             "desktop_width_percent": 100,
             "section_padding": 60,
             "background_color": "#ffffff",
-            "average_rating": 5,
-            "review_count": "1,247",
+            "average_rating": 4.8,
+            "review_count": "13,299",
             "section_title": "Customer Reviews",
-            "title_size": 28,
+            "title_size": 36,
             "rating_bar_5": 92,
             "rating_bar_4": 5,
             "rating_bar_3": 2,
@@ -155,16 +156,16 @@
             "rating_bar_1": 0,
             "brand_name": "Wildfyre",
             "review_1_rating": 5,
-            "review_1_title": "Absolutely stunning fragrance",
-            "review_1_text": "This perfume exceeded all my expectations. The scent is sophisticated, long-lasting, and receives compliments everywhere I go. Worth every penny.",
-            "review_1_author": "Sarah M.",
-            "review_1_date": "January 15, 2026",
+            "review_1_title": "Amazing",
+            "review_1_text": "This is my 3rd bottle and couldn't be more happy with the scent.",
+            "review_1_author": "Julie G.",
+            "review_1_date": "7/13/24",
             "review_1_verified": true,
             "review_1_response": "We can't get enough either, three bottles and counting! Thanks for sharing 😊",
             "review_2_rating": 5,
-            "review_2_title": "My new signature scent",
-            "review_2_text": "I've been searching for the perfect fragrance for years, and I finally found it. The blend is unique and elegant. Highly recommend!",
-            "review_2_author": "Michael R.",
+            "review_2_title": "Absolutely stunning fragrance",
+            "review_2_text": "This perfume exceeded all my expectations. The scent is sophisticated, long-lasting, and receives compliments everywhere I go. Worth every penny.",
+            "review_2_author": "Sarah M.",
             "review_2_date": "January 10, 2026",
             "review_2_verified": true,
             "review_2_response": "",
@@ -173,18 +174,18 @@
             "review_3_text": "The quality is exceptional. From the packaging to the scent itself, everything feels premium. This is now my go-to fragrance for special occasions.",
             "review_3_author": "Emma L.",
             "review_3_date": "January 5, 2026",
-            "review_3_verified": true,
+            "review_3_verified": false,
             "review_3_response": "",
             "show_cta_button": true,
-            "button_text": "Read all reviews",
+            "button_text": "Show More",
             "button_link": ""
           },
           "blocks": {}
         }
       },
       "block_order": [
-        "ai_gen_block_198ec01_eUnyxe",
-        "ai_gen_block_198ec01_63tek6"
+        "ai_gen_block_198ec01_jhKzMp",
+        "ai_gen_block_198ec01_eUnyxe"
       ],
       "settings": {}
     },
