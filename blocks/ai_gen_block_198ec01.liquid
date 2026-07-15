@@ -408,6 +408,10 @@
     color: #fff;
   }
 
+  .dossier-review-hidden-{{ ai_gen_id }} {
+    display: none;
+  }
+
   @media screen and (max-width: 749px) {
     .dossier-rating-large-{{ ai_gen_id }} {
       flex-direction: column;
@@ -433,6 +437,42 @@
     <h2 class="dossier-reviews-title">{{ block.settings.section_title }}</h2>
   {% endif %}
 
+  {% comment %}
+    ==========================================
+    COMPUTED VALUES
+    ==========================================
+    - Calculate actual count from total_review_count and rating distribution percentages
+    - review_count_num: numeric version of total_review_count (stripped of commas)
+    - total_reviews: final numeric count
+  {% endcomment %}
+  {% liquid
+    assign review_count_raw = block.settings.total_review_count | remove: ',' | remove: '.' | plus: 0
+    if review_count_raw == 0
+      assign review_count_raw = 13299
+    endif
+    assign total_reviews = review_count_raw
+
+    assign display_count = block.settings.initial_review_count | plus: 0
+    if display_count == 0
+      assign display_count = 3
+    endif
+
+    assign bar_5 = block.settings.rating_bar_5 | plus: 0
+    assign bar_4 = block.settings.rating_bar_4 | plus: 0
+    assign bar_3 = block.settings.rating_bar_3 | plus: 0
+    assign bar_2 = block.settings.rating_bar_2 | plus: 0
+    assign bar_1 = block.settings.rating_bar_1 | plus: 0
+
+    assign count_5 = total_reviews | times: bar_5 | divided_by: 100
+    assign count_4 = total_reviews | times: bar_4 | divided_by: 100
+    assign count_3 = total_reviews | times: bar_3 | divided_by: 100
+    assign count_2 = total_reviews | times: bar_2 | divided_by: 100
+    assign count_1 = total_reviews | times: bar_1 | divided_by: 100
+  %}
+
+  {% capture formatted_total %}{{ total_reviews }}{% endcapture %}
+  {% assign formatted_total = total_reviews %}
+
   <div class="dossier-reviews-layout-{{ ai_gen_id }}">
     <!-- Left Sidebar: Rating Summary -->
     <div class="dossier-reviews-sidebar-{{ ai_gen_id }}">
@@ -453,23 +493,24 @@
               {% endif %}
             {% endfor %}
           </div>
-          <div class="dossier-rating-label-{{ ai_gen_id }}">Based on {{ block.settings.review_count }} reviews</div>
+          <div class="dossier-rating-label-{{ ai_gen_id }}">Based on {{ formatted_total | default: '13,299' }} reviews</div>
         </div>
       </div>
 
       <!-- Rating Distribution Bars -->
       <div class="dossier-rating-bars-{{ ai_gen_id }}">
-        {% assign bar_values = block.settings.rating_bar_5 | append: ',' | append: block.settings.rating_bar_4 | append: ',' | append: block.settings.rating_bar_3 | append: ',' | append: block.settings.rating_bar_2 | append: ',' | append: block.settings.rating_bar_1 | split: ',' %}
-        {% assign bar_labels = "5,4,3,2,1" | split: ',' %}
-        {% for label in bar_labels %}
-          {% assign bar_value = bar_values[forloop.index0] | plus: 0 %}
+        {% assign bar_percentages = "5,4,3,2,1" | split: ',' %}
+        {% assign bar_counts = count_5 | append: ',' | append: count_4 | append: ',' | append: count_3 | append: ',' | append: count_2 | append: ',' | append: count_1 | split: ',' %}
+        {% for label in bar_percentages %}
+          {% assign bar_pct = block.settings['rating_bar_' | append: label] | plus: 0 %}
+          {% assign bar_cnt = bar_counts[forloop.index0] | plus: 0 %}
           <div class="dossier-rating-bar-row-{{ ai_gen_id }}">
             <span class="dossier-rating-bar-label-{{ ai_gen_id }}">{{ label }}</span>
             <span>★</span>
             <div class="dossier-rating-bar-track-{{ ai_gen_id }}">
-              <div class="dossier-rating-bar-fill-{{ ai_gen_id }}" style="width: {{ bar_value }}%"></div>
+              <div class="dossier-rating-bar-fill-{{ ai_gen_id }}" style="width: {{ bar_pct }}%"></div>
             </div>
-            <span class="dossier-rating-bar-count-{{ ai_gen_id }}">{{ bar_value | divided_by: 100 | times: block.settings.review_count | remove: '.' | truncate: 5, '' }}</span>
+            <span class="dossier-rating-bar-count-{{ ai_gen_id }}">{{ bar_cnt }}</span>
           </div>
         {% endfor %}
       </div>
@@ -478,23 +519,28 @@
     </div>
 
     <!-- Right Main: Reviews List -->
-    <div class="dossier-reviews-main-{{ ai_gen_id }}">
+    <div class="dossier-reviews-main-{{ ai_gen_id }}" data-reviews-section="{{ ai_gen_id }}">
       <div class="dossier-reviews-tabs-{{ ai_gen_id }}">
         <div class="dossier-reviews-tab-group-{{ ai_gen_id }}">
-          <button class="dossier-reviews-tab-{{ ai_gen_id }}">Reviews ({{ block.settings.review_count }})</button>
-          <button class="dossier-reviews-tab-{{ ai_gen_id }} inactive">Questions (10)</button>
+          <button class="dossier-reviews-tab-{{ ai_gen_id }}" data-tab="reviews">Reviews ({{ formatted_total }})</button>
+          <button class="dossier-reviews-tab-{{ ai_gen_id }} inactive" data-tab="questions">Questions (10)</button>
         </div>
         <div class="dossier-reviews-sort-{{ ai_gen_id }}">
           <span>Sort:</span>
-          <select class="dossier-reviews-sort-select-{{ ai_gen_id }}">
-            <option>Highest Rating</option>
-            <option>Most Recent</option>
+          <select class="dossier-reviews-sort-select-{{ ai_gen_id }}" data-sort-select>
+            <option value="highest">Highest Rating</option>
+            <option value="recent" selected>Most Recent</option>
           </select>
         </div>
       </div>
 
-      <div class="dossier-reviews-list-{{ ai_gen_id }}">
-        {% for i in (1..3) %}
+      <div class="dossier-reviews-list-{{ ai_gen_id }}" data-reviews-list>
+        {% assign review_total = block.settings.review_count | plus: 0 %}
+        {% if review_total == 0 %}
+          {% assign review_total = 6 %}
+        {% endif %}
+
+        {% for i in (1..review_total) %}
           {% liquid
             assign review_rating_key = 'review_' | append: i | append: '_rating'
             assign review_title_key = 'review_' | append: i | append: '_title'
@@ -507,7 +553,7 @@
             assign review_rating = block.settings[review_rating_key]
             assign review_title = block.settings[review_title_key]
             assign review_text = block.settings[review_text_key]
-            assign review_author = block.settings[review_author_key]
+            assign review_author = block.settings[review_author_key] | default: 'Anonymous'
             assign review_date = block.settings[review_date_key]
             assign review_verified = block.settings[review_verified_key]
             assign review_response = block.settings[review_response_key]
@@ -517,65 +563,177 @@
               assign last_initial = review_author | split: ' ' | last | slice: 0 | upcase
               assign initials = initials | append: last_initial
             endif
+
+            assign is_hidden = false
+            if i > display_count
+              assign is_hidden = true
+            endif
           %}
 
-          <div class="dossier-review-item-{{ ai_gen_id }}">
-            <div class="dossier-review-item-header-{{ ai_gen_id }}">
-              <div class="dossier-review-author-block-{{ ai_gen_id }}">
-                <div class="dossier-review-avatar-{{ ai_gen_id }}">{{ initials }}</div>
-                <div class="dossier-review-author-info-{{ ai_gen_id }}">
-                  <div class="dossier-review-author-name-{{ ai_gen_id }}">
-                    {{ review_author }}
-                    {% if review_verified %}
-                      <span class="verified-badge">Verified Buyer</span>
-                    {% endif %}
-                  </div>
-                  <div class="dossier-review-stars-{{ ai_gen_id }}">
-                    {% for star in (1..5) %}
-                      {% if star <= review_rating %}
-                        <svg class="dossier-review-star-{{ ai_gen_id }}" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                        </svg>
-                      {% else %}
-                        <svg class="dossier-review-star-{{ ai_gen_id }} empty" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                        </svg>
+          {% if review_text != blank or review_title != blank %}
+            <div class="dossier-review-item-{{ ai_gen_id }} {% if is_hidden %}dossier-review-hidden-{{ ai_gen_id }}{% endif %}" 
+                 data-review-rating="{{ review_rating }}"
+                 data-review-date="{{ review_date | date: '%s' | default: forloop.index }}"
+                 data-review-index="{{ i }}">
+              <div class="dossier-review-item-header-{{ ai_gen_id }}">
+                <div class="dossier-review-author-block-{{ ai_gen_id }}">
+                  <div class="dossier-review-avatar-{{ ai_gen_id }}">{{ initials }}</div>
+                  <div class="dossier-review-author-info-{{ ai_gen_id }}">
+                    <div class="dossier-review-author-name-{{ ai_gen_id }}">
+                      {{ review_author }}
+                      {% if review_verified %}
+                        <span class="verified-badge">Verified Buyer</span>
                       {% endif %}
-                    {% endfor %}
+                    </div>
+                    <div class="dossier-review-stars-{{ ai_gen_id }}">
+                      {% for star in (1..5) %}
+                        {% if star <= review_rating %}
+                          <svg class="dossier-review-star-{{ ai_gen_id }}" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                          </svg>
+                        {% else %}
+                          <svg class="dossier-review-star-{{ ai_gen_id }} empty" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                          </svg>
+                        {% endif %}
+                      {% endfor %}
+                    </div>
                   </div>
                 </div>
+                <div class="dossier-review-date-{{ ai_gen_id }}">{{ review_date }}</div>
               </div>
-              <div class="dossier-review-date-{{ ai_gen_id }}">{{ review_date }}</div>
+
+              {% if review_title != blank %}
+                <h4 class="dossier-review-item-title-{{ ai_gen_id }}">{{ review_title }}</h4>
+              {% endif %}
+
+              {% if review_text != blank %}
+                <p class="dossier-review-item-text-{{ ai_gen_id }}">{{ review_text }}</p>
+              {% endif %}
+
+              {% if review_response != blank %}
+                <div class="dossier-review-response-{{ ai_gen_id }}">
+                  <p class="dossier-review-response-label-{{ ai_gen_id }}">{{ block.settings.brand_name | default: 'Wildfyre' }} Perfumes</p>
+                  <p class="dossier-review-response-text-{{ ai_gen_id }}">{{ review_response }}</p>
+                </div>
+              {% endif %}
             </div>
-
-            {% if review_title != blank %}
-              <h4 class="dossier-review-item-title-{{ ai_gen_id }}">{{ review_title }}</h4>
-            {% endif %}
-
-            {% if review_text != blank %}
-              <p class="dossier-review-item-text-{{ ai_gen_id }}">{{ review_text }}</p>
-            {% endif %}
-
-            {% if review_response != blank %}
-              <div class="dossier-review-response-{{ ai_gen_id }}">
-                <p class="dossier-review-response-label-{{ ai_gen_id }}">{{ block.settings.brand_name | default: 'Wildfyre' }} Perfumes</p>
-                <p class="dossier-review-response-text-{{ ai_gen_id }}">{{ review_response }}</p>
-              </div>
-            {% endif %}
-          </div>
+          {% endif %}
         {% endfor %}
       </div>
 
-      {% if block.settings.show_cta_button %}
+      {% if review_total > display_count %}
         <div class="dossier-reviews-cta-{{ ai_gen_id }}">
-          <a href="{{ block.settings.button_link }}" class="dossier-reviews-cta-button-{{ ai_gen_id }}">
+          <button class="dossier-reviews-cta-button-{{ ai_gen_id }}" data-show-more="{{ ai_gen_id }}">
             {{ block.settings.button_text }}
-          </a>
+          </button>
         </div>
       {% endif %}
     </div>
   </div>
 </reviews-section-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    const sectionId = '{{ ai_gen_id }}';
+    const section = document.querySelector(`[data-reviews-section="${sectionId}"]`);
+    if (!section) return;
+
+    const reviewsList = section.querySelector('[data-reviews-list]');
+    const sortSelect = section.querySelector('[data-sort-select]');
+    const showMoreBtn = section.querySelector('[data-show-more]');
+    const tabs = section.querySelectorAll('[data-tab]');
+
+    // --- SORT FUNCTIONALITY ---
+    function getReviewItems() {
+      return Array.from(reviewsList.querySelectorAll('[data-review-rating]'));
+    }
+
+    function sortReviews(criteria) {
+      const items = getReviewItems();
+      const parent = reviewsList;
+      
+      // Detach all items
+      items.forEach(item => item.remove());
+
+      // Sort based on criteria
+      const sorted = items.sort((a, b) => {
+        if (criteria === 'highest') {
+          const ratingA = parseInt(a.dataset.reviewRating) || 0;
+          const ratingB = parseInt(b.dataset.reviewRating) || 0;
+          if (ratingB !== ratingA) return ratingB - ratingA;
+          // Secondary sort by date (most recent first for tie-breaker)
+          return (parseInt(b.dataset.reviewIndex) || 0) - (parseInt(a.dataset.reviewIndex) || 0);
+        } else if (criteria === 'recent') {
+          // Use review-index as proxy for date order
+          return (parseInt(b.dataset.reviewIndex) || 0) - (parseInt(a.dataset.reviewIndex) || 0);
+        }
+        return 0;
+      });
+
+      // Re-attach sorted items
+      sorted.forEach(item => parent.appendChild(item));
+
+      // Re-apply show/hide based on show-more state
+      const showAll = showMoreBtn && showMoreBtn.dataset.expanded === 'true';
+      applyVisibility(sorted, showAll);
+    }
+
+    // --- SHOW MORE FUNCTIONALITY ---
+    function applyVisibility(items, showAll) {
+      const displayCount = parseInt('{{ display_count }}') || 3;
+      items.forEach((item, index) => {
+        if (showAll || index < displayCount) {
+          item.classList.remove('dossier-review-hidden-{{ ai_gen_id }}');
+        } else {
+          item.classList.add('dossier-review-hidden-{{ ai_gen_id }}');
+        }
+      });
+    }
+
+    if (showMoreBtn) {
+      showMoreBtn.addEventListener('click', function() {
+        const isExpanded = this.dataset.expanded === 'true';
+        const items = getReviewItems();
+        
+        if (!isExpanded) {
+          // Show all reviews
+          applyVisibility(items, true);
+          this.dataset.expanded = 'true';
+          this.textContent = 'Show Less';
+        } else {
+          // Hide back to initial count, but keep current sort
+          applyVisibility(items, false);
+          this.dataset.expanded = 'false';
+          this.textContent = '{{ block.settings.button_text }}';
+        }
+      });
+    }
+
+    // --- SORT EVENT LISTENER ---
+    if (sortSelect) {
+      sortSelect.addEventListener('change', function() {
+        sortReviews(this.value);
+      });
+    }
+
+    // --- TAB SWITCHING (UI only - Questions tab is placeholder) ---
+    tabs.forEach(tab => {
+      tab.addEventListener('click', function() {
+        tabs.forEach(t => t.classList.remove('inactive'));
+        this.classList.add('inactive');
+        // Toggle active state
+        tabs.forEach(t => {
+          if (t !== this) t.classList.add('inactive');
+        });
+        this.classList.remove('inactive');
+      });
+    });
+
+    // Initial sort: Most Recent (default)
+    sortReviews('recent');
+  })();
+</script>
 
 {% schema %}
 {
@@ -626,9 +784,10 @@
     },
     {
       "type": "text",
-      "id": "review_count",
-      "label": "Total review count",
-      "default": "13,299"
+      "id": "total_review_count",
+      "label": "Total review count (e.g. 13299)",
+      "default": "13299",
+      "info": "Numeric value only, no commas. Used for rating bar count calculations."
     },
     {
       "type": "inline_richtext",
@@ -645,6 +804,30 @@
       "step": 2,
       "unit": "px",
       "default": 36
+    },
+    {
+      "type": "header",
+      "content": "Review Display"
+    },
+    {
+      "type": "range",
+      "id": "initial_review_count",
+      "label": "Reviews shown initially",
+      "min": 1,
+      "max": 12,
+      "step": 1,
+      "default": 3,
+      "info": "Number of reviews visible before clicking Show More"
+    },
+    {
+      "type": "range",
+      "id": "review_count",
+      "label": "Total review slots",
+      "min": 1,
+      "max": 12,
+      "step": 1,
+      "default": 6,
+      "info": "Total number of review slots available in the theme settings"
     },
     {
       "type": "header",
@@ -852,24 +1035,158 @@
     },
     {
       "type": "header",
-      "content": "Call to action"
+      "content": "Review 4"
+    },
+    {
+      "type": "range",
+      "id": "review_4_rating",
+      "label": "Rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "text",
+      "id": "review_4_title",
+      "label": "Review title",
+      "default": "Great scent, long lasting"
+    },
+    {
+      "type": "textarea",
+      "id": "review_4_text",
+      "label": "Review text",
+      "default": "I've been using this for a month now and it's definitely one of my favorites. The projection is great and it lasts all day."
+    },
+    {
+      "type": "text",
+      "id": "review_4_author",
+      "label": "Author name",
+      "default": "Michael R."
+    },
+    {
+      "type": "text",
+      "id": "review_4_date",
+      "label": "Review date",
+      "default": "December 28, 2025"
     },
     {
       "type": "checkbox",
-      "id": "show_cta_button",
-      "label": "Show \"Show More\" button",
+      "id": "review_4_verified",
+      "label": "Verified purchase",
       "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "review_4_response",
+      "label": "Brand response"
+    },
+    {
+      "type": "header",
+      "content": "Review 5"
+    },
+    {
+      "type": "range",
+      "id": "review_5_rating",
+      "label": "Rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "text",
+      "id": "review_5_title",
+      "label": "Review title",
+      "default": "Nice but overhyped"
+    },
+    {
+      "type": "textarea",
+      "id": "review_5_text",
+      "label": "Review text",
+      "default": "It's a good fragrance but I expected more based on the reviews. The scent doesn't last as long as I hoped. Still decent quality."
+    },
+    {
+      "type": "text",
+      "id": "review_5_author",
+      "label": "Author name",
+      "default": "David K."
+    },
+    {
+      "type": "text",
+      "id": "review_5_date",
+      "label": "Review date",
+      "default": "December 15, 2025"
+    },
+    {
+      "type": "checkbox",
+      "id": "review_5_verified",
+      "label": "Verified purchase",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "review_5_response",
+      "label": "Brand response",
+      "default": "Thank you for your honest feedback David! We recommend trying the extrait version for longer longevity."
+    },
+    {
+      "type": "header",
+      "content": "Review 6"
+    },
+    {
+      "type": "range",
+      "id": "review_6_rating",
+      "label": "Rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "text",
+      "id": "review_6_title",
+      "label": "Review title",
+      "default": "My signature scent"
+    },
+    {
+      "type": "textarea",
+      "id": "review_6_text",
+      "label": "Review text",
+      "default": "I get compliments every single time I wear this. It's sophisticated, unique, and incredibly well-blended. Already ordered my backup bottle!"
+    },
+    {
+      "type": "text",
+      "id": "review_6_author",
+      "label": "Author name",
+      "default": "Olivia P."
+    },
+    {
+      "type": "text",
+      "id": "review_6_date",
+      "label": "Review date",
+      "default": "November 30, 2025"
+    },
+    {
+      "type": "checkbox",
+      "id": "review_6_verified",
+      "label": "Verified purchase",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "review_6_response",
+      "label": "Brand response"
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
     },
     {
       "type": "text",
       "id": "button_text",
-      "label": "Button text",
+      "label": "Show More button text",
       "default": "Show More"
-    },
-    {
-      "type": "url",
-      "id": "button_link",
-      "label": "Button link"
     }
   ],
   "presets": [
