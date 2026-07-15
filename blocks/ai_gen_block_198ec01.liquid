@@ -1030,12 +1030,13 @@
 </div>
 
 <script>
-// Review block script wrapped with error handling for debugging
 (function() {
-  try {
   var sectionId = '{{ ai_gen_id }}';
-  var section = document.getElementById('dossier-section-' + sectionId);
-  if (!section) return;
+
+  function initReviewBlock() {
+    try {
+      var section = document.getElementById('dossier-section-' + sectionId);
+      if (!section) return;
 
   // ===== DOM REFS (using IDs for reliability) =====
   var reviewsList = document.getElementById('dossier-reviews-list-' + sectionId);
@@ -1044,7 +1045,7 @@
   var sortContainer = document.getElementById('dossier-sort-container-' + sectionId);
   var tabReviews = document.getElementById('dossier-tab-reviews-' + sectionId);
   var tabQuestions = document.getElementById('dossier-tab-questions-' + sectionId);
-  var allTabs = section.querySelectorAll('[data-tab]');
+  var allTabs = Array.from(section.querySelectorAll('[data-tab]'));
   var displayCount = parseInt('{{ display_count }}') || 3;
 
   // Modal refs
@@ -1116,6 +1117,9 @@
     });
   }
 
+  if (showMoreBtn && showMoreBtn.dataset.expanded === undefined) {
+    showMoreBtn.dataset.expanded = 'false';
+  }
   if (showMoreBtn) {
     showMoreBtn.addEventListener('click', function() {
       console.log('Dossier reviews: show more clicked, expanded?', this.dataset.expanded, sectionId);
@@ -1263,8 +1267,11 @@
   }
 
   // ===== INIT =====
+  if (sortSelect && !sortSelect.value) {
+    sortSelect.value = 'recent';
+  }
   switchTab('reviews');
-  sortReviews('recent');
+  sortReviews(sortSelect ? sortSelect.value : 'recent');
 
   // Fallback: ensure modal-open button works if clicked before script runs
   if (openModalBtn && modalOverlay) {
@@ -1275,6 +1282,13 @@
     // attach a data attribute to the section for easier inspection
     try { var sec = document.getElementById('dossier-section-{{ ai_gen_id }}'); if (sec) sec.dataset.reviewError = err && err.message ? err.message : String(err); } catch(e){}
   }
+}
+
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  initReviewBlock();
+} else {
+  document.addEventListener('DOMContentLoaded', initReviewBlock);
+}
 })();
 </script>
 
