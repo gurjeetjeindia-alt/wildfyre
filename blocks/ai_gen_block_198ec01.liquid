@@ -701,6 +701,87 @@
     margin: 0;
   }
 
+  .dossier__signin-overlay-{{ ai_gen_id }} {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 10000;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+
+  .dossier__signin-overlay-{{ ai_gen_id }}.dossier__modal-active {
+    display: flex;
+  }
+
+  .dossier__signin-modal-{{ ai_gen_id }} {
+    background: #fff;
+    max-width: 520px;
+    width: 100%;
+    padding: 2.5rem;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.12);
+  }
+
+  .dossier__signin-title-{{ ai_gen_id }} {
+    font-family: 'EB Garamond', serif;
+    font-size: 1.75rem;
+    margin: 0 0 1rem;
+    color: #000;
+  }
+
+  .dossier__signin-copy-{{ ai_gen_id }} {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #4b5563;
+    margin: 0 0 2rem;
+  }
+
+  .dossier__signin-actions-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .dossier__signin-button-{{ ai_gen_id }} {
+    padding: 1rem 1.5rem;
+    border: 2px solid #000;
+    background: #000;
+    color: #fff;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .dossier__signin-button-{{ ai_gen_id }}:hover {
+    background: #111;
+  }
+
+  .dossier__signin-cancel-{{ ai_gen_id }} {
+    padding: 1rem 1.5rem;
+    border: 2px solid #000;
+    background: #fff;
+    color: #000;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .dossier__signin-cancel-{{ ai_gen_id }}:hover {
+    background: #f3f4f6;
+  }
+
   @media screen and (max-width: 749px) {
     .dossier-rating-large-{{ ai_gen_id }} {
       flex-direction: column;
@@ -1029,6 +1110,17 @@
   </div>
 </div>
 
+<div class="dossier__signin-overlay-{{ ai_gen_id }}" id="dossier-signin-overlay-{{ ai_gen_id }}">
+  <div class="dossier__signin-modal-{{ ai_gen_id }}">
+    <h3 class="dossier__signin-title-{{ ai_gen_id }}">Sign in to write a review</h3>
+    <p class="dossier__signin-copy-{{ ai_gen_id }}">You must be signed in before you can submit a review. Please sign in or create an account to continue.</p>
+    <div class="dossier__signin-actions-{{ ai_gen_id }}">
+      <button type="button" class="dossier__signin-button-{{ ai_gen_id }}" id="dossier-signin-continue-{{ ai_gen_id }}">Sign In</button>
+      <button type="button" class="dossier__signin-cancel-{{ ai_gen_id }}" id="dossier-signin-cancel-{{ ai_gen_id }}">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <script>
 (function() {
   var sectionId = '{{ ai_gen_id }}';
@@ -1117,6 +1209,90 @@
     });
   }
 
+  var reviewStorageKey = 'dossierReviews-{{ ai_gen_id }}';
+  var isCustomerLoggedIn = {{ customer ? 'true' : 'false' }};
+  var loginUrl = '{{ routes.account_login_url | default: "/account/login" }}';
+
+  function getStoredReviews() {
+    try {
+      var data = window.localStorage.getItem(reviewStorageKey);
+      return data ? JSON.parse(data) : [];
+    } catch (error) {
+      console.warn('Dossier reviews: unable to read stored reviews', error);
+      return [];
+    }
+  }
+
+  function saveStoredReviews(reviews) {
+    try {
+      window.localStorage.setItem(reviewStorageKey, JSON.stringify(reviews));
+    } catch (error) {
+      console.warn('Dossier reviews: unable to save stored reviews', error);
+    }
+  }
+
+  function createReviewElement(review) {
+    var wrapper = document.createElement('div');
+    wrapper.className = 'dossier-review-item-{{ ai_gen_id }}';
+    wrapper.dataset.reviewRating = review.rating;
+    wrapper.dataset.reviewIndex = review.index || review.timestamp || Date.now();
+    wrapper.innerHTML = '<div class="dossier-review-item-header-{{ ai_gen_id }}">' +
+      '<div class="dossier-review-author-block-{{ ai_gen_id }}">' +
+        '<div class="dossier-review-avatar-{{ ai_gen_id }}">' + review.initials + '</div>' +
+        '<div class="dossier-review-author-info-{{ ai_gen_id }}">' +
+          '<div class="dossier-review-author-name-{{ ai_gen_id }}">' + review.author + '</div>' +
+          '<div class="dossier-review-stars-{{ ai_gen_id }}">' + review.starsHtml + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="dossier-review-date-{{ ai_gen_id }}">' + review.date + '</div>' +
+    '</div>' +
+    (review.title ? '<h4 class="dossier-review-item-title-{{ ai_gen_id }}">' + review.title + '</h4>' : '') +
+    (review.text ? '<p class="dossier-review-item-text-{{ ai_gen_id }}">' + review.text + '</p>' : '');
+    return wrapper;
+  }
+
+  function renderStoredReviews() {
+    if (!reviewsList) return;
+    var stored = getStoredReviews();
+    if (!stored.length) return;
+
+    stored.forEach(function(review) {
+      var newReview = createReviewElement(review);
+      if (newReview) {
+        newReview.classList.remove('dossier-review-hidden-{{ ai_gen_id }}');
+        reviewsList.insertBefore(newReview, reviewsList.firstChild);
+      }
+    });
+  }
+
+  function updateReviewTabCount(delta) {
+    allTabs.forEach(function(t) {
+      if (t.dataset.tab === 'reviews') {
+        var match = t.textContent.match(/(.*?\()([\d,]+)(\).*)/);
+        if (match) {
+          var count = parseInt(match[2].replace(/,/g, ''), 10) || 0;
+          t.textContent = match[1] + (count + delta) + match[3];
+        }
+      }
+    });
+  }
+
+  renderStoredReviews();
+
+  function showSigninPrompt() {
+    var signinOverlay = document.getElementById('dossier-signin-overlay-' + sectionId);
+    if (signinOverlay) {
+      signinOverlay.classList.add('dossier__modal-active');
+    }
+  }
+
+  function closeSigninPrompt() {
+    var signinOverlay = document.getElementById('dossier-signin-overlay-' + sectionId);
+    if (signinOverlay) {
+      signinOverlay.classList.remove('dossier__modal-active');
+    }
+  }
+
   if (showMoreBtn && showMoreBtn.dataset.expanded === undefined) {
     showMoreBtn.dataset.expanded = 'false';
   }
@@ -1147,8 +1323,36 @@
   // ===== MODAL =====
   if (openModalBtn && modalOverlay) {
     openModalBtn.addEventListener('click', function() {
+      if (!isCustomerLoggedIn) {
+        showSigninPrompt();
+        return;
+      }
       modalOverlay.classList.add('dossier__modal-active');
       document.body.style.overflow = 'hidden';
+    });
+  }
+
+  var signinContinue = document.getElementById('dossier-signin-continue-{{ ai_gen_id }}');
+  var signinCancel = document.getElementById('dossier-signin-cancel-{{ ai_gen_id }}');
+  var signinOverlay = document.getElementById('dossier-signin-overlay-' + sectionId);
+
+  if (signinContinue) {
+    signinContinue.addEventListener('click', function() {
+      window.location.href = loginUrl + '?return_url=' + encodeURIComponent(window.location.href);
+    });
+  }
+
+  if (signinCancel && signinOverlay) {
+    signinCancel.addEventListener('click', function() {
+      closeSigninPrompt();
+    });
+  }
+
+  if (signinOverlay) {
+    signinOverlay.addEventListener('click', function(event) {
+      if (event.target === signinOverlay) {
+        closeSigninPrompt();
+      }
     });
   }
 
@@ -1225,6 +1429,20 @@
       '</div>';
 
       console.log('Dossier reviews: submitting new review', {name: name, rating: rating, title: title});
+      var storedReviews = getStoredReviews();
+      storedReviews.unshift({
+        author: name,
+        rating: rating,
+        title: title,
+        text: text,
+        date: currentDate,
+        initials: initials,
+        starsHtml: starsHtml,
+        timestamp: Date.now(),
+        index: Date.now()
+      });
+      saveStoredReviews(storedReviews);
+
       // Insert at top, remove hidden class
       var wrapper = document.createElement('div');
       wrapper.innerHTML = reviewHtml;
@@ -1234,16 +1452,7 @@
         reviewsList.insertBefore(newReview, reviewsList.firstChild);
       }
 
-      // Update tab count
-      allTabs.forEach(function(t) {
-        if (t.dataset.tab === 'reviews') {
-          var match = t.textContent.match(/(.*?\()(\d+[,\d]*)(\).*)/);
-          if (match) {
-            var count = parseInt(match[2].replace(/,/g, '')) || 0;
-            t.textContent = match[1] + (count + 1) + match[3];
-          }
-        }
-      });
+      updateReviewTabCount(1);
 
       // Show success
       if (modalFormContainer) modalFormContainer.style.display = 'none';
