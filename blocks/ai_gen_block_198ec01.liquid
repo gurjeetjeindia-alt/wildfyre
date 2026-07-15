@@ -1116,6 +1116,7 @@
     <p class="dossier__signin-copy-{{ ai_gen_id }}">You must be signed in before you can submit a review. Please sign in or create an account to continue.</p>
     <div class="dossier__signin-actions-{{ ai_gen_id }}">
       <button type="button" class="dossier__signin-button-{{ ai_gen_id }}" id="dossier-signin-continue-{{ ai_gen_id }}">Sign In</button>
+      <button type="button" class="dossier__signin-cancel-{{ ai_gen_id }}" id="dossier-signin-guest-{{ ai_gen_id }}">Continue as Guest</button>
       <button type="button" class="dossier__signin-cancel-{{ ai_gen_id }}" id="dossier-signin-cancel-{{ ai_gen_id }}">Cancel</button>
     </div>
   </div>
@@ -1279,6 +1280,13 @@
 
   renderStoredReviews();
 
+  function openReviewModal() {
+    if (modalOverlay) {
+      modalOverlay.classList.add('dossier__modal-active');
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
   function showSigninPrompt() {
     var signinOverlay = document.getElementById('dossier-signin-overlay-' + sectionId);
     if (signinOverlay) {
@@ -1327,18 +1335,25 @@
         showSigninPrompt();
         return;
       }
-      modalOverlay.classList.add('dossier__modal-active');
-      document.body.style.overflow = 'hidden';
+      openReviewModal();
     });
   }
 
   var signinContinue = document.getElementById('dossier-signin-continue-{{ ai_gen_id }}');
+  var signinGuest = document.getElementById('dossier-signin-guest-{{ ai_gen_id }}');
   var signinCancel = document.getElementById('dossier-signin-cancel-{{ ai_gen_id }}');
   var signinOverlay = document.getElementById('dossier-signin-overlay-' + sectionId);
 
   if (signinContinue) {
     signinContinue.addEventListener('click', function() {
       window.location.href = loginUrl + '?return_url=' + encodeURIComponent(window.location.href);
+    });
+  }
+
+  if (signinGuest) {
+    signinGuest.addEventListener('click', function() {
+      closeSigninPrompt();
+      openReviewModal();
     });
   }
 
@@ -1453,6 +1468,7 @@
       }
 
       updateReviewTabCount(1);
+      sortReviews(sortSelect ? sortSelect.value : 'recent');
 
       // Show success
       if (modalFormContainer) modalFormContainer.style.display = 'none';
