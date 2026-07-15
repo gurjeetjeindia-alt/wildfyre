@@ -1057,6 +1057,7 @@
 
   // ===== TAB SWITCHING =====
   function switchTab(tabName) {
+    console.log('Dossier reviews: switching tab ->', tabName, sectionId);
     allTabs.forEach(function(t) {
       if (t.dataset.tab === tabName) {
         t.classList.remove('inactive');
@@ -1072,6 +1073,7 @@
 
   allTabs.forEach(function(tab) {
     tab.addEventListener('click', function() {
+      console.log('Dossier reviews: tab clicked ->', this.dataset.tab, sectionId);
       switchTab(this.dataset.tab);
     });
   });
@@ -1083,6 +1085,7 @@
 
   function sortReviews(criteria) {
     var items = getReviewItems();
+    console.log('Dossier reviews: sorting', criteria, 'found items', items.length, 'displayCount', displayCount);
     items.forEach(function(item) { item.remove(); });
 
     items.sort(function(a, b) {
@@ -1115,6 +1118,7 @@
 
   if (showMoreBtn) {
     showMoreBtn.addEventListener('click', function() {
+      console.log('Dossier reviews: show more clicked, expanded?', this.dataset.expanded, sectionId);
       var isExpanded = this.dataset.expanded === 'true';
       var items = getReviewItems();
       if (!isExpanded) {
@@ -1131,6 +1135,7 @@
 
   if (sortSelect) {
     sortSelect.addEventListener('change', function() {
+      console.log('Dossier reviews: sort changed ->', this.value, sectionId);
       sortReviews(this.value);
     });
   }
@@ -1215,6 +1220,7 @@
         textHtml +
       '</div>';
 
+      console.log('Dossier reviews: submitting new review', {name: name, rating: rating, title: title});
       // Insert at top, remove hidden class
       var wrapper = document.createElement('div');
       wrapper.innerHTML = reviewHtml;
