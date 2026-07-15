@@ -1,0 +1,2030 @@
+{% assign section_id = section.id | replace: '_', '' | downcase %}
+
+{% style %}
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  .dossier-reviews-{{ section_id }} {
+    display: block;
+    width: {{ section.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: {{ section.settings.section_padding }}px 20px;
+    background-color: {{ section.settings.background_color }};
+    font-family: 'Inter', sans-serif;
+    color: #000;
+  }
+
+  .dossier-reviews-{{ section_id }} .dossier-reviews-title {
+    font-family: 'EB Garamond', serif;
+    font-size: {{ section.settings.title_size | plus: 16 }}px;
+    font-weight: 600;
+    margin: 0 0 3rem 0;
+    line-height: 1.2;
+    color: #000;
+    letter-spacing: -0.02em;
+  }
+
+  @media screen and (max-width: 749px) {
+    .dossier-reviews-{{ section_id }} .dossier-reviews-title {
+      font-size: {{ section.settings.title_size | plus: 8 }}px;
+    }
+  }
+
+  .dossier-reviews-layout-{{ section_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+  }
+
+  @media screen and (min-width: 990px) {
+    .dossier-reviews-layout-{{ section_id }} {
+      flex-direction: row;
+      gap: 6rem;
+    }
+  }
+
+  .dossier-reviews-sidebar-{{ section_id }} {
+    width: 100%;
+  }
+
+  @media screen and (min-width: 990px) {
+    .dossier-reviews-sidebar-{{ section_id }} {
+      width: 33.333%;
+      flex-shrink: 0;
+    }
+  }
+
+  .dossier-reviews-main-{{ section_id }} {
+    width: 100%;
+  }
+
+  @media screen and (min-width: 990px) {
+    .dossier-reviews-main-{{ section_id }} {
+      width: 66.666%;
+    }
+  }
+
+  .dossier-rating-large-{{ section_id }} {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .dossier-rating-number-{{ section_id }} {
+    font-family: 'EB Garamond', serif;
+    font-size: 6rem;
+    font-weight: 600;
+    line-height: 1;
+    color: #000;
+    letter-spacing: -0.03em;
+  }
+
+  @media screen and (max-width: 749px) {
+    .dossier-rating-number-{{ section_id }} {
+      font-size: 4rem;
+    }
+  }
+
+  .dossier-rating-stars-{{ section_id }} {
+    display: flex;
+    gap: 0.375rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .dossier-rating-star-{{ section_id }} {
+    width: 1.75rem;
+    height: 1.75rem;
+    fill: #f59e0b;
+  }
+
+  .dossier-rating-star-{{ section_id }}.empty {
+    fill: #e5e7eb;
+  }
+
+  .dossier-rating-label-{{ section_id }} {
+    font-size: 1.125rem;
+    color: #6b7280;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+  }
+
+  .dossier-rating-bars-{{ section_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .dossier-rating-bar-row-{{ section_id }} {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1rem;
+  }
+
+  .dossier-rating-bar-label-{{ section_id }} {
+    width: 1.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #000;
+  }
+
+  .dossier-rating-bar-track-{{ section_id }} {
+    flex: 1;
+    height: 0.75rem;
+    background: #f3f4f6;
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+
+  .dossier-rating-bar-fill-{{ section_id }} {
+    height: 100%;
+    background: #000;
+    border-radius: 9999px;
+    transition: width 0.6s ease;
+  }
+
+  .dossier-rating-bar-count-{{ section_id }} {
+    width: 4rem;
+    text-align: right;
+    font-size: 0.9375rem;
+    color: #9ca3af;
+  }
+
+  .dossier__write-review-btn-{{ section_id }} {
+    display: block;
+    width: 100%;
+    padding: 1rem 1.5rem;
+    background: #fff;
+    color: #000;
+    border: 2px solid #000;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .dossier__write-review-btn-{{ section_id }}:hover {
+    background: #000;
+    color: #fff;
+  }
+
+  .dossier-reviews-tabs-{{ section_id }} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 0;
+  }
+
+  .dossier-reviews-tab-group-{{ section_id }} {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .dossier-reviews-tab-{{ section_id }} {
+    font-size: 1.125rem;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #000;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .dossier-reviews-tab-{{ section_id }}.inactive {
+    color: #9ca3af;
+    text-decoration: none;
+    font-weight: 400;
+  }
+
+  .dossier-reviews-tab-{{ section_id }}.inactive:hover {
+    color: #6b7280;
+  }
+
+  .dossier-reviews-sort-{{ section_id }} {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9375rem;
+    color: #6b7280;
+  }
+
+  .dossier-reviews-sort-select-{{ section_id }} {
+    border: none;
+    background: transparent;
+    font-weight: 700;
+    color: #000;
+    cursor: pointer;
+    font-size: 0.9375rem;
+    font-family: 'Inter', sans-serif;
+    padding: 0;
+  }
+
+  .dossier-reviews-sort-select-{{ section_id }}:focus {
+    outline: none;
+  }
+
+  .dossier-reviews-list-{{ section_id }} {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .dossier-review-item-{{ section_id }} {
+    padding: 3rem 0;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background 0.2s ease;
+  }
+
+  .dossier-review-item-{{ section_id }}:hover {
+    background: #fafafa;
+    margin: 0 -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .dossier-review-item-{{ section_id }}:last-child {
+    border-bottom: none;
+  }
+
+  .dossier-review-item-header-{{ section_id }} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+  }
+
+  .dossier-review-author-block-{{ section_id }} {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .dossier-review-avatar-{{ section_id }} {
+    width: 3.5rem;
+    height: 3.5rem;
+    background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    color: #4b5563;
+    flex-shrink: 0;
+    letter-spacing: 0.02em;
+  }
+
+  .dossier-review-author-info-{{ section_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .dossier-review-author-name-{{ section_id }} {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #000;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .dossier-review-author-name-{{ section_id }} .verified-badge {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #2563eb;
+    border: 1.5px solid #2563eb;
+    padding: 0.125rem 0.4375rem;
+    letter-spacing: 0.05em;
+    border-radius: 2px;
+    display: inline-block;
+  }
+
+  .dossier-review-stars-{{ section_id }} {
+    display: flex;
+    gap: 0.1875rem;
+  }
+
+  .dossier-review-star-{{ section_id }} {
+    width: 1.125rem;
+    height: 1.125rem;
+    fill: #f59e0b;
+  }
+
+  .dossier-review-star-{{ section_id }}.empty {
+    fill: #e5e7eb;
+  }
+
+  .dossier-review-date-{{ section_id }} {
+    font-size: 0.875rem;
+    color: #9ca3af;
+    white-space: nowrap;
+  }
+
+  .dossier-review-item-title-{{ section_id }} {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #000;
+    margin: 0 0 0.625rem 0;
+    line-height: 1.4;
+  }
+
+  .dossier-review-item-text-{{ section_id }} {
+    font-size: 1.0625rem;
+    color: #4b5563;
+    line-height: 1.7;
+    margin: 0 0 1.5rem 0;
+    max-width: 90%;
+  }
+
+  @media screen and (max-width: 749px) {
+    .dossier-review-item-text-{{ section_id }} {
+      max-width: 100%;
+    }
+  }
+
+  .dossier-review-response-{{ section_id }} {
+    background: #f9fafb;
+    padding: 1.5rem;
+    border-radius: 4px;
+    border-left: 3px solid #d1d5db;
+  }
+
+  .dossier-review-response-label-{{ section_id }} {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+    color: #000;
+  }
+
+  .dossier-review-response-text-{{ section_id }} {
+    font-size: 1rem;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.7;
+  }
+
+  .dossier-reviews-cta-{{ section_id }} {
+    text-align: center;
+    margin-top: 3rem;
+  }
+
+  .dossier-reviews-cta-button-{{ section_id }} {
+    display: inline-block;
+    padding: 1rem 4rem;
+    border: 2px solid #000;
+    background: #fff;
+    color: #000;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .dossier-reviews-cta-button-{{ section_id }}:hover {
+    background: #000;
+    color: #fff;
+  }
+
+  .dossier-review-hidden-{{ section_id }} {
+    display: none;
+  }
+
+  /* ===== QUESTIONS TAB UI ===== */
+  .dossier-questions-list-{{ section_id }} {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .dossier-question-item-{{ section_id }} {
+    padding: 3rem 0;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background 0.2s ease;
+  }
+
+  .dossier-question-item-{{ section_id }}:hover {
+    background: #fafafa;
+    margin: 0 -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .dossier-question-item-{{ section_id }}:last-child {
+    border-bottom: none;
+  }
+
+  .dossier-question-header-{{ section_id }} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .dossier-question-author-{{ section_id }} {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .dossier-question-avatar-{{ section_id }} {
+    width: 2.75rem;
+    height: 2.75rem;
+    background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: #4b5563;
+    flex-shrink: 0;
+  }
+
+  .dossier-question-name-{{ section_id }} {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #000;
+  }
+
+  .dossier-question-date-{{ section_id }} {
+    font-size: 0.875rem;
+    color: #9ca3af;
+  }
+
+  .dossier-question-text-{{ section_id }} {
+    font-size: 1.0625rem;
+    color: #374151;
+    line-height: 1.7;
+    margin: 0 0 1rem 0;
+    max-width: 90%;
+  }
+
+  .dossier-question-answer-{{ section_id }} {
+    background: #f9fafb;
+    padding: 1.5rem;
+    border-radius: 4px;
+    border-left: 3px solid #000;
+  }
+
+  .dossier-question-answer-label-{{ section_id }} {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+    color: #000;
+  }
+
+  .dossier-question-answer-text-{{ section_id }} {
+    font-size: 1rem;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.7;
+  }
+
+  .dossier-ask-question-btn-{{ section_id }} {
+    display: inline-block;
+    padding: 1rem 3rem;
+    border: 2px solid #000;
+    background: #fff;
+    color: #000;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-family: 'Inter', sans-serif;
+    margin-top: 2rem;
+    text-align: center;
+  }
+
+  .dossier-ask-question-btn-{{ section_id }}:hover {
+    background: #000;
+    color: #fff;
+  }
+
+  /* ===== WRITE REVIEW MODAL ===== */
+  .dossier__modal-overlay-{{ section_id }} {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+
+  .dossier__modal-overlay-{{ section_id }}.dossier__modal-active {
+    display: flex;
+  }
+
+  .dossier__modal-{{ section_id }} {
+    background: #fff;
+    max-width: 560px;
+    width: 100%;
+    padding: 3rem;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .dossier__modal-close-{{ section_id }} {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #9ca3af;
+    padding: 0.5rem;
+    line-height: 1;
+  }
+
+  .dossier__modal-close-{{ section_id }}:hover {
+    color: #000;
+  }
+
+  .dossier__modal-title-{{ section_id }} {
+    font-family: 'EB Garamond', serif;
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.2;
+  }
+
+  .dossier__modal-subtitle-{{ section_id }} {
+    font-size: 1rem;
+    color: #6b7280;
+    margin: 0 0 2rem 0;
+  }
+
+  .dossier__review-form-{{ section_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .dossier__form-group-{{ section_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .dossier__form-label-{{ section_id }} {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #000;
+  }
+
+  .dossier__form-input-{{ section_id }},
+  .dossier__form-textarea-{{ section_id }} {
+    padding: 0.875rem 1rem;
+    border: 1.5px solid #d1d5db;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    transition: border-color 0.2s ease;
+    background: #fff;
+    color: #000;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .dossier__form-input-{{ section_id }}:focus,
+  .dossier__form-textarea-{{ section_id }}:focus {
+    outline: none;
+    border-color: #000;
+  }
+
+  .dossier__form-textarea-{{ section_id }} {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  .dossier__form-rating-{{ section_id }} {
+    display: flex;
+    gap: 0.5rem;
+    direction: rtl;
+  }
+
+  .dossier__form-rating-{{ section_id }} input {
+    display: none;
+  }
+
+  .dossier__form-rating-{{ section_id }} label {
+    font-size: 2rem;
+    cursor: pointer;
+    color: #e5e7eb;
+    transition: color 0.15s ease;
+    direction: ltr;
+  }
+
+  .dossier__form-rating-{{ section_id }} label:hover,
+  .dossier__form-rating-{{ section_id }} label:hover ~ label,
+  .dossier__form-rating-{{ section_id }} input:checked ~ label {
+    color: #f59e0b;
+  }
+
+  .dossier__form-submit-{{ section_id }} {
+    padding: 1rem 2rem;
+    background: #000;
+    color: #fff;
+    border: none;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-family: 'Inter', sans-serif;
+    margin-top: 0.5rem;
+  }
+
+  .dossier__form-submit-{{ section_id }}:hover {
+    background: #333;
+  }
+
+  .dossier__form-success-{{ section_id }} {
+    text-align: center;
+    padding: 3rem 1rem;
+    display: none;
+  }
+
+  .dossier__form-success-{{ section_id }}.dossier__form-success-active {
+    display: block;
+  }
+
+  .dossier__form-success-icon-{{ section_id }} {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+  }
+
+  .dossier__form-success-title-{{ section_id }} {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .dossier__form-success-text-{{ section_id }} {
+    font-size: 1rem;
+    color: #6b7280;
+    margin: 0;
+  }
+
+  .dossier__signin-overlay-{{ section_id }} {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 10000;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+
+  .dossier__signin-overlay-{{ section_id }}.dossier__modal-active {
+    display: flex;
+  }
+
+  .dossier__signin-modal-{{ section_id }} {
+    background: #fff;
+    max-width: 520px;
+    width: 100%;
+    padding: 2.5rem;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.12);
+  }
+
+  .dossier__signin-title-{{ section_id }} {
+    font-family: 'EB Garamond', serif;
+    font-size: 1.75rem;
+    margin: 0 0 1rem;
+    color: #000;
+  }
+
+  .dossier__signin-copy-{{ section_id }} {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #4b5563;
+    margin: 0 0 2rem;
+  }
+
+  .dossier__signin-actions-{{ section_id }} {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .dossier__signin-button-{{ section_id }},
+  .dossier__signin-cancel-{{ section_id }} {
+    padding: 1rem 1.5rem;
+    border: 2px solid #000;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .dossier__signin-button-{{ section_id }} {
+    background: #000;
+    color: #fff;
+  }
+
+  .dossier__signin-button-{{ section_id }}:hover {
+    background: #111;
+  }
+
+  .dossier__signin-cancel-{{ section_id }} {
+    background: #fff;
+    color: #000;
+  }
+
+  .dossier__signin-cancel-{{ section_id }}:hover {
+    background: #f3f4f6;
+  }
+
+  @media screen and (max-width: 749px) {
+    .dossier-rating-large-{{ section_id }} {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .dossier-reviews-tabs-{{ section_id }} {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .dossier-review-item-header-{{ section_id }} {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .dossier__modal-{{ section_id }} {
+      padding: 2rem 1.5rem;
+    }
+  }
+{% endstyle %}
+
+<div class="dossier-reviews-{{ section_id }}">
+  {% if section.settings.section_title != blank %}
+    <h2 class="dossier-reviews-title">{{ section.settings.section_title }}</h2>
+  {% endif %}
+
+  {% liquid
+    assign review_count_raw = section.settings.total_review_count | remove: ',' | remove: '.' | plus: 0
+    if review_count_raw == 0
+      assign review_count_raw = 13299
+    endif
+    assign total_reviews = review_count_raw
+
+    assign display_count = section.settings.initial_review_count | plus: 0
+    if display_count == 0
+      assign display_count = 3
+    endif
+
+    assign bar_5 = section.settings.rating_bar_5 | plus: 0
+    assign bar_4 = section.settings.rating_bar_4 | plus: 0
+    assign bar_3 = section.settings.rating_bar_3 | plus: 0
+    assign bar_2 = section.settings.rating_bar_2 | plus: 0
+    assign bar_1 = section.settings.rating_bar_1 | plus: 0
+
+    assign count_5 = total_reviews | times: bar_5 | divided_by: 100
+    assign count_4 = total_reviews | times: bar_4 | divided_by: 100
+    assign count_3 = total_reviews | times: bar_3 | divided_by: 100
+    assign count_2 = total_reviews | times: bar_2 | divided_by: 100
+    assign count_1 = total_reviews | times: bar_1 | divided_by: 100
+
+    assign question_count = section.settings.question_count | plus: 0
+    if question_count == 0
+      assign question_count = 3
+    endif
+  %}
+
+  {% capture formatted_total %}{{ total_reviews }}{% endcapture %}
+  {% assign formatted_total = total_reviews %}
+
+  <div class="dossier-reviews-layout-{{ section_id }}">
+    <div class="dossier-reviews-sidebar-{{ section_id }}">
+      <div class="dossier-rating-large-{{ section_id }}">
+        <div class="dossier-rating-number-{{ section_id }}">{{ section.settings.average_rating }}</div>
+        <div>
+          <div class="dossier-rating-stars-{{ section_id }}">
+            {% assign full_stars = section.settings.average_rating | floor %}
+            {% for i in (1..5) %}
+              {% if i <= full_stars %}
+                <svg class="dossier-rating-star-{{ section_id }}" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                </svg>
+              {% else %}
+                <svg class="dossier-rating-star-{{ section_id }} empty" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                </svg>
+              {% endif %}
+            {% endfor %}
+          </div>
+          <div class="dossier-rating-label-{{ section_id }}">Based on {{ formatted_total | default: '13,299' }} reviews</div>
+        </div>
+      </div>
+
+      <div class="dossier-rating-bars-{{ section_id }}">
+        {% assign bar_percentages = "5,4,3,2,1" | split: ',' %}
+        {% assign bar_counts = count_5 | append: ',' | append: count_4 | append: ',' | append: count_3 | append: ',' | append: count_2 | append: ',' | append: count_1 | split: ',' %}
+        {% for label in bar_percentages %}
+          {% assign bar_pct = section.settings['rating_bar_' | append: label] | plus: 0 %}
+          {% assign bar_cnt = bar_counts[forloop.index0] | plus: 0 %}
+          <div class="dossier-rating-bar-row-{{ section_id }}">
+            <span class="dossier-rating-bar-label-{{ section_id }}">{{ label }}</span>
+            <span>★</span>
+            <div class="dossier-rating-bar-track-{{ section_id }}">
+              <div class="dossier-rating-bar-fill-{{ section_id }}" style="width: {{ bar_pct }}%"></div>
+            </div>
+            <span class="dossier-rating-bar-count-{{ section_id }}">{{ bar_cnt }}</span>
+          </div>
+        {% endfor %}
+      </div>
+
+      <button class="dossier__write-review-btn-{{ section_id }}" id="dossier-open-modal-{{ section_id }}">Write a Review</button>
+    </div>
+
+    <div class="dossier-reviews-main-{{ section_id }}" id="dossier-section-{{ section_id }}">
+      <div class="dossier-reviews-tabs-{{ section_id }}">
+        <div class="dossier-reviews-tab-group-{{ section_id }}">
+          <button class="dossier-reviews-tab-{{ section_id }}" data-tab="reviews">Reviews ({{ formatted_total }})</button>
+          <button class="dossier-reviews-tab-{{ section_id }} inactive" data-tab="questions">Questions ({{ question_count }})</button>
+        </div>
+        <div class="dossier-reviews-sort-{{ section_id }}" id="dossier-sort-container-{{ section_id }}">
+          <span>Sort:</span>
+          <select class="dossier-reviews-sort-select-{{ section_id }}" id="dossier-sort-select-{{ section_id }}">
+            <option value="highest">Highest Rating</option>
+            <option value="recent" selected>Most Recent</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="dossier-tab-reviews-{{ section_id }}" class="dossier-tab-content-{{ section_id }}">
+        <div class="dossier-reviews-list-{{ section_id }}" id="dossier-reviews-list-{{ section_id }}">
+          {% assign review_total = section.settings.review_count | plus: 0 %}
+          {% if review_total == 0 %}
+            {% assign review_total = 6 %}
+          {% endif %}
+
+          {% for i in (1..review_total) %}
+            {% liquid
+              assign review_rating_key = 'review_' | append: i | append: '_rating'
+              assign review_title_key = 'review_' | append: i | append: '_title'
+              assign review_text_key = 'review_' | append: i | append: '_text'
+              assign review_author_key = 'review_' | append: i | append: '_author'
+              assign review_date_key = 'review_' | append: i | append: '_date'
+              assign review_verified_key = 'review_' | append: i | append: '_verified'
+              assign review_response_key = 'review_' | append: i | append: '_response'
+
+              assign review_rating = section.settings[review_rating_key]
+              assign review_title = section.settings[review_title_key]
+              assign review_text = section.settings[review_text_key]
+              assign review_author = section.settings[review_author_key] | default: 'Anonymous'
+              assign review_date = section.settings[review_date_key]
+              assign review_verified = section.settings[review_verified_key]
+              assign review_response = section.settings[review_response_key]
+
+              assign initials = review_author | split: ' ' | first | slice: 0 | upcase
+              if review_author contains ' '
+                assign last_initial = review_author | split: ' ' | last | slice: 0 | upcase
+                assign initials = initials | append: last_initial
+              endif
+
+              assign is_hidden = false
+              if i > display_count
+                assign is_hidden = true
+              endif
+            %}
+
+            {% if review_text != blank or review_title != blank %}
+              <div class="dossier-review-item-{{ section_id }} {% if is_hidden %}dossier-review-hidden-{{ section_id }}{% endif %}" data-review-rating="{{ review_rating }}" data-review-index="{{ i }}">
+                <div class="dossier-review-item-header-{{ section_id }}">
+                  <div class="dossier-review-author-block-{{ section_id }}">
+                    <div class="dossier-review-avatar-{{ section_id }}">{{ initials }}</div>
+                    <div class="dossier-review-author-info-{{ section_id }}">
+                      <div class="dossier-review-author-name-{{ section_id }}">
+                        {{ review_author }}
+                        {% if review_verified %}
+                          <span class="verified-badge">Verified Buyer</span>
+                        {% endif %}
+                      </div>
+                      <div class="dossier-review-stars-{{ section_id }}">
+                        {% for star in (1..5) %}
+                          {% if star <= review_rating %}
+                            <svg class="dossier-review-star-{{ section_id }}" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                            </svg>
+                          {% else %}
+                            <svg class="dossier-review-star-{{ section_id }} empty" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                            </svg>
+                          {% endif %}
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="dossier-review-date-{{ section_id }}">{{ review_date }}</div>
+                </div>
+
+                {% if review_title != blank %}
+                  <h4 class="dossier-review-item-title-{{ section_id }}">{{ review_title }}</h4>
+                {% endif %}
+
+                {% if review_text != blank %}
+                  <p class="dossier-review-item-text-{{ section_id }}">{{ review_text }}</p>
+                {% endif %}
+
+                {% if review_response != blank %}
+                  <div class="dossier-review-response-{{ section_id }}">
+                    <p class="dossier-review-response-label-{{ section_id }}">{{ section.settings.brand_name | default: 'Wildfyre' }} Perfumes</p>
+                    <p class="dossier-review-response-text-{{ section_id }}">{{ review_response }}</p>
+                  </div>
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        {% if review_total > display_count %}
+          <div class="dossier-reviews-cta-{{ section_id }}">
+            <button class="dossier-reviews-cta-button-{{ section_id }}" id="dossier-show-more-{{ section_id }}">
+              {{ section.settings.button_text }}
+            </button>
+          </div>
+        {% endif %}
+      </div>
+
+      <div id="dossier-tab-questions-{{ section_id }}" class="dossier-tab-content-{{ section_id }}" style="display: none;">
+        <div class="dossier-questions-list-{{ section_id }}">
+          {% for i in (1..question_count) %}
+            {% liquid
+              assign question_author_key = 'question_' | append: i | append: '_author'
+              assign question_text_key = 'question_' | append: i | append: '_text'
+              assign question_date_key = 'question_' | append: i | append: '_date'
+              assign question_answer_key = 'question_' | append: i | append: '_answer'
+
+              assign q_author = section.settings[question_author_key] | default: 'Anonymous'
+              assign q_text = section.settings[question_text_key]
+              assign q_date = section.settings[question_date_key]
+              assign q_answer = section.settings[question_answer_key]
+
+              assign q_initials = q_author | split: ' ' | first | slice: 0 | upcase
+              if q_author contains ' '
+                assign q_last = q_author | split: ' ' | last | slice: 0 | upcase
+                assign q_initials = q_initials | append: q_last
+              endif
+            %}
+
+            {% if q_text != blank %}
+              <div class="dossier-question-item-{{ section_id }}">
+                <div class="dossier-question-header-{{ section_id }}">
+                  <div class="dossier-question-author-{{ section_id }}">
+                    <div class="dossier-question-avatar-{{ section_id }}">{{ q_initials }}</div>
+                    <div class="dossier-question-name-{{ section_id }}">{{ q_author }}</div>
+                  </div>
+                  <div class="dossier-question-date-{{ section_id }}">{{ q_date }}</div>
+                </div>
+                <p class="dossier-question-text-{{ section_id }}">{{ q_text }}</p>
+                {% if q_answer != blank %}
+                  <div class="dossier-question-answer-{{ section_id }}">
+                    <p class="dossier-question-answer-label-{{ section_id }}">{{ section.settings.brand_name | default: 'Wildfyre' }} Perfumes</p>
+                    <p class="dossier-question-answer-text-{{ section_id }}">{{ q_answer }}</p>
+                  </div>
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <button class="dossier-ask-question-btn-{{ section_id }}" id="dossier-ask-question-{{ section_id }}">Ask a Question</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="dossier__modal-overlay-{{ section_id }}" id="dossier-modal-overlay-{{ section_id }}">
+  <div class="dossier__modal-{{ section_id }}">
+    <button class="dossier__modal-close-{{ section_id }}" id="dossier-modal-close-{{ section_id }}">✕</button>
+
+    <div id="dossier-modal-form-container-{{ section_id }}">
+      <h3 class="dossier__modal-title-{{ section_id }}">Write a Review</h3>
+      <p class="dossier__modal-subtitle-{{ section_id }}">Share your thoughts with others</p>
+
+      <form class="dossier__review-form-{{ section_id }}" id="dossier-review-form-{{ section_id }}">
+        <div class="dossier__form-group-{{ section_id }}">
+          <label class="dossier__form-label-{{ section_id }}" for="dossier-form-name-{{ section_id }}">Your Name *</label>
+          <input class="dossier__form-input-{{ section_id }}" type="text" id="dossier-form-name-{{ section_id }}" name="name" required placeholder="Enter your name">
+        </div>
+
+        <div class="dossier__form-group-{{ section_id }}">
+          <label class="dossier__form-label-{{ section_id }}">Your Rating *</label>
+          <div class="dossier__form-rating-{{ section_id }}">
+            <input type="radio" id="dossier-star5-{{ section_id }}" name="rating" value="5">
+            <label for="dossier-star5-{{ section_id }}" title="5 stars">★</label>
+            <input type="radio" id="dossier-star4-{{ section_id }}" name="rating" value="4">
+            <label for="dossier-star4-{{ section_id }}" title="4 stars">★</label>
+            <input type="radio" id="dossier-star3-{{ section_id }}" name="rating" value="3">
+            <label for="dossier-star3-{{ section_id }}" title="3 stars">★</label>
+            <input type="radio" id="dossier-star2-{{ section_id }}" name="rating" value="2">
+            <label for="dossier-star2-{{ section_id }}" title="2 stars">★</label>
+            <input type="radio" id="dossier-star1-{{ section_id }}" name="rating" value="1" checked>
+            <label for="dossier-star1-{{ section_id }}" title="1 star">★</label>
+          </div>
+        </div>
+
+        <div class="dossier__form-group-{{ section_id }}">
+          <label class="dossier__form-label-{{ section_id }}" for="dossier-form-title-{{ section_id }}">Review Title</label>
+          <input class="dossier__form-input-{{ section_id }}" type="text" id="dossier-form-title-{{ section_id }}" name="title" placeholder="Summarize your review">
+        </div>
+
+        <div class="dossier__form-group-{{ section_id }}">
+          <label class="dossier__form-label-{{ section_id }}" for="dossier-form-text-{{ section_id }}">Your Review *</label>
+          <textarea class="dossier__form-textarea-{{ section_id }}" id="dossier-form-text-{{ section_id }}" name="text" required placeholder="Tell others about your experience..."></textarea>
+        </div>
+
+        <button class="dossier__form-submit-{{ section_id }}" type="submit">Submit Review</button>
+      </form>
+    </div>
+
+    <div class="dossier__form-success-{{ section_id }}" id="dossier-modal-success-{{ section_id }}">
+      <div class="dossier__form-success-icon-{{ section_id }}">✓</div>
+      <h3 class="dossier__form-success-title-{{ section_id }}">Thank You!</h3>
+      <p class="dossier__form-success-text-{{ section_id }}">Your review has been submitted and will appear after moderation.</p>
+    </div>
+  </div>
+</div>
+
+<div class="dossier__signin-overlay-{{ section_id }}" id="dossier-signin-overlay-{{ section_id }}">
+  <div class="dossier__signin-modal-{{ section_id }}">
+    <h3 class="dossier__signin-title-{{ section_id }}">Sign in to write a review</h3>
+    <p class="dossier__signin-copy-{{ section_id }}">You must be signed in before you can submit a review. Please sign in or create an account to continue.</p>
+    <div class="dossier__signin-actions-{{ section_id }}">
+      <button type="button" class="dossier__signin-button-{{ section_id }}" id="dossier-signin-continue-{{ section_id }}">Sign In</button>
+      <button type="button" class="dossier__signin-cancel-{{ section_id }}" id="dossier-signin-cancel-{{ section_id }}">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var sectionId = '{{ section_id }}';
+
+  function initReviewSection() {
+    try {
+      var section = document.getElementById('dossier-section-' + sectionId);
+      if (!section) return;
+
+      var reviewsList = document.getElementById('dossier-reviews-list-' + sectionId);
+      var sortSelect = document.getElementById('dossier-sort-select-' + sectionId);
+      var showMoreBtn = document.getElementById('dossier-show-more-' + sectionId);
+      var sortContainer = document.getElementById('dossier-sort-container-' + sectionId);
+      var tabReviews = document.getElementById('dossier-tab-reviews-' + sectionId);
+      var tabQuestions = document.getElementById('dossier-tab-questions-' + sectionId);
+      var allTabs = Array.from(section.querySelectorAll('[data-tab]'));
+      var displayCount = parseInt('{{ display_count }}') || 3;
+
+      var modalOverlay = document.getElementById('dossier-modal-overlay-' + sectionId);
+      var modalClose = document.getElementById('dossier-modal-close-' + sectionId);
+      var openModalBtn = document.getElementById('dossier-open-modal-' + sectionId);
+      var reviewForm = document.getElementById('dossier-review-form-' + sectionId);
+      var modalFormContainer = document.getElementById('dossier-modal-form-container-' + sectionId);
+      var modalSuccess = document.getElementById('dossier-modal-success-' + sectionId);
+
+      var reviewStorageKey = 'dossierReviews-{{ section_id }}';
+      var isCustomerLoggedIn = {{ customer ? 'true' : 'false' }};
+      var loginUrl = '{{ routes.account_login_url | default: "/account/login" }}';
+
+      function log() {
+        if (window.console && window.console.log) {
+          window.console.log.apply(window.console, arguments);
+        }
+      }
+
+      function getStoredReviews() {
+        try {
+          var data = window.localStorage.getItem(reviewStorageKey);
+          return data ? JSON.parse(data) : [];
+        } catch (error) {
+          console.warn('Dossier reviews: unable to read stored reviews', error);
+          return [];
+        }
+      }
+
+      function saveStoredReviews(reviews) {
+        try {
+          window.localStorage.setItem(reviewStorageKey, JSON.stringify(reviews));
+        } catch (error) {
+          console.warn('Dossier reviews: unable to save stored reviews', error);
+        }
+      }
+
+      function createReviewElement(review) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'dossier-review-item-{{ section_id }}';
+        wrapper.dataset.reviewRating = review.rating;
+        wrapper.dataset.reviewIndex = review.index || review.timestamp || Date.now();
+        wrapper.innerHTML = '<div class="dossier-review-item-header-{{ section_id }}">' +
+          '<div class="dossier-review-author-block-{{ section_id }}">' +
+            '<div class="dossier-review-avatar-{{ section_id }}">' + review.initials + '</div>' +
+            '<div class="dossier-review-author-info-{{ section_id }}">' +
+              '<div class="dossier-review-author-name-{{ section_id }}">' + review.author + '</div>' +
+              '<div class="dossier-review-stars-{{ section_id }}">' + review.starsHtml + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="dossier-review-date-{{ section_id }}">' + review.date + '</div>' +
+        '</div>' +
+        (review.title ? '<h4 class="dossier-review-item-title-{{ section_id }}">' + review.title + '</h4>' : '') +
+        (review.text ? '<p class="dossier-review-item-text-{{ section_id }}">' + review.text + '</p>' : '');
+        return wrapper;
+      }
+
+      function renderStoredReviews() {
+        if (!reviewsList) return;
+        var stored = getStoredReviews();
+        if (!stored.length) return;
+
+        stored.forEach(function(review) {
+          var newReview = createReviewElement(review);
+          if (newReview) {
+            newReview.classList.remove('dossier-review-hidden-{{ section_id }}');
+            reviewsList.insertBefore(newReview, reviewsList.firstChild);
+          }
+        });
+      }
+
+      function updateReviewTabCount(delta) {
+        allTabs.forEach(function(t) {
+          if (t.dataset.tab === 'reviews') {
+            var match = t.textContent.match(/(.*?\()([\d,]+)(\).*)/);
+            if (match) {
+              var count = parseInt(match[2].replace(/,/g, ''), 10) || 0;
+              t.textContent = match[1] + (count + delta) + match[3];
+            }
+          }
+        });
+      }
+
+      function switchTab(tabName) {
+        log('Dossier reviews:', sectionId, 'switchTab', tabName);
+        allTabs.forEach(function(t) {
+          t.classList.toggle('inactive', t.dataset.tab !== tabName);
+        });
+
+        if (tabReviews) tabReviews.style.display = (tabName === 'reviews') ? 'block' : 'none';
+        if (tabQuestions) tabQuestions.style.display = (tabName === 'questions') ? 'block' : 'none';
+        if (sortContainer) sortContainer.style.display = (tabName === 'reviews') ? 'flex' : 'none';
+      }
+
+      allTabs.forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          log('Dossier reviews:', sectionId, 'tab clicked', this.dataset.tab);
+          switchTab(this.dataset.tab);
+        });
+      });
+
+      function getReviewItems() {
+        return reviewsList ? Array.from(reviewsList.querySelectorAll('[data-review-rating]')) : [];
+      }
+
+      function applyVisibility(items, showAll) {
+        items.forEach(function(item, index) {
+          item.classList.toggle('dossier-review-hidden-{{ section_id }}', !showAll && index >= display_count);
+        });
+      }
+
+      function sortReviews(criteria) {
+        var items = getReviewItems();
+        log('Dossier reviews:', sectionId, 'sortReviews', criteria, 'items', items.length, 'display', display_count);
+        items.forEach(function(item) { item.remove(); });
+
+        items.sort(function(a, b) {
+          if (criteria === 'highest') {
+            var ratingA = parseInt(a.dataset.reviewRating, 10) || 0;
+            var ratingB = parseInt(b.dataset.reviewRating, 10) || 0;
+            if (ratingB !== ratingA) return ratingB - ratingA;
+            return (parseInt(b.dataset.reviewIndex, 10) || 0) - (parseInt(a.dataset.reviewIndex, 10) || 0);
+          }
+          return (parseInt(b.dataset.reviewIndex, 10) || 0) - (parseInt(a.dataset.reviewIndex, 10) || 0);
+        });
+
+        items.forEach(function(item) { reviewsList.appendChild(item); });
+        var showAll = showMoreBtn && showMoreBtn.dataset.expanded === 'true';
+        applyVisibility(items, showAll);
+      }
+
+      function showSigninPrompt() {
+        var signinOverlay = document.getElementById('dossier-signin-overlay-' + sectionId);
+        if (signinOverlay) signinOverlay.classList.add('dossier__modal-active');
+      }
+
+      function closeSigninPrompt() {
+        var signinOverlay = document.getElementById('dossier-signin-overlay-' + sectionId);
+        if (signinOverlay) signinOverlay.classList.remove('dossier__modal-active');
+      }
+
+      if (showMoreBtn && showMoreBtn.dataset.expanded === undefined) {
+        showMoreBtn.dataset.expanded = 'false';
+      }
+
+      if (showMoreBtn) {
+        showMoreBtn.addEventListener('click', function() {
+          log('Dossier reviews:', sectionId, 'show more clicked', this.dataset.expanded);
+          var isExpanded = this.dataset.expanded === 'true';
+          var items = getReviewItems();
+          if (!isExpanded) {
+            applyVisibility(items, true);
+            this.dataset.expanded = 'true';
+            this.textContent = 'Show Less';
+          } else {
+            applyVisibility(items, false);
+            this.dataset.expanded = 'false';
+            this.textContent = '{{ section.settings.button_text }}';
+          }
+        });
+      }
+
+      if (sortSelect) {
+        sortSelect.addEventListener('change', function() {
+          log('Dossier reviews:', sectionId, 'sort changed', this.value);
+          sortReviews(this.value);
+        });
+      }
+
+      if (openModalBtn && modalOverlay) {
+        openModalBtn.addEventListener('click', function() {
+          if (!isCustomerLoggedIn) {
+            showSigninPrompt();
+            return;
+          }
+          modalOverlay.classList.add('dossier__modal-active');
+          document.body.style.overflow = 'hidden';
+        });
+      }
+
+      var signinContinue = document.getElementById('dossier-signin-continue-{{ section_id }}');
+      var signinCancel = document.getElementById('dossier-signin-cancel-{{ section_id }}');
+      var signinOverlay = document.getElementById('dossier-signin-overlay-' + sectionId);
+
+      if (signinContinue) {
+        signinContinue.addEventListener('click', function() {
+          window.location.href = loginUrl + '?return_url=' + encodeURIComponent(window.location.href);
+        });
+      }
+
+      if (signinCancel && signinOverlay) {
+        signinCancel.addEventListener('click', function() {
+          closeSigninPrompt();
+        });
+      }
+
+      if (signinOverlay) {
+        signinOverlay.addEventListener('click', function(event) {
+          if (event.target === signinOverlay) closeSigninPrompt();
+        });
+      }
+
+      function closeModal() {
+        if (modalOverlay) modalOverlay.classList.remove('dossier__modal-active');
+        document.body.style.overflow = '';
+        if (reviewForm) {
+          reviewForm.reset();
+          reviewForm.style.display = '';
+          reviewForm.querySelectorAll('.dossier__form-rating-{{ section_id }} input').forEach(function(r) { r.checked = false; });
+          var defaultStar = document.getElementById('dossier-star5-{{ section_id }}');
+          if (defaultStar) defaultStar.checked = true;
+        }
+        if (modalFormContainer) modalFormContainer.style.display = '';
+        if (modalSuccess) modalSuccess.classList.remove('dossier__form-success-active');
+      }
+
+      if (modalClose) modalClose.addEventListener('click', closeModal);
+      if (modalOverlay) {
+        modalOverlay.addEventListener('click', function(e) {
+          if (e.target === modalOverlay) closeModal();
+        });
+      }
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modalOverlay && modalOverlay.classList.contains('dossier__modal-active')) closeModal();
+      });
+
+      if (reviewForm) {
+        reviewForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          var nameInput = document.getElementById('dossier-form-name-{{ section_id }}');
+          var ratingInput = this.querySelector('[name="rating"]:checked');
+          var titleInput = document.getElementById('dossier-form-title-{{ section_id }}');
+          var textInput = document.getElementById('dossier-form-text-{{ section_id }}');
+
+          var name = nameInput ? nameInput.value.trim() : '';
+          var rating = ratingInput ? ratingInput.value : '5';
+          var title = titleInput ? titleInput.value.trim() : '';
+          var text = textInput ? textInput.value.trim() : '';
+
+          if (!name || !text) {
+            alert('Please fill in your name and review text.');
+            return;
+          }
+
+          var now = new Date();
+          var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+          var currentDate = months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
+          var nameParts = name.split(' ');
+          var initials = (nameParts[0] ? nameParts[0].charAt(0).toUpperCase() : '') + (nameParts.length > 1 ? nameParts[nameParts.length-1].charAt(0).toUpperCase() : '');
+
+          var starsHtml = '';
+          for (var s = 1; s <= 5; s++) {
+            if (s <= parseInt(rating, 10)) {
+              starsHtml += '<svg class="dossier-review-star-{{ section_id }}" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>';
+            } else {
+              starsHtml += '<svg class="dossier-review-star-{{ section_id }} empty" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>';
+            }
+          }
+
+          var titleHtml = title ? '<h4 class="dossier-review-item-title-{{ section_id }}">' + title + '</h4>' : '';
+          var textHtml = text ? '<p class="dossier-review-item-text-{{ section_id }}">' + text + '</p>' : '';
+          var reviewHtml = '<div class="dossier-review-item-{{ section_id }}" data-review-rating="' + rating + '" data-review-index="999">' +
+            '<div class="dossier-review-item-header-{{ section_id }}">' +
+              '<div class="dossier-review-author-block-{{ section_id }}">' +
+                '<div class="dossier-review-avatar-{{ section_id }}">' + initials + '</div>' +
+                '<div class="dossier-review-author-info-{{ section_id }}">' +
+                  '<div class="dossier-review-author-name-{{ section_id }}">' + name + '</div>' +
+                  '<div class="dossier-review-stars-{{ section_id }}">' + starsHtml + '</div>' +
+                '</div>' +
+              '</div>' +
+              '<div class="dossier-review-date-{{ section_id }}">' + currentDate + '</div>' +
+            '</div>' +
+            titleHtml +
+            textHtml +
+          '</div>';
+
+          log('Dossier reviews:', sectionId, 'submitting review', {name: name, rating: rating, title: title});
+          var storedReviews = getStoredReviews();
+          storedReviews.unshift({
+            author: name,
+            rating: rating,
+            title: title,
+            text: text,
+            date: currentDate,
+            initials: initials,
+            starsHtml: starsHtml,
+            timestamp: Date.now(),
+            index: Date.now()
+          });
+          saveStoredReviews(storedReviews);
+
+          var wrapper = document.createElement('div');
+          wrapper.innerHTML = reviewHtml;
+          var newReview = wrapper.firstElementChild;
+          if (newReview) {
+            newReview.classList.remove('dossier-review-hidden-{{ section_id }}');
+            reviewsList.insertBefore(newReview, reviewsList.firstChild);
+          }
+
+          updateReviewTabCount(1);
+
+          if (modalFormContainer) modalFormContainer.style.display = 'none';
+          if (modalSuccess) modalSuccess.classList.add('dossier__form-success-active');
+          setTimeout(closeModal, 2500);
+        });
+      }
+
+      var askBtn = document.getElementById('dossier-ask-question-' + sectionId);
+      if (askBtn) {
+        askBtn.addEventListener('click', function() {
+          var email = '{{ section.settings.brand_email }}';
+          if (email && email.indexOf('@') > -1) {
+            window.location.href = 'mailto:' + email + '?subject=Question%20about%20your%20products';
+          } else {
+            alert('To ask a question, please contact our support team.');
+          }
+        });
+      }
+
+      if (sortSelect && !sortSelect.value) {
+        sortSelect.value = 'recent';
+      }
+
+      renderStoredReviews();
+      switchTab('reviews');
+      sortReviews(sortSelect ? sortSelect.value : 'recent');
+
+      if (openModalBtn && modalOverlay) {
+        openModalBtn.style.cursor = 'pointer';
+      }
+    } catch (err) {
+      console.error('Dossier reviews section error ({{ section_id }}):', err);
+      try {
+        var sec = document.getElementById('dossier-section-{{ section_id }}');
+        if (sec) sec.dataset.reviewError = err && err.message ? err.message : String(err);
+      } catch (e) {}
+    }
+  }
+
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    initReviewSection();
+  } else {
+    document.addEventListener('DOMContentLoaded', initReviewSection);
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Dossier Reviews",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section settings"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "label": "Section padding",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Rating summary"
+    },
+    {
+      "type": "range",
+      "id": "average_rating",
+      "label": "Average rating",
+      "min": 1,
+      "max": 5,
+      "step": 0.1,
+      "default": 4.8
+    },
+    {
+      "type": "text",
+      "id": "total_review_count",
+      "label": "Total review count (e.g. 13299)",
+      "default": "13299",
+      "info": "Numeric value only, no commas. Used for rating bar count calculations."
+    },
+    {
+      "type": "inline_richtext",
+      "id": "section_title",
+      "label": "Title",
+      "default": "Customer Reviews"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size (px)",
+      "min": 24,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "header",
+      "content": "Review Display"
+    },
+    {
+      "type": "range",
+      "id": "initial_review_count",
+      "label": "Reviews shown initially",
+      "min": 1,
+      "max": 12,
+      "step": 1,
+      "default": 3,
+      "info": "Number of reviews visible before clicking Show More"
+    },
+    {
+      "type": "range",
+      "id": "review_count",
+      "label": "Total review slots",
+      "min": 1,
+      "max": 12,
+      "step": 1,
+      "default": 6,
+      "info": "Total number of review slots available in the theme settings"
+    },
+    {
+      "type": "header",
+      "content": "Rating Distribution (percentage)"
+    },
+    {
+      "type": "range",
+      "id": "rating_bar_5",
+      "label": "5★ bar width %",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 92
+    },
+    {
+      "type": "range",
+      "id": "rating_bar_4",
+      "label": "4★ bar width %",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "rating_bar_3",
+      "label": "3★ bar width %",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "rating_bar_2",
+      "label": "2★ bar width %",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "rating_bar_1",
+      "label": "1★ bar width %",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Brand"
+    },
+    {
+      "type": "text",
+      "id": "brand_name",
+      "label": "Brand name for responses",
+      "default": "Wildfyre"
+    },
+    {
+      "type": "text",
+      "id": "brand_email",
+      "label": "Brand email for questions",
+      "default": "support@wildfyre.com",
+      "info": "Email used when customers click 'Ask a Question'"
+    },
+    {
+      "type": "header",
+      "content": "Review 1"
+    },
+    {
+      "type": "range",
+      "id": "review_1_rating",
+      "label": "Rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "text",
+      "id": "review_1_title",
+      "label": "Review title",
+      "default": "Amazing"
+    },
+    {
+      "type": "textarea",
+      "id": "review_1_text",
+      "label": "Review text",
+      "default": "This is my 3rd bottle and couldn't be more happy with the scent."
+    },
+    {
+      "type": "text",
+      "id": "review_1_author",
+      "label": "Author name",
+      "default": "Julie G."
+    },
+    {
+      "type": "text",
+      "id": "review_1_date",
+      "label": "Review date",
+      "default": "7/13/24"
+    },
+    {
+      "type": "checkbox",
+      "id": "review_1_verified",
+      "label": "Verified purchase",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "review_1_response",
+      "label": "Brand response",
+      "default": "We can't get enough either, three bottles and counting! Thanks for sharing 😊"
+    },
+    {
+      "type": "header",
+      "content": "Review 2"
+    },
+    {
+      "type": "range",
+      "id": "review_2_rating",
+      "label": "Rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "text",
+      "id": "review_2_title",
+      "label": "Review title",
+      "default": "Absolutely stunning fragrance"
+    },
+    {
+      "type": "textarea",
+      "id": "review_2_text",
+      "label": "Review text",
+      "default": "This perfume exceeded all my expectations. The scent is sophisticated, long-lasting, and receives compliments everywhere I go. Worth every penny."
+    },
+    {
+      "type": "text",
+      "id": "review_2_author",
+      "label": "Author name",
+      "default": "Sarah M."
+    },
+    {
+      "type": "text",
+      "id": "review_2_date",
+      "label": "Review date",
+      "default": "January 10, 2026"
+    },
+    {
+      "type": "checkbox",
+      "id": "review_2_verified",
+      "label": "Verified purchase",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "review_2_response",
+      "label": "Brand response"
+    },
+    {
+      "type": "header",
+      "content": "Review 3"
+    },
+    {
+      "type": "range",
+      "id": "review_3_rating",
+      "label": "Rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "text",
+      "id": "review_3_title",
+      "label": "Review title",
+      "default": "Luxury in a bottle"
+    },
+    {
+      "type": "textarea",
+      "id": "review_3_text",
+      "label": "Review text",
+      "default": "The quality is exceptional. From the packaging to the scent itself, everything feels premium. This is now my go-to fragrance for special occasions."
+    },
+    {
+      "type": "text",
+      "id": "review_3_author",
+      "label": "Author name",
+      "default": "Emma L."
+    },
+    {
+      "type": "text",
+      "id": "review_3_date",
+      "label": "Review date",
+      "default": "January 5, 2026"
+    },
+    {
+      "type": "checkbox",
+      "id": "review_3_verified",
+      "label": "Verified purchase",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "review_3_response",
+      "label": "Brand response"
+    },
+    {
+      "type": "header",
+      "content": "Review 4"
+    },
+    {
+      "type": "range",
+      "id": "review_4_rating",
+      "label": "Rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "text",
+      "id": "review_4_title",
+      "label": "Review title",
+      "default": "Great scent, long lasting"
+    },
+    {
+      "type": "textarea",
+      "id": "review_4_text",
+      "label": "Review text",
+      "default": "I've been using this for a month now and it's definitely one of my favorites. The projection is great and it lasts all day."
+    },
+    {
+      "type": "text",
+      "id": "review_4_author",
+      "label": "Author name",
+      "default": "Michael R."
+    },
+    {
+      "type": "text",
+      "id": "review_4_date",
+      "label": "Review date",
+      "default": "December 28, 2025"
+    },
+    {
+      "type": "checkbox",
+      "id": "review_4_verified",
+      "label": "Verified purchase",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "review_4_response",
+      "label": "Brand response"
+    },
+    {
+      "type": "header",
+      "content": "Review 5"
+    },
+    {
+      "type": "range",
+      "id": "review_5_rating",
+      "label": "Rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "text",
+      "id": "review_5_title",
+      "label": "Review title",
+      "default": "Nice but overhyped"
+    },
+    {
+      "type": "textarea",
+      "id": "review_5_text",
+      "label": "Review text",
+      "default": "It's a good fragrance but I expected more based on the reviews. The scent doesn't last as long as I hoped. Still decent quality."
+    },
+    {
+      "type": "text",
+      "id": "review_5_author",
+      "label": "Author name",
+      "default": "David K."
+    },
+    {
+      "type": "text",
+      "id": "review_5_date",
+      "label": "Review date",
+      "default": "December 15, 2025"
+    },
+    {
+      "type": "checkbox",
+      "id": "review_5_verified",
+      "label": "Verified purchase",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "review_5_response",
+      "label": "Brand response",
+      "default": "Thank you for your honest feedback David! We recommend trying the extrait version for longer longevity."
+    },
+    {
+      "type": "header",
+      "content": "Review 6"
+    },
+    {
+      "type": "range",
+      "id": "review_6_rating",
+      "label": "Rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "text",
+      "id": "review_6_title",
+      "label": "Review title",
+      "default": "My signature scent"
+    },
+    {
+      "type": "textarea",
+      "id": "review_6_text",
+      "label": "Review text",
+      "default": "I get compliments every single time I wear this. It's sophisticated, unique, and incredibly well-blended. Already ordered my backup bottle!"
+    },
+    {
+      "type": "text",
+      "id": "review_6_author",
+      "label": "Author name",
+      "default": "Olivia P."
+    },
+    {
+      "type": "text",
+      "id": "review_6_date",
+      "label": "Review date",
+      "default": "November 30, 2025"
+    },
+    {
+      "type": "checkbox",
+      "id": "review_6_verified",
+      "label": "Verified purchase",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "review_6_response",
+      "label": "Brand response"
+    },
+    {
+      "type": "header",
+      "content": "Questions"
+    },
+    {
+      "type": "range",
+      "id": "question_count",
+      "label": "Number of questions",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "header",
+      "content": "Question 1"
+    },
+    {
+      "type": "text",
+      "id": "question_1_author",
+      "label": "Author name",
+      "default": "Jessica T."
+    },
+    {
+      "type": "textarea",
+      "id": "question_1_text",
+      "label": "Question",
+      "default": "How long does the fragrance typically last on skin?"
+    },
+    {
+      "type": "text",
+      "id": "question_1_date",
+      "label": "Date",
+      "default": "January 8, 2026"
+    },
+    {
+      "type": "textarea",
+      "id": "question_1_answer",
+      "label": "Answer",
+      "default": "Our fragrances typically last 6-8 hours on skin and even longer on clothing. For best results, apply to pulse points and moisturized skin."
+    },
+    {
+      "type": "header",
+      "content": "Question 2"
+    },
+    {
+      "type": "text",
+      "id": "question_2_author",
+      "label": "Author name",
+      "default": "Marcus W."
+    },
+    {
+      "type": "textarea",
+      "id": "question_2_text",
+      "label": "Question",
+      "default": "Is this suitable for sensitive skin?"
+    },
+    {
+      "type": "text",
+      "id": "question_2_date",
+      "label": "Date",
+      "default": "December 20, 2025"
+    },
+    {
+      "type": "textarea",
+      "id": "question_2_answer",
+      "label": "Answer",
+      "default": "Yes! All our fragrances are formulated without harsh chemicals and are dermatologist-tested. We recommend doing a patch test if you have extremely sensitive skin."
+    },
+    {
+      "type": "header",
+      "content": "Question 3"
+    },
+    {
+      "type": "text",
+      "id": "question_3_author",
+      "label": "Author name",
+      "default": "Priya K."
+    },
+    {
+      "type": "textarea",
+      "id": "question_3_text",
+      "label": "Question",
+      "default": "Do you offer samples or travel sizes?"
+    },
+    {
+      "type": "text",
+      "id": "question_3_date",
+      "label": "Date",
+      "default": "December 5, 2025"
+    },
+    {
+      "type": "textarea",
+      "id": "question_3_answer",
+      "label": "Answer",
+      "default": "Yes, we do offer travel-sized options! Check the product page for size availability. We're also working on a sample discovery set - stay tuned!"
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Show More button text",
+      "default": "See All Reviews"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Dossier Reviews"
+    }
+  ]
+}
+{% endschema %}
