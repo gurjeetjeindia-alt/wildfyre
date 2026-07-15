@@ -156,7 +156,7 @@
     color: #9ca3af;
   }
 
-  .dossier-write-review-btn-{{ ai_gen_id }} {
+  .dossier__write-review-btn-{{ ai_gen_id }} {
     display: block;
     width: 100%;
     padding: 1rem 1.5rem;
@@ -173,7 +173,7 @@
     font-family: 'Inter', sans-serif;
   }
 
-  .dossier-write-review-btn-{{ ai_gen_id }}:hover {
+  .dossier__write-review-btn-{{ ai_gen_id }}:hover {
     background: #000;
     color: #fff;
   }
@@ -527,7 +527,7 @@
   }
 
   /* ===== WRITE REVIEW MODAL ===== */
-  .dossier-review-modal-overlay-{{ ai_gen_id }} {
+  .dossier__modal-overlay-{{ ai_gen_id }} {
     position: fixed;
     top: 0;
     left: 0;
@@ -542,11 +542,11 @@
     box-sizing: border-box;
   }
 
-  .dossier-review-modal-overlay-{{ ai_gen_id }}.active {
+  .dossier__modal-overlay-{{ ai_gen_id }}.dossier__modal-active {
     display: flex;
   }
 
-  .dossier-review-modal-{{ ai_gen_id }} {
+  .dossier__modal-{{ ai_gen_id }} {
     background: #fff;
     max-width: 560px;
     width: 100%;
@@ -556,7 +556,7 @@
     overflow-y: auto;
   }
 
-  .dossier-review-modal-close-{{ ai_gen_id }} {
+  .dossier__modal-close-{{ ai_gen_id }} {
     position: absolute;
     top: 1rem;
     right: 1rem;
@@ -569,11 +569,11 @@
     line-height: 1;
   }
 
-  .dossier-review-modal-close-{{ ai_gen_id }}:hover {
+  .dossier__modal-close-{{ ai_gen_id }}:hover {
     color: #000;
   }
 
-  .dossier-review-modal-title-{{ ai_gen_id }} {
+  .dossier__modal-title-{{ ai_gen_id }} {
     font-family: 'EB Garamond', serif;
     font-size: 2rem;
     font-weight: 600;
@@ -581,25 +581,25 @@
     line-height: 1.2;
   }
 
-  .dossier-review-modal-subtitle-{{ ai_gen_id }} {
+  .dossier__modal-subtitle-{{ ai_gen_id }} {
     font-size: 1rem;
     color: #6b7280;
     margin: 0 0 2rem 0;
   }
 
-  .dossier-review-form-{{ ai_gen_id }} {
+  .dossier__review-form-{{ ai_gen_id }} {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
   }
 
-  .dossier-review-form-group-{{ ai_gen_id }} {
+  .dossier__form-group-{{ ai_gen_id }} {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
 
-  .dossier-review-form-label-{{ ai_gen_id }} {
+  .dossier__form-label-{{ ai_gen_id }} {
     font-size: 0.8125rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -607,8 +607,8 @@
     color: #000;
   }
 
-  .dossier-review-form-input-{{ ai_gen_id }},
-  .dossier-review-form-textarea-{{ ai_gen_id }} {
+  .dossier__form-input-{{ ai_gen_id }},
+  .dossier__form-textarea-{{ ai_gen_id }} {
     padding: 0.875rem 1rem;
     border: 1.5px solid #d1d5db;
     font-size: 1rem;
@@ -620,28 +620,28 @@
     box-sizing: border-box;
   }
 
-  .dossier-review-form-input-{{ ai_gen_id }}:focus,
-  .dossier-review-form-textarea-{{ ai_gen_id }}:focus {
+  .dossier__form-input-{{ ai_gen_id }}:focus,
+  .dossier__form-textarea-{{ ai_gen_id }}:focus {
     outline: none;
     border-color: #000;
   }
 
-  .dossier-review-form-textarea-{{ ai_gen_id }} {
+  .dossier__form-textarea-{{ ai_gen_id }} {
     min-height: 120px;
     resize: vertical;
   }
 
-  .dossier-review-form-rating-{{ ai_gen_id }} {
+  .dossier__form-rating-{{ ai_gen_id }} {
     display: flex;
     gap: 0.5rem;
     direction: rtl;
   }
 
-  .dossier-review-form-rating-{{ ai_gen_id }} input {
+  .dossier__form-rating-{{ ai_gen_id }} input {
     display: none;
   }
 
-  .dossier-review-form-rating-{{ ai_gen_id }} label {
+  .dossier__form-rating-{{ ai_gen_id }} label {
     font-size: 2rem;
     cursor: pointer;
     color: #e5e7eb;
@@ -649,13 +649,13 @@
     direction: ltr;
   }
 
-  .dossier-review-form-rating-{{ ai_gen_id }} label:hover,
-  .dossier-review-form-rating-{{ ai_gen_id }} label:hover ~ label,
-  .dossier-review-form-rating-{{ ai_gen_id }} input:checked ~ label {
+  .dossier__form-rating-{{ ai_gen_id }} label:hover,
+  .dossier__form-rating-{{ ai_gen_id }} label:hover ~ label,
+  .dossier__form-rating-{{ ai_gen_id }} input:checked ~ label {
     color: #f59e0b;
   }
 
-  .dossier-review-form-submit-{{ ai_gen_id }} {
+  .dossier__form-submit-{{ ai_gen_id }} {
     padding: 1rem 2rem;
     background: #000;
     color: #fff;
@@ -670,32 +670,32 @@
     margin-top: 0.5rem;
   }
 
-  .dossier-review-form-submit-{{ ai_gen_id }}:hover {
+  .dossier__form-submit-{{ ai_gen_id }}:hover {
     background: #333;
   }
 
-  .dossier-review-form-success-{{ ai_gen_id }} {
+  .dossier__form-success-{{ ai_gen_id }} {
     text-align: center;
     padding: 3rem 1rem;
     display: none;
   }
 
-  .dossier-review-form-success-{{ ai_gen_id }}.active {
+  .dossier__form-success-{{ ai_gen_id }}.dossier__form-success-active {
     display: block;
   }
 
-  .dossier-review-form-success-icon-{{ ai_gen_id }} {
+  .dossier__form-success-icon-{{ ai_gen_id }} {
     font-size: 4rem;
     margin-bottom: 1rem;
   }
 
-  .dossier-review-form-success-title-{{ ai_gen_id }} {
+  .dossier__form-success-title-{{ ai_gen_id }} {
     font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
   }
 
-  .dossier-review-form-success-text-{{ ai_gen_id }} {
+  .dossier__form-success-text-{{ ai_gen_id }} {
     font-size: 1rem;
     color: #6b7280;
     margin: 0;
@@ -719,13 +719,13 @@
       gap: 0.75rem;
     }
 
-    .dossier-review-modal-{{ ai_gen_id }} {
+    .dossier__modal-{{ ai_gen_id }} {
       padding: 2rem 1.5rem;
     }
   }
 {% endstyle %}
 
-<reviews-section-{{ ai_gen_id }} class="dossier-reviews-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+<div class="dossier-reviews-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
   {% if block.settings.section_title != blank %}
     <h2 class="dossier-reviews-title">{{ block.settings.section_title }}</h2>
   {% endif %}
@@ -810,19 +810,19 @@
         {% endfor %}
       </div>
 
-      <button class="dossier-write-review-btn-{{ ai_gen_id }}" data-open-modal="{{ ai_gen_id }}">Write a Review</button>
+      <button class="dossier__write-review-btn-{{ ai_gen_id }}" id="dossier-open-modal-{{ ai_gen_id }}">Write a Review</button>
     </div>
 
     <!-- Right Main: Reviews / Questions Tabs -->
-    <div class="dossier-reviews-main-{{ ai_gen_id }}" data-reviews-section="{{ ai_gen_id }}">
+    <div class="dossier-reviews-main-{{ ai_gen_id }}" id="dossier-section-{{ ai_gen_id }}">
       <div class="dossier-reviews-tabs-{{ ai_gen_id }}">
         <div class="dossier-reviews-tab-group-{{ ai_gen_id }}">
-          <button class="dossier-reviews-tab-{{ ai_gen_id }}" data-tab="reviews" data-tab-group="{{ ai_gen_id }}">Reviews ({{ formatted_total }})</button>
-          <button class="dossier-reviews-tab-{{ ai_gen_id }} inactive" data-tab="questions" data-tab-group="{{ ai_gen_id }}">Questions ({{ question_count }})</button>
+          <button class="dossier-reviews-tab-{{ ai_gen_id }}" data-tab="reviews">Reviews ({{ formatted_total }})</button>
+          <button class="dossier-reviews-tab-{{ ai_gen_id }} inactive" data-tab="questions">Questions ({{ question_count }})</button>
         </div>
-        <div class="dossier-reviews-sort-{{ ai_gen_id }}" data-sort-container>
+        <div class="dossier-reviews-sort-{{ ai_gen_id }}" id="dossier-sort-container-{{ ai_gen_id }}">
           <span>Sort:</span>
-          <select class="dossier-reviews-sort-select-{{ ai_gen_id }}" data-sort-select>
+          <select class="dossier-reviews-sort-select-{{ ai_gen_id }}" id="dossier-sort-select-{{ ai_gen_id }}">
             <option value="highest">Highest Rating</option>
             <option value="recent" selected>Most Recent</option>
           </select>
@@ -830,8 +830,8 @@
       </div>
 
       <!-- ===== REVIEWS TAB CONTENT ===== -->
-      <div data-tab-content="reviews" data-tab-group="{{ ai_gen_id }}">
-        <div class="dossier-reviews-list-{{ ai_gen_id }}" data-reviews-list>
+      <div id="dossier-tab-reviews-{{ ai_gen_id }}" class="dossier-tab-content-{{ ai_gen_id }}">
+        <div class="dossier-reviews-list-{{ ai_gen_id }}" id="dossier-reviews-list-{{ ai_gen_id }}">
           {% assign review_total = block.settings.review_count | plus: 0 %}
           {% if review_total == 0 %}
             {% assign review_total = 6 %}
@@ -870,7 +870,6 @@
             {% if review_text != blank or review_title != blank %}
               <div class="dossier-review-item-{{ ai_gen_id }} {% if is_hidden %}dossier-review-hidden-{{ ai_gen_id }}{% endif %}" 
                    data-review-rating="{{ review_rating }}"
-                   data-review-date="{{ review_date | date: '%s' | default: forloop.index }}"
                    data-review-index="{{ i }}">
                 <div class="dossier-review-item-header-{{ ai_gen_id }}">
                   <div class="dossier-review-author-block-{{ ai_gen_id }}">
@@ -921,7 +920,7 @@
 
         {% if review_total > display_count %}
           <div class="dossier-reviews-cta-{{ ai_gen_id }}">
-            <button class="dossier-reviews-cta-button-{{ ai_gen_id }}" data-show-more="{{ ai_gen_id }}">
+            <button class="dossier-reviews-cta-button-{{ ai_gen_id }}" id="dossier-show-more-{{ ai_gen_id }}">
               {{ block.settings.button_text }}
             </button>
           </div>
@@ -929,8 +928,8 @@
       </div>
 
       <!-- ===== QUESTIONS TAB CONTENT ===== -->
-      <div data-tab-content="questions" data-tab-group="{{ ai_gen_id }}" style="display: none;">
-        <div class="dossier-questions-list-{{ ai_gen_id }}" data-questions-list>
+      <div id="dossier-tab-questions-{{ ai_gen_id }}" class="dossier-tab-content-{{ ai_gen_id }}" style="display: none;">
+        <div class="dossier-questions-list-{{ ai_gen_id }}">
           {% for i in (1..question_count) %}
             {% liquid
               assign question_author_key = 'question_' | append: i | append: '_author'
@@ -971,321 +970,299 @@
           {% endfor %}
         </div>
 
-        <button class="dossier-ask-question-btn-{{ ai_gen_id }}" data-ask-question="{{ ai_gen_id }}">Ask a Question</button>
+        <button class="dossier-ask-question-btn-{{ ai_gen_id }}" id="dossier-ask-question-{{ ai_gen_id }}">Ask a Question</button>
       </div>
     </div>
   </div>
-</reviews-section-{{ ai_gen_id }}>
+</div>
 
 <!-- ===== WRITE REVIEW MODAL ===== -->
-<div class="dossier-review-modal-overlay-{{ ai_gen_id }}" data-modal-overlay="{{ ai_gen_id }}">
-  <div class="dossier-review-modal-{{ ai_gen_id }}">
-    <button class="dossier-review-modal-close-{{ ai_gen_id }}" data-modal-close="{{ ai_gen_id }}">✕</button>
+<div class="dossier__modal-overlay-{{ ai_gen_id }}" id="dossier-modal-overlay-{{ ai_gen_id }}">
+  <div class="dossier__modal-{{ ai_gen_id }}">
+    <button class="dossier__modal-close-{{ ai_gen_id }}" id="dossier-modal-close-{{ ai_gen_id }}">✕</button>
 
-    <div class="dossier-review-modal-form-{{ ai_gen_id }}" data-modal-form-container>
-      <h3 class="dossier-review-modal-title-{{ ai_gen_id }}">Write a Review</h3>
-      <p class="dossier-review-modal-subtitle-{{ ai_gen_id }}">Share your thoughts with others</p>
+    <div id="dossier-modal-form-container-{{ ai_gen_id }}">
+      <h3 class="dossier__modal-title-{{ ai_gen_id }}">Write a Review</h3>
+      <p class="dossier__modal-subtitle-{{ ai_gen_id }}">Share your thoughts with others</p>
 
-      <form class="dossier-review-form-{{ ai_gen_id }}" data-review-form="{{ ai_gen_id }}">
-        <div class="dossier-review-form-group-{{ ai_gen_id }}">
-          <label class="dossier-review-form-label-{{ ai_gen_id }}" for="review-name-{{ ai_gen_id }}">Your Name *</label>
-          <input class="dossier-review-form-input-{{ ai_gen_id }}" type="text" id="review-name-{{ ai_gen_id }}" name="name" required placeholder="Enter your name">
+      <form class="dossier__review-form-{{ ai_gen_id }}" id="dossier-review-form-{{ ai_gen_id }}">
+        <div class="dossier__form-group-{{ ai_gen_id }}">
+          <label class="dossier__form-label-{{ ai_gen_id }}" for="dossier-form-name-{{ ai_gen_id }}">Your Name *</label>
+          <input class="dossier__form-input-{{ ai_gen_id }}" type="text" id="dossier-form-name-{{ ai_gen_id }}" name="name" required placeholder="Enter your name">
         </div>
 
-        <div class="dossier-review-form-group-{{ ai_gen_id }}">
-          <label class="dossier-review-form-label-{{ ai_gen_id }}">Your Rating *</label>
-          <div class="dossier-review-form-rating-{{ ai_gen_id }}" data-star-rating>
-            <input type="radio" id="star5-{{ ai_gen_id }}" name="rating" value="5">
-            <label for="star5-{{ ai_gen_id }}" title="5 stars">★</label>
-            <input type="radio" id="star4-{{ ai_gen_id }}" name="rating" value="4">
-            <label for="star4-{{ ai_gen_id }}" title="4 stars">★</label>
-            <input type="radio" id="star3-{{ ai_gen_id }}" name="rating" value="3">
-            <label for="star3-{{ ai_gen_id }}" title="3 stars">★</label>
-            <input type="radio" id="star2-{{ ai_gen_id }}" name="rating" value="2">
-            <label for="star2-{{ ai_gen_id }}" title="2 stars">★</label>
-            <input type="radio" id="star1-{{ ai_gen_id }}" name="rating" value="1" checked>
-            <label for="star1-{{ ai_gen_id }}" title="1 star">★</label>
+        <div class="dossier__form-group-{{ ai_gen_id }}">
+          <label class="dossier__form-label-{{ ai_gen_id }}">Your Rating *</label>
+          <div class="dossier__form-rating-{{ ai_gen_id }}">
+            <input type="radio" id="dossier-star5-{{ ai_gen_id }}" name="rating" value="5">
+            <label for="dossier-star5-{{ ai_gen_id }}" title="5 stars">★</label>
+            <input type="radio" id="dossier-star4-{{ ai_gen_id }}" name="rating" value="4">
+            <label for="dossier-star4-{{ ai_gen_id }}" title="4 stars">★</label>
+            <input type="radio" id="dossier-star3-{{ ai_gen_id }}" name="rating" value="3">
+            <label for="dossier-star3-{{ ai_gen_id }}" title="3 stars">★</label>
+            <input type="radio" id="dossier-star2-{{ ai_gen_id }}" name="rating" value="2">
+            <label for="dossier-star2-{{ ai_gen_id }}" title="2 stars">★</label>
+            <input type="radio" id="dossier-star1-{{ ai_gen_id }}" name="rating" value="1" checked>
+            <label for="dossier-star1-{{ ai_gen_id }}" title="1 star">★</label>
           </div>
         </div>
 
-        <div class="dossier-review-form-group-{{ ai_gen_id }}">
-          <label class="dossier-review-form-label-{{ ai_gen_id }}" for="review-title-{{ ai_gen_id }}">Review Title</label>
-          <input class="dossier-review-form-input-{{ ai_gen_id }}" type="text" id="review-title-{{ ai_gen_id }}" name="title" placeholder="Summarize your review">
+        <div class="dossier__form-group-{{ ai_gen_id }}">
+          <label class="dossier__form-label-{{ ai_gen_id }}" for="dossier-form-title-{{ ai_gen_id }}">Review Title</label>
+          <input class="dossier__form-input-{{ ai_gen_id }}" type="text" id="dossier-form-title-{{ ai_gen_id }}" name="title" placeholder="Summarize your review">
         </div>
 
-        <div class="dossier-review-form-group-{{ ai_gen_id }}">
-          <label class="dossier-review-form-label-{{ ai_gen_id }}" for="review-text-{{ ai_gen_id }}">Your Review *</label>
-          <textarea class="dossier-review-form-textarea-{{ ai_gen_id }}" id="review-text-{{ ai_gen_id }}" name="text" required placeholder="Tell others about your experience..."></textarea>
+        <div class="dossier__form-group-{{ ai_gen_id }}">
+          <label class="dossier__form-label-{{ ai_gen_id }}" for="dossier-form-text-{{ ai_gen_id }}">Your Review *</label>
+          <textarea class="dossier__form-textarea-{{ ai_gen_id }}" id="dossier-form-text-{{ ai_gen_id }}" name="text" required placeholder="Tell others about your experience..."></textarea>
         </div>
 
-        <button class="dossier-review-form-submit-{{ ai_gen_id }}" type="submit">Submit Review</button>
+        <button class="dossier__form-submit-{{ ai_gen_id }}" type="submit">Submit Review</button>
       </form>
     </div>
 
-    <div class="dossier-review-form-success-{{ ai_gen_id }}" data-modal-success>
-      <div class="dossier-review-form-success-icon-{{ ai_gen_id }}">✓</div>
-      <h3 class="dossier-review-form-success-title-{{ ai_gen_id }}">Thank You!</h3>
-      <p class="dossier-review-form-success-text-{{ ai_gen_id }}">Your review has been submitted and will appear after moderation.</p>
+    <div class="dossier__form-success-{{ ai_gen_id }}" id="dossier-modal-success-{{ ai_gen_id }}">
+      <div class="dossier__form-success-icon-{{ ai_gen_id }}">✓</div>
+      <h3 class="dossier__form-success-title-{{ ai_gen_id }}">Thank You!</h3>
+      <p class="dossier__form-success-text-{{ ai_gen_id }}">Your review has been submitted and will appear after moderation.</p>
     </div>
   </div>
 </div>
 
 <script>
-  (function() {
-    const sectionId = '{{ ai_gen_id }}';
-    const section = document.querySelector(`[data-reviews-section="${sectionId}"]`);
-    if (!section) return;
+(function() {
+  var sectionId = '{{ ai_gen_id }}';
+  var section = document.getElementById('dossier-section-' + sectionId);
+  if (!section) return;
 
-    // ===== DOM REFS =====
-    const reviewsList = section.querySelector('[data-reviews-list]');
-    const sortSelect = section.querySelector('[data-sort-select]');
-    const showMoreBtn = section.querySelector('[data-show-more]');
-    const tabs = section.querySelectorAll('[data-tab]');
-    const tabGroup = sectionId;
+  // ===== DOM REFS (using IDs for reliability) =====
+  var reviewsList = document.getElementById('dossier-reviews-list-' + sectionId);
+  var sortSelect = document.getElementById('dossier-sort-select-' + sectionId);
+  var showMoreBtn = document.getElementById('dossier-show-more-' + sectionId);
+  var sortContainer = document.getElementById('dossier-sort-container-' + sectionId);
+  var tabReviews = document.getElementById('dossier-tab-reviews-' + sectionId);
+  var tabQuestions = document.getElementById('dossier-tab-questions-' + sectionId);
+  var allTabs = section.querySelectorAll('[data-tab]');
+  var displayCount = parseInt('{{ display_count }}') || 3;
 
-    // Modal refs
-    const modalOverlay = document.querySelector(`[data-modal-overlay="${sectionId}"]`);
-    const modalClose = document.querySelector(`[data-modal-close="${sectionId}"]`);
-    const openModalBtn = document.querySelector(`[data-open-modal="${sectionId}"]`);
-    const reviewForm = document.querySelector(`[data-review-form="${sectionId}"]`);
-    const modalFormContainer = modalOverlay ? modalOverlay.querySelector('[data-modal-form-container]') : null;
-    const modalSuccess = modalOverlay ? modalOverlay.querySelector('[data-modal-success]') : null;
+  // Modal refs
+  var modalOverlay = document.getElementById('dossier-modal-overlay-' + sectionId);
+  var modalClose = document.getElementById('dossier-modal-close-' + sectionId);
+  var openModalBtn = document.getElementById('dossier-open-modal-' + sectionId);
+  var reviewForm = document.getElementById('dossier-review-form-' + sectionId);
+  var modalFormContainer = document.getElementById('dossier-modal-form-container-' + sectionId);
+  var modalSuccess = document.getElementById('dossier-modal-success-' + sectionId);
 
-    // ===== TAB SWITCHING =====
-    function switchTab(tabName) {
-      // Update tab button states
-      tabs.forEach(t => {
-        const isActive = t.dataset.tab === tabName;
-        if (isActive) {
-          t.classList.remove('inactive');
-        } else {
-          t.classList.add('inactive');
-        }
-      });
-
-      // Show/hide tab content
-      const contents = document.querySelectorAll(`[data-tab-content][data-tab-group="${tabGroup}"]`);
-      contents.forEach(content => {
-        if (content.dataset.tabContent === tabName) {
-          content.style.display = 'block';
-        } else {
-          content.style.display = 'none';
-        }
-      });
-
-      // Show/hide sort dropdown (only for reviews tab)
-      const sortContainer = section.querySelector('[data-sort-container]');
-      if (sortContainer) {
-        sortContainer.style.display = tabName === 'reviews' ? 'flex' : 'none';
-      }
-    }
-
-    tabs.forEach(tab => {
-      tab.addEventListener('click', function() {
-        switchTab(this.dataset.tab);
-      });
-    });
-
-    // ===== SORT FUNCTIONALITY =====
-    function getReviewItems() {
-      return Array.from(reviewsList.querySelectorAll('[data-review-rating]'));
-    }
-
-    function sortReviews(criteria) {
-      const items = getReviewItems();
-      const parent = reviewsList;
-      
-      items.forEach(item => item.remove());
-
-      const sorted = items.sort((a, b) => {
-        if (criteria === 'highest') {
-          const ratingA = parseInt(a.dataset.reviewRating) || 0;
-          const ratingB = parseInt(b.dataset.reviewRating) || 0;
-          if (ratingB !== ratingA) return ratingB - ratingA;
-          return (parseInt(b.dataset.reviewIndex) || 0) - (parseInt(a.dataset.reviewIndex) || 0);
-        } else if (criteria === 'recent') {
-          return (parseInt(b.dataset.reviewIndex) || 0) - (parseInt(a.dataset.reviewIndex) || 0);
-        }
-        return 0;
-      });
-
-      sorted.forEach(item => parent.appendChild(item));
-
-      const showAll = showMoreBtn && showMoreBtn.dataset.expanded === 'true';
-      applyVisibility(sorted, showAll);
-    }
-
-    // ===== SHOW MORE / SEE ALL =====
-    function applyVisibility(items, showAll) {
-      const displayCount = parseInt('{{ display_count }}') || 3;
-      items.forEach((item, index) => {
-        if (showAll || index < displayCount) {
-          item.classList.remove('dossier-review-hidden-{{ ai_gen_id }}');
-        } else {
-          item.classList.add('dossier-review-hidden-{{ ai_gen_id }}');
-        }
-      });
-    }
-
-    if (showMoreBtn) {
-      showMoreBtn.addEventListener('click', function() {
-        const isExpanded = this.dataset.expanded === 'true';
-        const items = getReviewItems();
-        
-        if (!isExpanded) {
-          applyVisibility(items, true);
-          this.dataset.expanded = 'true';
-          this.textContent = 'Show Less';
-        } else {
-          applyVisibility(items, false);
-          this.dataset.expanded = 'false';
-          this.textContent = '{{ block.settings.button_text }}';
-        }
-      });
-    }
-
-    if (sortSelect) {
-      sortSelect.addEventListener('change', function() {
-        sortReviews(this.value);
-      });
-    }
-
-    // ===== WRITE REVIEW MODAL =====
-    if (openModalBtn && modalOverlay) {
-      openModalBtn.addEventListener('click', function() {
-        modalOverlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
-      });
-    }
-
-    function closeModal() {
-      if (modalOverlay) {
-        modalOverlay.classList.remove('active');
-        document.body.style.overflow = '';
-      }
-      // Reset form
-      if (reviewForm) {
-        reviewForm.reset();
-        reviewForm.style.display = '';
-      }
-      if (modalFormContainer) {
-        modalFormContainer.style.display = '';
-      }
-      if (modalSuccess) {
-        modalSuccess.classList.remove('active');
-      }
-    }
-
-    if (modalClose) {
-      modalClose.addEventListener('click', closeModal);
-    }
-
-    if (modalOverlay) {
-      modalOverlay.addEventListener('click', function(e) {
-        if (e.target === this) closeModal();
-      });
-    }
-
-    // Close on Escape
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && modalOverlay && modalOverlay.classList.contains('active')) {
-        closeModal();
+  // ===== TAB SWITCHING =====
+  function switchTab(tabName) {
+    allTabs.forEach(function(t) {
+      if (t.dataset.tab === tabName) {
+        t.classList.remove('inactive');
+      } else {
+        t.classList.add('inactive');
       }
     });
 
-    // ===== REVIEW FORM SUBMIT =====
+    if (tabReviews) tabReviews.style.display = (tabName === 'reviews') ? 'block' : 'none';
+    if (tabQuestions) tabQuestions.style.display = (tabName === 'questions') ? 'block' : 'none';
+    if (sortContainer) sortContainer.style.display = (tabName === 'reviews') ? 'flex' : 'none';
+  }
+
+  allTabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      switchTab(this.dataset.tab);
+    });
+  });
+
+  // ===== SORT =====
+  function getReviewItems() {
+    return Array.from(reviewsList.querySelectorAll('[data-review-rating]'));
+  }
+
+  function sortReviews(criteria) {
+    var items = getReviewItems();
+    items.forEach(function(item) { item.remove(); });
+
+    items.sort(function(a, b) {
+      if (criteria === 'highest') {
+        var ratingA = parseInt(a.dataset.reviewRating) || 0;
+        var ratingB = parseInt(b.dataset.reviewRating) || 0;
+        if (ratingB !== ratingA) return ratingB - ratingA;
+        return (parseInt(b.dataset.reviewIndex) || 0) - (parseInt(a.dataset.reviewIndex) || 0);
+      } else {
+        return (parseInt(b.dataset.reviewIndex) || 0) - (parseInt(a.dataset.reviewIndex) || 0);
+      }
+    });
+
+    items.forEach(function(item) { reviewsList.appendChild(item); });
+
+    var showAll = showMoreBtn && showMoreBtn.dataset.expanded === 'true';
+    applyVisibility(items, showAll);
+  }
+
+  // ===== SHOW MORE =====
+  function applyVisibility(items, showAll) {
+    items.forEach(function(item, index) {
+      if (showAll || index < displayCount) {
+        item.classList.remove('dossier-review-hidden-{{ ai_gen_id }}');
+      } else {
+        item.classList.add('dossier-review-hidden-{{ ai_gen_id }}');
+      }
+    });
+  }
+
+  if (showMoreBtn) {
+    showMoreBtn.addEventListener('click', function() {
+      var isExpanded = this.dataset.expanded === 'true';
+      var items = getReviewItems();
+      if (!isExpanded) {
+        applyVisibility(items, true);
+        this.dataset.expanded = 'true';
+        this.textContent = 'Show Less';
+      } else {
+        applyVisibility(items, false);
+        this.dataset.expanded = 'false';
+        this.textContent = '{{ block.settings.button_text }}';
+      }
+    });
+  }
+
+  if (sortSelect) {
+    sortSelect.addEventListener('change', function() {
+      sortReviews(this.value);
+    });
+  }
+
+  // ===== MODAL =====
+  if (openModalBtn && modalOverlay) {
+    openModalBtn.addEventListener('click', function() {
+      modalOverlay.classList.add('dossier__modal-active');
+      document.body.style.overflow = 'hidden';
+    });
+  }
+
+  function closeModal() {
+    if (modalOverlay) modalOverlay.classList.remove('dossier__modal-active');
+    document.body.style.overflow = '';
     if (reviewForm) {
-      reviewForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        const name = this.querySelector('[name="name"]').value.trim();
-        const rating = this.querySelector('[name="rating"]:checked')?.value || '5';
-        const title = this.querySelector('[name="title"]').value.trim();
-        const text = this.querySelector('[name="text"]').value.trim();
-
-        if (!name || !text) {
-          alert('Please fill in your name and review text.');
-          return;
-        }
-
-        // Add the new review to the top of the list
-        const currentDate = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-        const initials = name.split(' ').map(n => n.charAt(0).toUpperCase()).join('').slice(0, 2);
-
-        const reviewItem = document.createElement('div');
-        reviewItem.className = 'dossier-review-item-{{ ai_gen_id }}';
-        reviewItem.setAttribute('data-review-rating', rating);
-        reviewItem.setAttribute('data-review-date', Math.floor(Date.now() / 1000));
-        reviewItem.setAttribute('data-review-index', '999');
-
-        let starsHtml = '';
-        for (let s = 1; s <= 5; s++) {
-          if (s <= parseInt(rating)) {
-            starsHtml += '<svg class="dossier-review-star-{{ ai_gen_id }}" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>';
-          } else {
-            starsHtml += '<svg class="dossier-review-star-{{ ai_gen_id }} empty" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>';
-          }
-        }
-
-        const titleHtml = title ? `<h4 class="dossier-review-item-title-{{ ai_gen_id }}">${title}</h4>` : '';
-        const textHtml = text ? `<p class="dossier-review-item-text-{{ ai_gen_id }}">${text}</p>` : '';
-
-        reviewItem.innerHTML = `
-          <div class="dossier-review-item-header-{{ ai_gen_id }}">
-            <div class="dossier-review-author-block-{{ ai_gen_id }}">
-              <div class="dossier-review-avatar-{{ ai_gen_id }}">${initials}</div>
-              <div class="dossier-review-author-info-{{ ai_gen_id }}">
-                <div class="dossier-review-author-name-{{ ai_gen_id }}">
-                  ${name}
-                </div>
-                <div class="dossier-review-stars-{{ ai_gen_id }}">${starsHtml}</div>
-              </div>
-            </div>
-            <div class="dossier-review-date-{{ ai_gen_id }}">${currentDate}</div>
-          </div>
-          ${titleHtml}
-          ${textHtml}
-        `;
-
-        reviewsList.insertBefore(reviewItem, reviewsList.firstChild);
-
-        // Update review count
-        const reviewTab = section.querySelector('[data-tab="reviews"]');
-        if (reviewTab) {
-          const match = reviewTab.textContent.match(/(.*?\()(\d+[,\d]*)(\).*)/);
-          if (match) {
-            const currentCount = parseInt(match[2].replace(/,/g, '')) || 0;
-            reviewTab.textContent = match[1] + (currentCount + 1) + match[3];
-          }
-        }
-
-        // Show success state
-        if (modalFormContainer) modalFormContainer.style.display = 'none';
-        if (modalSuccess) modalSuccess.classList.add('active');
-
-        // Close modal after 2.5 seconds
-        setTimeout(closeModal, 2500);
-      });
+      reviewForm.reset();
+      reviewForm.style.display = '';
+      reviewForm.querySelectorAll('.dossier__form-rating-{{ ai_gen_id }} input').forEach(function(r) { r.checked = false; });
+      document.getElementById('dossier-star5-{{ ai_gen_id }}').checked = true;
     }
+    if (modalFormContainer) modalFormContainer.style.display = '';
+    if (modalSuccess) modalSuccess.classList.remove('dossier__form-success-active');
+  }
 
-    // ===== ASK A QUESTION (placeholder - opens email or alert) =====
-    const askBtn = section.querySelector('[data-ask-question]');
-    if (askBtn) {
-      askBtn.addEventListener('click', function() {
-        const brandEmail = '{{ block.settings.brand_email }}';
-        if (brandEmail) {
-          window.location.href = `mailto:${brandEmail}?subject=Question%20about%20your%20products`;
+  if (modalClose) modalClose.addEventListener('click', closeModal);
+  if (modalOverlay) modalOverlay.addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && modalOverlay && modalOverlay.classList.contains('dossier__modal-active')) closeModal();
+  });
+
+  // ===== REVIEW FORM =====
+  if (reviewForm) {
+    reviewForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var nameInput = document.getElementById('dossier-form-name-{{ ai_gen_id }}');
+      var ratingInput = this.querySelector('[name="rating"]:checked');
+      var titleInput = document.getElementById('dossier-form-title-{{ ai_gen_id }}');
+      var textInput = document.getElementById('dossier-form-text-{{ ai_gen_id }}');
+
+      var name = nameInput ? nameInput.value.trim() : '';
+      var rating = ratingInput ? ratingInput.value : '5';
+      var title = titleInput ? titleInput.value.trim() : '';
+      var text = textInput ? textInput.value.trim() : '';
+
+      if (!name || !text) {
+        alert('Please fill in your name and review text.');
+        return;
+      }
+
+      // Build new review HTML
+      var now = new Date();
+      var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      var currentDate = months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
+      var nameParts = name.split(' ');
+      var initials = (nameParts[0] ? nameParts[0].charAt(0).toUpperCase() : '') + (nameParts.length > 1 ? nameParts[nameParts.length-1].charAt(0).toUpperCase() : '');
+
+      var starsHtml = '';
+      for (var s = 1; s <= 5; s++) {
+        if (s <= parseInt(rating)) {
+          starsHtml += '<svg class="dossier-review-star-{{ ai_gen_id }}" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>';
         } else {
-          alert('To ask a question, please contact our support team.');
+          starsHtml += '<svg class="dossier-review-star-{{ ai_gen_id }} empty" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>';
+        }
+      }
+
+      var titleHtml = title ? '<h4 class="dossier-review-item-title-{{ ai_gen_id }}">' + title + '</h4>' : '';
+      var textHtml = text ? '<p class="dossier-review-item-text-{{ ai_gen_id }}">' + text + '</p>' : '';
+
+      var reviewHtml = '<div class="dossier-review-item-{{ ai_gen_id }}" data-review-rating="' + rating + '" data-review-index="999">' +
+        '<div class="dossier-review-item-header-{{ ai_gen_id }}">' +
+          '<div class="dossier-review-author-block-{{ ai_gen_id }}">' +
+            '<div class="dossier-review-avatar-{{ ai_gen_id }}">' + initials + '</div>' +
+            '<div class="dossier-review-author-info-{{ ai_gen_id }}">' +
+              '<div class="dossier-review-author-name-{{ ai_gen_id }}">' + name + '</div>' +
+              '<div class="dossier-review-stars-{{ ai_gen_id }}">' + starsHtml + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="dossier-review-date-{{ ai_gen_id }}">' + currentDate + '</div>' +
+        '</div>' +
+        titleHtml +
+        textHtml +
+      '</div>';
+
+      // Insert at top, remove hidden class
+      var wrapper = document.createElement('div');
+      wrapper.innerHTML = reviewHtml;
+      var newReview = wrapper.firstElementChild;
+      if (newReview) {
+        newReview.classList.remove('dossier-review-hidden-{{ ai_gen_id }}');
+        reviewsList.insertBefore(newReview, reviewsList.firstChild);
+      }
+
+      // Update tab count
+      allTabs.forEach(function(t) {
+        if (t.dataset.tab === 'reviews') {
+          var match = t.textContent.match(/(.*?\()(\d+[,\d]*)(\).*)/);
+          if (match) {
+            var count = parseInt(match[2].replace(/,/g, '')) || 0;
+            t.textContent = match[1] + (count + 1) + match[3];
+          }
         }
       });
-    }
 
-    // ===== INITIAL STATE =====
-    // Default to reviews tab, sort by most recent
-    switchTab('reviews');
-    sortReviews('recent');
-  })();
+      // Show success
+      if (modalFormContainer) modalFormContainer.style.display = 'none';
+      if (modalSuccess) modalSuccess.classList.add('dossier__form-success-active');
+
+      setTimeout(closeModal, 2500);
+    });
+  }
+
+  // ===== ASK A QUESTION =====
+  var askBtn = document.getElementById('dossier-ask-question-' + sectionId);
+  if (askBtn) {
+    askBtn.addEventListener('click', function() {
+      var email = '{{ block.settings.brand_email }}';
+      if (email && email.indexOf('@') > -1) {
+        window.location.href = 'mailto:' + email + '?subject=Question%20about%20your%20products';
+      } else {
+        alert('To ask a question, please contact our support team.');
+      }
+    });
+  }
+
+  // ===== INIT =====
+  switchTab('reviews');
+  sortReviews('recent');
+
+  // Fallback: ensure modal-open button works if clicked before script runs
+  if (openModalBtn && modalOverlay) {
+    openModalBtn.style.cursor = 'pointer';
+  }
+})();
 </script>
 
 {% schema %}
