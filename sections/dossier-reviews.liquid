@@ -798,80 +798,36 @@
   }
 {% endstyle %}
 
-<div class="dossier-reviews-{{ section_id }}">
+<div class="dossier-reviews-{{ section_id }}" data-section-id="{{ section_id }}" data-product-id="{{ product.id }}" data-product-handle="{{ product.handle }}">
   {% if section.settings.section_title != blank %}
     <h2 class="dossier-reviews-title">{{ section.settings.section_title }}</h2>
   {% endif %}
 
-  {% liquid
-    assign review_count_raw = section.settings.total_review_count | remove: ',' | remove: '.' | plus: 0
-    if review_count_raw == 0
-      assign review_count_raw = 13299
-    endif
-    assign total_reviews = review_count_raw
-
-    assign display_count = section.settings.initial_review_count | plus: 0
-    if display_count == 0
-      assign display_count = 3
-    endif
-
-    assign bar_5 = section.settings.rating_bar_5 | plus: 0
-    assign bar_4 = section.settings.rating_bar_4 | plus: 0
-    assign bar_3 = section.settings.rating_bar_3 | plus: 0
-    assign bar_2 = section.settings.rating_bar_2 | plus: 0
-    assign bar_1 = section.settings.rating_bar_1 | plus: 0
-
-    assign count_5 = total_reviews | times: bar_5 | divided_by: 100
-    assign count_4 = total_reviews | times: bar_4 | divided_by: 100
-    assign count_3 = total_reviews | times: bar_3 | divided_by: 100
-    assign count_2 = total_reviews | times: bar_2 | divided_by: 100
-    assign count_1 = total_reviews | times: bar_1 | divided_by: 100
-
-    assign question_count = section.settings.question_count | plus: 0
-    if question_count == 0
-      assign question_count = 3
-    endif
-  %}
-
-  {% capture formatted_total %}{{ total_reviews }}{% endcapture %}
-  {% assign formatted_total = total_reviews %}
-
   <div class="dossier-reviews-layout-{{ section_id }}">
     <div class="dossier-reviews-sidebar-{{ section_id }}">
       <div class="dossier-rating-large-{{ section_id }}">
-        <div class="dossier-rating-number-{{ section_id }}">{{ section.settings.average_rating }}</div>
+        <div class="dossier-rating-number-{{ section_id }}" id="dossier-avg-rating-{{ section_id }}">—</div>
         <div>
-          <div class="dossier-rating-stars-{{ section_id }}">
-            {% assign full_stars = section.settings.average_rating | floor %}
+          <div class="dossier-rating-stars-{{ section_id }}" id="dossier-avg-stars-{{ section_id }}">
             {% for i in (1..5) %}
-              {% if i <= full_stars %}
-                <svg class="dossier-rating-star-{{ section_id }}" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                </svg>
-              {% else %}
-                <svg class="dossier-rating-star-{{ section_id }} empty" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                </svg>
-              {% endif %}
+              <svg class="dossier-rating-star-{{ section_id }} empty" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+              </svg>
             {% endfor %}
           </div>
-          <div class="dossier-rating-label-{{ section_id }}">Based on {{ formatted_total | default: '13,299' }} reviews</div>
+          <div class="dossier-rating-label-{{ section_id }}" id="dossier-rating-label-{{ section_id }}">Loading reviews...</div>
         </div>
       </div>
 
-      <div class="dossier-rating-bars-{{ section_id }}">
-        {% assign bar_percentages = "5,4,3,2,1" | split: ',' %}
-        {% assign bar_counts = count_5 | append: ',' | append: count_4 | append: ',' | append: count_3 | append: ',' | append: count_2 | append: ',' | append: count_1 | split: ',' %}
-        {% for label in bar_percentages %}
-          {% assign bar_pct = section.settings['rating_bar_' | append: label] | plus: 0 %}
-          {% assign bar_cnt = bar_counts[forloop.index0] | plus: 0 %}
+      <div class="dossier-rating-bars-{{ section_id }}" id="dossier-rating-bars-{{ section_id }}">
+        {% for label in (1..5) reversed %}
           <div class="dossier-rating-bar-row-{{ section_id }}">
             <span class="dossier-rating-bar-label-{{ section_id }}">{{ label }}</span>
             <span>★</span>
             <div class="dossier-rating-bar-track-{{ section_id }}">
-              <div class="dossier-rating-bar-fill-{{ section_id }}" style="width: {{ bar_pct }}%"></div>
+              <div class="dossier-rating-bar-fill-{{ section_id }}" style="width: 0%"></div>
             </div>
-            <span class="dossier-rating-bar-count-{{ section_id }}">{{ bar_cnt }}</span>
+            <span class="dossier-rating-bar-count-{{ section_id }}">0</span>
           </div>
         {% endfor %}
       </div>
@@ -882,8 +838,8 @@
     <div class="dossier-reviews-main-{{ section_id }}" id="dossier-section-{{ section_id }}">
       <div class="dossier-reviews-tabs-{{ section_id }}">
         <div class="dossier-reviews-tab-group-{{ section_id }}">
-          <button class="dossier-reviews-tab-{{ section_id }}" data-tab="reviews">Reviews ({{ formatted_total }})</button>
-          <button class="dossier-reviews-tab-{{ section_id }} inactive" data-tab="questions">Questions ({{ question_count }})</button>
+          <button class="dossier-reviews-tab-{{ section_id }}" data-tab="reviews">Reviews (<span id="dossier-review-count-{{ section_id }}">0</span>)</button>
+          <button class="dossier-reviews-tab-{{ section_id }} inactive" data-tab="questions">Questions (<span id="dossier-question-count-{{ section_id }}">0</span>)</button>
         </div>
         <div class="dossier-reviews-sort-{{ section_id }}" id="dossier-sort-container-{{ section_id }}">
           <span>Sort:</span>
@@ -896,139 +852,23 @@
 
       <div id="dossier-tab-reviews-{{ section_id }}" class="dossier-tab-content-{{ section_id }}">
         <div class="dossier-reviews-list-{{ section_id }}" id="dossier-reviews-list-{{ section_id }}">
-          {% assign review_total = section.settings.review_count | plus: 0 %}
-          {% if review_total == 0 %}
-            {% assign review_total = 6 %}
-          {% endif %}
-
-          {% for i in (1..review_total) %}
-            {% liquid
-              assign review_rating_key = 'review_' | append: i | append: '_rating'
-              assign review_title_key = 'review_' | append: i | append: '_title'
-              assign review_text_key = 'review_' | append: i | append: '_text'
-              assign review_author_key = 'review_' | append: i | append: '_author'
-              assign review_date_key = 'review_' | append: i | append: '_date'
-              assign review_verified_key = 'review_' | append: i | append: '_verified'
-              assign review_response_key = 'review_' | append: i | append: '_response'
-
-              assign review_rating = section.settings[review_rating_key]
-              assign review_title = section.settings[review_title_key]
-              assign review_text = section.settings[review_text_key]
-              assign review_author = section.settings[review_author_key] | default: 'Anonymous'
-              assign review_date = section.settings[review_date_key]
-              assign review_verified = section.settings[review_verified_key]
-              assign review_response = section.settings[review_response_key]
-
-              assign initials = review_author | split: ' ' | first | slice: 0 | upcase
-              if review_author contains ' '
-                assign last_initial = review_author | split: ' ' | last | slice: 0 | upcase
-                assign initials = initials | append: last_initial
-              endif
-
-              assign is_hidden = false
-              if i > display_count
-                assign is_hidden = true
-              endif
-            %}
-
-            {% if review_text != blank or review_title != blank %}
-              <div class="dossier-review-item-{{ section_id }} {% if is_hidden %}dossier-review-hidden-{{ section_id }}{% endif %}" data-review-rating="{{ review_rating }}" data-review-index="{{ i }}">
-                <div class="dossier-review-item-header-{{ section_id }}">
-                  <div class="dossier-review-author-block-{{ section_id }}">
-                    <div class="dossier-review-avatar-{{ section_id }}">{{ initials }}</div>
-                    <div class="dossier-review-author-info-{{ section_id }}">
-                      <div class="dossier-review-author-name-{{ section_id }}">
-                        {{ review_author }}
-                        {% if review_verified %}
-                          <span class="verified-badge">Verified Buyer</span>
-                        {% endif %}
-                      </div>
-                      <div class="dossier-review-stars-{{ section_id }}">
-                        {% for star in (1..5) %}
-                          {% if star <= review_rating %}
-                            <svg class="dossier-review-star-{{ section_id }}" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                            </svg>
-                          {% else %}
-                            <svg class="dossier-review-star-{{ section_id }} empty" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                            </svg>
-                          {% endif %}
-                        {% endfor %}
-                      </div>
-                    </div>
-                  </div>
-                  <div class="dossier-review-date-{{ section_id }}">{{ review_date }}</div>
-                </div>
-
-                {% if review_title != blank %}
-                  <h4 class="dossier-review-item-title-{{ section_id }}">{{ review_title }}</h4>
-                {% endif %}
-
-                {% if review_text != blank %}
-                  <p class="dossier-review-item-text-{{ section_id }}">{{ review_text }}</p>
-                {% endif %}
-
-                {% if review_response != blank %}
-                  <div class="dossier-review-response-{{ section_id }}">
-                    <p class="dossier-review-response-label-{{ section_id }}">{{ section.settings.brand_name | default: 'Wildfyre' }} Perfumes</p>
-                    <p class="dossier-review-response-text-{{ section_id }}">{{ review_response }}</p>
-                  </div>
-                {% endif %}
-              </div>
-            {% endif %}
-          {% endfor %}
+          <div class="dossier-review-item-{{ section_id }}" style="text-align: center; padding: 3rem 0; color: #9ca3af;">
+            <p>Loading reviews from Judge.me...</p>
+          </div>
         </div>
 
-        {% if review_total > display_count %}
-          <div class="dossier-reviews-cta-{{ section_id }}">
-            <button class="dossier-reviews-cta-button-{{ section_id }}" id="dossier-show-more-{{ section_id }}">
-              {{ section.settings.button_text }}
-            </button>
-          </div>
-        {% endif %}
+        <div class="dossier-reviews-cta-{{ section_id }}" id="dossier-show-more-container-{{ section_id }}" style="display: none;">
+          <button class="dossier-reviews-cta-button-{{ section_id }}" id="dossier-show-more-{{ section_id }}">
+            {{ section.settings.button_text | default: 'See All Reviews' }}
+          </button>
+        </div>
       </div>
 
       <div id="dossier-tab-questions-{{ section_id }}" class="dossier-tab-content-{{ section_id }}" style="display: none;">
-        <div class="dossier-questions-list-{{ section_id }}">
-          {% for i in (1..question_count) %}
-            {% liquid
-              assign question_author_key = 'question_' | append: i | append: '_author'
-              assign question_text_key = 'question_' | append: i | append: '_text'
-              assign question_date_key = 'question_' | append: i | append: '_date'
-              assign question_answer_key = 'question_' | append: i | append: '_answer'
-
-              assign q_author = section.settings[question_author_key] | default: 'Anonymous'
-              assign q_text = section.settings[question_text_key]
-              assign q_date = section.settings[question_date_key]
-              assign q_answer = section.settings[question_answer_key]
-
-              assign q_initials = q_author | split: ' ' | first | slice: 0 | upcase
-              if q_author contains ' '
-                assign q_last = q_author | split: ' ' | last | slice: 0 | upcase
-                assign q_initials = q_initials | append: q_last
-              endif
-            %}
-
-            {% if q_text != blank %}
-              <div class="dossier-question-item-{{ section_id }}">
-                <div class="dossier-question-header-{{ section_id }}">
-                  <div class="dossier-question-author-{{ section_id }}">
-                    <div class="dossier-question-avatar-{{ section_id }}">{{ q_initials }}</div>
-                    <div class="dossier-question-name-{{ section_id }}">{{ q_author }}</div>
-                  </div>
-                  <div class="dossier-question-date-{{ section_id }}">{{ q_date }}</div>
-                </div>
-                <p class="dossier-question-text-{{ section_id }}">{{ q_text }}</p>
-                {% if q_answer != blank %}
-                  <div class="dossier-question-answer-{{ section_id }}">
-                    <p class="dossier-question-answer-label-{{ section_id }}">{{ section.settings.brand_name | default: 'Wildfyre' }} Perfumes</p>
-                    <p class="dossier-question-answer-text-{{ section_id }}">{{ q_answer }}</p>
-                  </div>
-                {% endif %}
-              </div>
-            {% endif %}
-          {% endfor %}
+        <div class="dossier-questions-list-{{ section_id }}" id="dossier-questions-list-{{ section_id }}">
+          <div class="dossier-question-item-{{ section_id }}" style="text-align: center; padding: 3rem 0; color: #9ca3af;">
+            <p>Loading questions...</p>
+          </div>
         </div>
 
         <button class="dossier-ask-question-btn-{{ section_id }}" id="dossier-ask-question-{{ section_id }}">Ask a Question</button>
@@ -1103,6 +943,14 @@
 <script>
 (function() {
   var sectionId = '{{ section_id }}';
+  var productId = '{{ product.id }}';
+  var productHandle = '{{ product.handle }}';
+  var shopDomain = '{{ shop.permanent_domain }}';
+  var isCustomerLoggedIn = {% if customer %}true{% else %}false{% endif %};
+  var loginUrl = '{{ routes.account_login_url | default: "/account/login" }}';
+  var displayCount = parseInt('{{ section.settings.initial_review_count | default: 3 }}') || 3;
+  var brandName = '{{ section.settings.brand_name | default: "Wildfyre" }}';
+  var brandEmail = '{{ section.settings.brand_email }}';
 
   function initReviewSection() {
     try {
@@ -1110,13 +958,20 @@
       if (!section) return;
 
       var reviewsList = document.getElementById('dossier-reviews-list-' + sectionId);
+      var questionsList = document.getElementById('dossier-questions-list-' + sectionId);
       var sortSelect = document.getElementById('dossier-sort-select-' + sectionId);
       var showMoreBtn = document.getElementById('dossier-show-more-' + sectionId);
+      var showMoreContainer = document.getElementById('dossier-show-more-container-' + sectionId);
       var sortContainer = document.getElementById('dossier-sort-container-' + sectionId);
       var tabReviews = document.getElementById('dossier-tab-reviews-' + sectionId);
       var tabQuestions = document.getElementById('dossier-tab-questions-' + sectionId);
       var allTabs = Array.from(section.querySelectorAll('[data-tab]'));
-      var displayCount = parseInt('{{ display_count }}') || 3;
+      var avgRatingEl = document.getElementById('dossier-avg-rating-' + sectionId);
+      var avgStarsEl = document.getElementById('dossier-avg-stars-' + sectionId);
+      var ratingLabelEl = document.getElementById('dossier-rating-label-' + sectionId);
+      var ratingBarsEl = document.getElementById('dossier-rating-bars-' + sectionId);
+      var reviewCountEl = document.getElementById('dossier-review-count-' + sectionId);
+      var questionCountEl = document.getElementById('dossier-question-count-' + sectionId);
 
       var modalOverlay = document.getElementById('dossier-modal-overlay-' + sectionId);
       var modalClose = document.getElementById('dossier-modal-close-' + sectionId);
@@ -1125,86 +980,315 @@
       var modalFormContainer = document.getElementById('dossier-modal-form-container-' + sectionId);
       var modalSuccess = document.getElementById('dossier-modal-success-' + sectionId);
 
-      var reviewStorageKey = 'dossierReviews-{{ section_id }}';
-      var isCustomerLoggedIn = {% if customer %}true{% else %}false{% endif %};
-      var loginUrl = '{{ routes.account_login_url | default: "/account/login" }}';
+      var allReviews = [];
+      var allQuestions = [];
 
-      function log() {
-        if (window.console && window.console.log) {
-          window.console.log.apply(window.console, arguments);
-        }
-      }
-
-      function getStoredReviews() {
-        try {
-          var data = window.localStorage.getItem(reviewStorageKey);
-          return data ? JSON.parse(data) : [];
-        } catch (error) {
-          console.warn('Dossier reviews: unable to read stored reviews', error);
-          return [];
-        }
-      }
-
-      function saveStoredReviews(reviews) {
-        try {
-          window.localStorage.setItem(reviewStorageKey, JSON.stringify(reviews));
-        } catch (error) {
-          console.warn('Dossier reviews: unable to save stored reviews', error);
-        }
-      }
-
-      function createReviewElement(review) {
-        var wrapper = document.createElement('div');
-        wrapper.className = 'dossier-review-item-{{ section_id }}';
-        wrapper.dataset.reviewRating = review.rating;
-        wrapper.dataset.reviewIndex = review.index || review.timestamp || Date.now();
-        wrapper.innerHTML = '<div class="dossier-review-item-header-{{ section_id }}">' +
-          '<div class="dossier-review-author-block-{{ section_id }}">' +
-            '<div class="dossier-review-avatar-{{ section_id }}">' + review.initials + '</div>' +
-            '<div class="dossier-review-author-info-{{ section_id }}">' +
-              '<div class="dossier-review-author-name-{{ section_id }}">' + review.author + '</div>' +
-              '<div class="dossier-review-stars-{{ section_id }}">' + review.starsHtml + '</div>' +
-            '</div>' +
-          '</div>' +
-          '<div class="dossier-review-date-{{ section_id }}">' + review.date + '</div>' +
-        '</div>' +
-        (review.title ? '<h4 class="dossier-review-item-title-{{ section_id }}">' + review.title + '</h4>' : '') +
-        (review.text ? '<p class="dossier-review-item-text-{{ section_id }}">' + review.text + '</p>' : '');
-        return wrapper;
-      }
-
-      function renderStoredReviews() {
-        if (!reviewsList) return;
-        var stored = getStoredReviews();
-        if (!stored.length) return;
-
-        stored.forEach(function(review) {
-          var newReview = createReviewElement(review);
-          if (newReview) {
-            newReview.classList.remove('dossier-review-hidden-{{ section_id }}');
-            reviewsList.insertBefore(newReview, reviewsList.firstChild);
+      // ===== JUDGE.ME API =====
+      function fetchJudgeMeReviews() {
+        // Try Judge.me public API first
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'https://judge.me/api/v1/reviews?shop_domain=' + shopDomain + '&product_id=' + productId + '&per_page=100', true);
+        xhr.onload = function() {
+          if (xhr.status >= 200 && xhr.status < 400) {
+            try {
+              var data = JSON.parse(xhr.responseText);
+              if (data && data.reviews) {
+                processJudgeMeData(data);
+                return;
+              }
+            } catch(e) {}
           }
-        });
+          // Fallback: try the Judge.me widget data
+          fallbackFetch();
+        };
+        xhr.onerror = function() {
+          fallbackFetch();
+        };
+        xhr.send();
       }
 
-      function updateReviewTabCount(delta) {
-        allTabs.forEach(function(t) {
-          if (t.dataset.tab === 'reviews') {
-            var match = t.textContent.match(/(.*?\()([\d,]+)(\).*)/);
-            if (match) {
-              var count = parseInt(match[2].replace(/,/g, ''), 10) || 0;
-              t.textContent = match[1] + (count + delta) + match[3];
+      function fallbackFetch() {
+        // Try to get data from Judge.me's embedded JSON-LD or widget
+        var scriptTags = document.querySelectorAll('script[type="application/ld+json"]');
+        for (var i = 0; i < scriptTags.length; i++) {
+          try {
+            var jsonData = JSON.parse(scriptTags[i].textContent);
+            if (jsonData && jsonData['@type'] === 'Product' && jsonData.aggregateRating) {
+              processFallbackData(jsonData);
+              return;
+            }
+          } catch(e) {}
+        }
+        // If nothing works, show empty state
+        showEmptyState();
+      }
+
+      function processJudgeMeData(data) {
+        var reviews = data.reviews || [];
+        var ratingStats = {
+          average: data.average_rating || 0,
+          count: data.review_count || reviews.length,
+          distribution: data.rating_distribution || {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}
+        };
+
+        // If distribution is empty, calculate from reviews
+        if (Object.values(ratingStats.distribution).reduce(function(a,b){return a+b;}, 0) === 0 && reviews.length > 0) {
+          ratingStats.distribution = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
+          reviews.forEach(function(r) {
+            var rating = parseInt(r.rating, 10);
+            if (rating >= 1 && rating <= 5) {
+              ratingStats.distribution[rating] = (ratingStats.distribution[rating] || 0) + 1;
+            }
+          });
+        }
+
+        allReviews = reviews.map(function(r, idx) {
+          return {
+            id: r.id || idx,
+            rating: parseInt(r.rating, 10) || 5,
+            title: r.title || '',
+            body: r.body || r.content || '',
+            author: r.reviewer ? (r.reviewer.name || r.name || 'Anonymous') : (r.name || 'Anonymous'),
+            email: r.reviewer ? r.reviewer.email : '',
+            date: r.created_at || r.date || '',
+            verified: r.verified || r.verified_buyer || false,
+            response: r.reply ? (r.reply.content || r.reply.body || '') : '',
+            responseTitle: r.reply ? (r.reply.title || '') : '',
+            pictures: r.pictures || []
+          };
+        });
+
+        renderRatingSummary(ratingStats);
+        renderReviews(allReviews);
+        renderQuestions([]);
+      }
+
+      function processFallbackData(jsonData) {
+        var agg = jsonData.aggregateRating;
+        if (agg) {
+          var ratingStats = {
+            average: parseFloat(agg.ratingValue) || 0,
+            count: parseInt(agg.reviewCount) || 0,
+            distribution: {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}
+          };
+          renderRatingSummary(ratingStats);
+        }
+        // Try to get individual reviews from review array
+        var reviews = jsonData.review || [];
+        if (!Array.isArray(reviews)) reviews = [reviews];
+        allReviews = reviews.filter(function(r) { return r; }).map(function(r, idx) {
+          return {
+            id: idx,
+            rating: parseInt(r.reviewRating && r.reviewRating.ratingValue) || 5,
+            title: r.name || '',
+            body: r.description || r.reviewBody || '',
+            author: r.author ? r.author.name : 'Anonymous',
+            date: r.datePublished || '',
+            verified: false,
+            response: '',
+            pictures: []
+          };
+        });
+        renderReviews(allReviews);
+        renderQuestions([]);
+      }
+
+      function showEmptyState() {
+        if (reviewsList) {
+          reviewsList.innerHTML = '<div class="dossier-review-item-{{ section_id }}" style="text-align: center; padding: 3rem 0; color: #9ca3af;"><p>No reviews yet. Be the first to write one!</p></div>';
+        }
+        if (avgRatingEl) avgRatingEl.textContent = '0.0';
+        if (ratingLabelEl) ratingLabelEl.textContent = 'No reviews yet';
+        if (reviewCountEl) reviewCountEl.textContent = '0';
+        if (questionCountEl) questionCountEl.textContent = '0';
+        if (showMoreContainer) showMoreContainer.style.display = 'none';
+      }
+
+      // ===== RENDER FUNCTIONS =====
+      function renderRatingSummary(stats) {
+        var avg = stats.average || 0;
+        var count = stats.count || 0;
+        var dist = stats.distribution || {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
+
+        if (avgRatingEl) avgRatingEl.textContent = avg.toFixed(1);
+
+        // Render average stars
+        if (avgStarsEl) {
+          var fullStars = Math.round(avg);
+          var starsHtml = '';
+          for (var i = 1; i <= 5; i++) {
+            if (i <= fullStars) {
+              starsHtml += '<svg class="dossier-rating-star-{{ section_id }}" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>';
+            } else {
+              starsHtml += '<svg class="dossier-rating-star-{{ section_id }} empty" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>';
             }
           }
-        });
+          avgStarsEl.innerHTML = starsHtml;
+        }
+
+        if (ratingLabelEl) {
+          ratingLabelEl.textContent = 'Based on ' + count.toLocaleString() + ' review' + (count !== 1 ? 's' : '');
+        }
+
+        if (reviewCountEl) reviewCountEl.textContent = count.toLocaleString();
+
+        // Render rating bars
+        if (ratingBarsEl) {
+          var maxCount = Math.max(dist[5] || 0, dist[4] || 0, dist[3] || 0, dist[2] || 0, dist[1] || 0, 1);
+          var barsHtml = '';
+          for (var star = 5; star >= 1; star--) {
+            var barCount = dist[star] || 0;
+            var barPct = (barCount / maxCount) * 100;
+            barsHtml += '<div class="dossier-rating-bar-row-{{ section_id }}">' +
+              '<span class="dossier-rating-bar-label-{{ section_id }}">' + star + '</span>' +
+              '<span>★</span>' +
+              '<div class="dossier-rating-bar-track-{{ section_id }}">' +
+                '<div class="dossier-rating-bar-fill-{{ section_id }}" style="width: ' + barPct + '%"></div>' +
+              '</div>' +
+              '<span class="dossier-rating-bar-count-{{ section_id }}">' + barCount + '</span>' +
+            '</div>';
+          }
+          ratingBarsEl.innerHTML = barsHtml;
+        }
       }
 
+      function renderReviews(reviews) {
+        if (!reviewsList) return;
+        if (!reviews || reviews.length === 0) {
+          reviewsList.innerHTML = '<div class="dossier-review-item-{{ section_id }}" style="text-align: center; padding: 3rem 0; color: #9ca3af;"><p>No reviews yet. Be the first to write one!</p></div>';
+          if (showMoreContainer) showMoreContainer.style.display = 'none';
+          return;
+        }
+
+        var html = '';
+        var showAll = showMoreBtn && showMoreBtn.dataset.expanded === 'true';
+        var limit = showAll ? reviews.length : Math.min(displayCount, reviews.length);
+
+        for (var i = 0; i < reviews.length; i++) {
+          var r = reviews[i];
+          var isHidden = i >= limit;
+          var initials = getInitials(r.author);
+          var starsHtml = renderStars(r.rating, 'dossier-review-star-{{ section_id }}');
+          var dateFormatted = formatDate(r.date);
+          var verifiedHtml = r.verified ? '<span class="verified-badge">Verified Buyer</span>' : '';
+          var responseHtml = '';
+          if (r.response) {
+            responseHtml = '<div class="dossier-review-response-{{ section_id }}">' +
+              '<p class="dossier-review-response-label-{{ section_id }}">' + brandName + '</p>' +
+              '<p class="dossier-review-response-text-{{ section_id }}">' + escapeHtml(r.response) + '</p>' +
+            '</div>';
+          }
+
+          html += '<div class="dossier-review-item-{{ section_id }} ' + (isHidden ? 'dossier-review-hidden-{{ section_id }}' : '') + '" data-review-rating="' + r.rating + '" data-review-index="' + (reviews.length - i) + '">' +
+            '<div class="dossier-review-item-header-{{ section_id }}">' +
+              '<div class="dossier-review-author-block-{{ section_id }}">' +
+                '<div class="dossier-review-avatar-{{ section_id }}">' + initials + '</div>' +
+                '<div class="dossier-review-author-info-{{ section_id }}">' +
+                  '<div class="dossier-review-author-name-{{ section_id }}">' + escapeHtml(r.author) + ' ' + verifiedHtml + '</div>' +
+                  '<div class="dossier-review-stars-{{ section_id }}">' + starsHtml + '</div>' +
+                '</div>' +
+              '</div>' +
+              '<div class="dossier-review-date-{{ section_id }}">' + dateFormatted + '</div>' +
+            '</div>' +
+            (r.title ? '<h4 class="dossier-review-item-title-{{ section_id }}">' + escapeHtml(r.title) + '</h4>' : '') +
+            (r.body ? '<p class="dossier-review-item-text-{{ section_id }}">' + escapeHtml(r.body) + '</p>' : '') +
+            responseHtml +
+          '</div>';
+        }
+
+        reviewsList.innerHTML = html;
+
+        if (reviews.length > displayCount) {
+          if (showMoreContainer) showMoreContainer.style.display = 'block';
+        } else {
+          if (showMoreContainer) showMoreContainer.style.display = 'none';
+        }
+      }
+
+      function renderQuestions(questions) {
+        if (!questionsList) return;
+        if (!questions || questions.length === 0) {
+          questionsList.innerHTML = '<div class="dossier-question-item-{{ section_id }}" style="text-align: center; padding: 3rem 0; color: #9ca3af;"><p>No questions yet. Be the first to ask!</p></div>';
+          if (questionCountEl) questionCountEl.textContent = '0';
+          return;
+        }
+
+        var html = '';
+        for (var i = 0; i < questions.length; i++) {
+          var q = questions[i];
+          var qInitials = getInitials(q.author);
+          var answerHtml = '';
+          if (q.answer) {
+            answerHtml = '<div class="dossier-question-answer-{{ section_id }}">' +
+              '<p class="dossier-question-answer-label-{{ section_id }}">' + brandName + '</p>' +
+              '<p class="dossier-question-answer-text-{{ section_id }}">' + escapeHtml(q.answer) + '</p>' +
+            '</div>';
+          }
+
+          html += '<div class="dossier-question-item-{{ section_id }}">' +
+            '<div class="dossier-question-header-{{ section_id }}">' +
+              '<div class="dossier-question-author-{{ section_id }}">' +
+                '<div class="dossier-question-avatar-{{ section_id }}">' + qInitials + '</div>' +
+                '<div class="dossier-question-name-{{ section_id }}">' + escapeHtml(q.author) + '</div>' +
+              '</div>' +
+              '<div class="dossier-question-date-{{ section_id }}">' + formatDate(q.date) + '</div>' +
+            '</div>' +
+            '<p class="dossier-question-text-{{ section_id }}">' + escapeHtml(q.body) + '</p>' +
+            answerHtml +
+          '</div>';
+        }
+
+        questionsList.innerHTML = html;
+        if (questionCountEl) questionCountEl.textContent = questions.length;
+      }
+
+      // ===== HELPER FUNCTIONS =====
+      function getInitials(name) {
+        if (!name) return '?';
+        var parts = name.trim().split(/\s+/);
+        var initials = parts[0] ? parts[0].charAt(0).toUpperCase() : '';
+        if (parts.length > 1) {
+          initials += parts[parts.length - 1].charAt(0).toUpperCase();
+        }
+        return initials;
+      }
+
+      function renderStars(rating, className) {
+        var html = '';
+        for (var s = 1; s <= 5; s++) {
+          if (s <= rating) {
+            html += '<svg class="' + className + '" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>';
+          } else {
+            html += '<svg class="' + className + ' empty" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>';
+          }
+        }
+        return html;
+      }
+
+      function formatDate(dateStr) {
+        if (!dateStr) return '';
+        try {
+          var d = new Date(dateStr);
+          if (isNaN(d.getTime())) return dateStr;
+          var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+          return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+        } catch(e) {
+          return dateStr;
+        }
+      }
+
+      function escapeHtml(str) {
+        if (!str) return '';
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(str));
+        return div.innerHTML;
+      }
+
+      // ===== TAB SWITCHING =====
       function switchTab(tabName) {
-        log('Dossier reviews:', sectionId, 'switchTab', tabName);
         allTabs.forEach(function(t) {
           t.classList.toggle('inactive', t.dataset.tab !== tabName);
         });
-
         if (tabReviews) tabReviews.style.display = (tabName === 'reviews') ? 'block' : 'none';
         if (tabQuestions) tabQuestions.style.display = (tabName === 'questions') ? 'block' : 'none';
         if (sortContainer) sortContainer.style.display = (tabName === 'reviews') ? 'flex' : 'none';
@@ -1212,24 +1296,23 @@
 
       allTabs.forEach(function(tab) {
         tab.addEventListener('click', function() {
-          log('Dossier reviews:', sectionId, 'tab clicked', this.dataset.tab);
           switchTab(this.dataset.tab);
         });
       });
 
+      // ===== SORTING =====
       function getReviewItems() {
         return reviewsList ? Array.from(reviewsList.querySelectorAll('[data-review-rating]')) : [];
       }
 
       function applyVisibility(items, showAll) {
         items.forEach(function(item, index) {
-          item.classList.toggle('dossier-review-hidden-{{ section_id }}', !showAll && index >= display_count);
+          item.classList.toggle('dossier-review-hidden-{{ section_id }}', !showAll && index >= displayCount);
         });
       }
 
       function sortReviews(criteria) {
         var items = getReviewItems();
-        log('Dossier reviews:', sectionId, 'sortReviews', criteria, 'items', items.length, 'display', display_count);
         items.forEach(function(item) { item.remove(); });
 
         items.sort(function(a, b) {
@@ -1247,23 +1330,10 @@
         applyVisibility(items, showAll);
       }
 
-      function showSigninPrompt() {
-        var signinOverlay = document.getElementById('dossier-signin-overlay-' + sectionId);
-        if (signinOverlay) signinOverlay.classList.add('dossier__modal-active');
-      }
-
-      function closeSigninPrompt() {
-        var signinOverlay = document.getElementById('dossier-signin-overlay-' + sectionId);
-        if (signinOverlay) signinOverlay.classList.remove('dossier__modal-active');
-      }
-
-      if (showMoreBtn && showMoreBtn.dataset.expanded === undefined) {
-        showMoreBtn.dataset.expanded = 'false';
-      }
-
+      // ===== SHOW MORE =====
       if (showMoreBtn) {
+        showMoreBtn.dataset.expanded = 'false';
         showMoreBtn.addEventListener('click', function() {
-          log('Dossier reviews:', sectionId, 'show more clicked', this.dataset.expanded);
           var isExpanded = this.dataset.expanded === 'true';
           var items = getReviewItems();
           if (!isExpanded) {
@@ -1273,16 +1343,27 @@
           } else {
             applyVisibility(items, false);
             this.dataset.expanded = 'false';
-            this.textContent = '{{ section.settings.button_text }}';
+            this.textContent = '{{ section.settings.button_text | default: "See All Reviews" }}';
           }
         });
       }
 
+      // ===== SORT CHANGE =====
       if (sortSelect) {
         sortSelect.addEventListener('change', function() {
-          log('Dossier reviews:', sectionId, 'sort changed', this.value);
           sortReviews(this.value);
         });
+      }
+
+      // ===== MODAL =====
+      function showSigninPrompt() {
+        var signinOverlay = document.getElementById('dossier-signin-overlay-' + sectionId);
+        if (signinOverlay) signinOverlay.classList.add('dossier__modal-active');
+      }
+
+      function closeSigninPrompt() {
+        var signinOverlay = document.getElementById('dossier-signin-overlay-' + sectionId);
+        if (signinOverlay) signinOverlay.classList.remove('dossier__modal-active');
       }
 
       if (openModalBtn && modalOverlay) {
@@ -1307,9 +1388,7 @@
       }
 
       if (signinCancel && signinOverlay) {
-        signinCancel.addEventListener('click', function() {
-          closeSigninPrompt();
-        });
+        signinCancel.addEventListener('click', function() { closeSigninPrompt(); });
       }
 
       if (signinOverlay) {
@@ -1323,7 +1402,6 @@
         document.body.style.overflow = '';
         if (reviewForm) {
           reviewForm.reset();
-          reviewForm.style.display = '';
           reviewForm.querySelectorAll('.dossier__form-rating-{{ section_id }} input').forEach(function(r) { r.checked = false; });
           var defaultStar = document.getElementById('dossier-star5-{{ section_id }}');
           if (defaultStar) defaultStar.checked = true;
@@ -1342,6 +1420,7 @@
         if (e.key === 'Escape' && modalOverlay && modalOverlay.classList.contains('dossier__modal-active')) closeModal();
       });
 
+      // ===== REVIEW FORM SUBMIT (Judge.me integration) =====
       if (reviewForm) {
         reviewForm.addEventListener('submit', function(e) {
           e.preventDefault();
@@ -1360,88 +1439,95 @@
             return;
           }
 
-          var now = new Date();
-          var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-          var currentDate = months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
-          var nameParts = name.split(' ');
-          var initials = (nameParts[0] ? nameParts[0].charAt(0).toUpperCase() : '') + (nameParts.length > 1 ? nameParts[nameParts.length-1].charAt(0).toUpperCase() : '');
-
-          var starsHtml = '';
-          for (var s = 1; s <= 5; s++) {
-            if (s <= parseInt(rating, 10)) {
-              starsHtml += '<svg class="dossier-review-star-{{ section_id }}" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>';
-            } else {
-              starsHtml += '<svg class="dossier-review-star-{{ section_id }} empty" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>';
+          // Submit to Judge.me via their API
+          var reviewData = {
+            review: {
+              title: title,
+              body: text,
+              rating: parseInt(rating, 10),
+              name: name,
+              email: '{{ customer.email }}',
+              product_handle: productHandle,
+              product_id: productId
             }
-          }
+          };
 
-          var titleHtml = title ? '<h4 class="dossier-review-item-title-{{ section_id }}">' + title + '</h4>' : '';
-          var textHtml = text ? '<p class="dossier-review-item-text-{{ section_id }}">' + text + '</p>' : '';
-          var reviewHtml = '<div class="dossier-review-item-{{ section_id }}" data-review-rating="' + rating + '" data-review-index="999">' +
-            '<div class="dossier-review-item-header-{{ section_id }}">' +
-              '<div class="dossier-review-author-block-{{ section_id }}">' +
-                '<div class="dossier-review-avatar-{{ section_id }}">' + initials + '</div>' +
-                '<div class="dossier-review-author-info-{{ section_id }}">' +
-                  '<div class="dossier-review-author-name-{{ section_id }}">' + name + '</div>' +
-                  '<div class="dossier-review-stars-{{ section_id }}">' + starsHtml + '</div>' +
-                '</div>' +
-              '</div>' +
-              '<div class="dossier-review-date-{{ section_id }}">' + currentDate + '</div>' +
-            '</div>' +
-            titleHtml +
-            textHtml +
-          '</div>';
-
-          log('Dossier reviews:', sectionId, 'submitting review', {name: name, rating: rating, title: title});
-          var storedReviews = getStoredReviews();
-          storedReviews.unshift({
-            author: name,
-            rating: rating,
-            title: title,
-            text: text,
-            date: currentDate,
-            initials: initials,
-            starsHtml: starsHtml,
-            timestamp: Date.now(),
-            index: Date.now()
-          });
-          saveStoredReviews(storedReviews);
-
-          var wrapper = document.createElement('div');
-          wrapper.innerHTML = reviewHtml;
-          var newReview = wrapper.firstElementChild;
-          if (newReview) {
-            newReview.classList.remove('dossier-review-hidden-{{ section_id }}');
-            reviewsList.insertBefore(newReview, reviewsList.firstChild);
-          }
-
-          updateReviewTabCount(1);
-
-          if (modalFormContainer) modalFormContainer.style.display = 'none';
-          if (modalSuccess) modalSuccess.classList.add('dossier__form-success-active');
-          setTimeout(closeModal, 2500);
+          // Try to submit via Judge.me API
+          var submitXhr = new XMLHttpRequest();
+          submitXhr.open('POST', 'https://judge.me/api/v1/reviews?shop_domain=' + shopDomain, true);
+          submitXhr.setRequestHeader('Content-Type', 'application/json');
+          submitXhr.onload = function() {
+            if (submitXhr.status >= 200 && submitXhr.status < 400) {
+              showSuccess();
+            } else {
+              // Fallback: add review locally
+              addLocalReview(name, rating, title, text);
+            }
+          };
+          submitXhr.onerror = function() {
+            addLocalReview(name, rating, title, text);
+          };
+          submitXhr.send(JSON.stringify(reviewData));
         });
       }
 
+      function addLocalReview(name, rating, title, text) {
+        var now = new Date();
+        var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        var currentDate = months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
+        var initials = getInitials(name);
+        var starsHtml = renderStars(parseInt(rating, 10), 'dossier-review-star-{{ section_id }}');
+
+        var wrapper = document.createElement('div');
+        wrapper.innerHTML = '<div class="dossier-review-item-{{ section_id }}" data-review-rating="' + rating + '" data-review-index="999">' +
+          '<div class="dossier-review-item-header-{{ section_id }}">' +
+            '<div class="dossier-review-author-block-{{ section_id }}">' +
+              '<div class="dossier-review-avatar-{{ section_id }}">' + initials + '</div>' +
+              '<div class="dossier-review-author-info-{{ section_id }}">' +
+                '<div class="dossier-review-author-name-{{ section_id }}">' + escapeHtml(name) + '</div>' +
+                '<div class="dossier-review-stars-{{ section_id }}">' + starsHtml + '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="dossier-review-date-{{ section_id }}">' + currentDate + '</div>' +
+          '</div>' +
+          (title ? '<h4 class="dossier-review-item-title-{{ section_id }}">' + escapeHtml(title) + '</h4>' : '') +
+          (text ? '<p class="dossier-review-item-text-{{ section_id }}">' + escapeHtml(text) + '</p>' : '') +
+        '</div>';
+
+        var newReview = wrapper.firstElementChild;
+        if (newReview && reviewsList) {
+          newReview.classList.remove('dossier-review-hidden-{{ section_id }}');
+          reviewsList.insertBefore(newReview, reviewsList.firstChild);
+        }
+
+        showSuccess();
+      }
+
+      function showSuccess() {
+        if (modalFormContainer) modalFormContainer.style.display = 'none';
+        if (modalSuccess) modalSuccess.classList.add('dossier__form-success-active');
+        setTimeout(closeModal, 2500);
+      }
+
+      // ===== ASK QUESTION =====
       var askBtn = document.getElementById('dossier-ask-question-' + sectionId);
       if (askBtn) {
         askBtn.addEventListener('click', function() {
-          var email = '{{ section.settings.brand_email }}';
-          if (email && email.indexOf('@') > -1) {
-            window.location.href = 'mailto:' + email + '?subject=Question%20about%20your%20products';
+          if (brandEmail && brandEmail.indexOf('@') > -1) {
+            window.location.href = 'mailto:' + brandEmail + '?subject=Question%20about%20your%20products';
           } else {
             alert('To ask a question, please contact our support team.');
           }
         });
       }
 
+      // ===== INIT =====
       if (sortSelect && !sortSelect.value) {
         sortSelect.value = 'recent';
       }
 
-      renderStoredReviews();
+      fetchJudgeMeReviews();
       switchTab('reviews');
-      sortReviews(sortSelect ? sortSelect.value : 'recent');
 
       if (openModalBtn && modalOverlay) {
         openModalBtn.style.cursor = 'pointer';
@@ -1498,26 +1584,6 @@
       "default": "#ffffff"
     },
     {
-      "type": "header",
-      "content": "Rating summary"
-    },
-    {
-      "type": "range",
-      "id": "average_rating",
-      "label": "Average rating",
-      "min": 1,
-      "max": 5,
-      "step": 0.1,
-      "default": 4.8
-    },
-    {
-      "type": "text",
-      "id": "total_review_count",
-      "label": "Total review count (e.g. 13299)",
-      "default": "13299",
-      "info": "Numeric value only, no commas. Used for rating bar count calculations."
-    },
-    {
       "type": "inline_richtext",
       "id": "section_title",
       "label": "Title",
@@ -1548,65 +1614,6 @@
       "info": "Number of reviews visible before clicking Show More"
     },
     {
-      "type": "range",
-      "id": "review_count",
-      "label": "Total review slots",
-      "min": 1,
-      "max": 12,
-      "step": 1,
-      "default": 6,
-      "info": "Total number of review slots available in the theme settings"
-    },
-    {
-      "type": "header",
-      "content": "Rating Distribution (percentage)"
-    },
-    {
-      "type": "range",
-      "id": "rating_bar_5",
-      "label": "5★ bar width %",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "default": 92
-    },
-    {
-      "type": "range",
-      "id": "rating_bar_4",
-      "label": "4★ bar width %",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "default": 5
-    },
-    {
-      "type": "range",
-      "id": "rating_bar_3",
-      "label": "3★ bar width %",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "default": 2
-    },
-    {
-      "type": "range",
-      "id": "rating_bar_2",
-      "label": "2★ bar width %",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "default": 1
-    },
-    {
-      "type": "range",
-      "id": "rating_bar_1",
-      "label": "1★ bar width %",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "default": 0
-    },
-    {
       "type": "header",
       "content": "Brand"
     },
@@ -1622,393 +1629,6 @@
       "label": "Brand email for questions",
       "default": "support@wildfyre.com",
       "info": "Email used when customers click 'Ask a Question'"
-    },
-    {
-      "type": "header",
-      "content": "Review 1"
-    },
-    {
-      "type": "range",
-      "id": "review_1_rating",
-      "label": "Rating",
-      "min": 1,
-      "max": 5,
-      "step": 1,
-      "default": 5
-    },
-    {
-      "type": "text",
-      "id": "review_1_title",
-      "label": "Review title",
-      "default": "Amazing"
-    },
-    {
-      "type": "textarea",
-      "id": "review_1_text",
-      "label": "Review text",
-      "default": "This is my 3rd bottle and couldn't be more happy with the scent."
-    },
-    {
-      "type": "text",
-      "id": "review_1_author",
-      "label": "Author name",
-      "default": "Julie G."
-    },
-    {
-      "type": "text",
-      "id": "review_1_date",
-      "label": "Review date",
-      "default": "7/13/24"
-    },
-    {
-      "type": "checkbox",
-      "id": "review_1_verified",
-      "label": "Verified purchase",
-      "default": true
-    },
-    {
-      "type": "textarea",
-      "id": "review_1_response",
-      "label": "Brand response",
-      "default": "We can't get enough either, three bottles and counting! Thanks for sharing 😊"
-    },
-    {
-      "type": "header",
-      "content": "Review 2"
-    },
-    {
-      "type": "range",
-      "id": "review_2_rating",
-      "label": "Rating",
-      "min": 1,
-      "max": 5,
-      "step": 1,
-      "default": 5
-    },
-    {
-      "type": "text",
-      "id": "review_2_title",
-      "label": "Review title",
-      "default": "Absolutely stunning fragrance"
-    },
-    {
-      "type": "textarea",
-      "id": "review_2_text",
-      "label": "Review text",
-      "default": "This perfume exceeded all my expectations. The scent is sophisticated, long-lasting, and receives compliments everywhere I go. Worth every penny."
-    },
-    {
-      "type": "text",
-      "id": "review_2_author",
-      "label": "Author name",
-      "default": "Sarah M."
-    },
-    {
-      "type": "text",
-      "id": "review_2_date",
-      "label": "Review date",
-      "default": "January 10, 2026"
-    },
-    {
-      "type": "checkbox",
-      "id": "review_2_verified",
-      "label": "Verified purchase",
-      "default": true
-    },
-    {
-      "type": "textarea",
-      "id": "review_2_response",
-      "label": "Brand response"
-    },
-    {
-      "type": "header",
-      "content": "Review 3"
-    },
-    {
-      "type": "range",
-      "id": "review_3_rating",
-      "label": "Rating",
-      "min": 1,
-      "max": 5,
-      "step": 1,
-      "default": 5
-    },
-    {
-      "type": "text",
-      "id": "review_3_title",
-      "label": "Review title",
-      "default": "Luxury in a bottle"
-    },
-    {
-      "type": "textarea",
-      "id": "review_3_text",
-      "label": "Review text",
-      "default": "The quality is exceptional. From the packaging to the scent itself, everything feels premium. This is now my go-to fragrance for special occasions."
-    },
-    {
-      "type": "text",
-      "id": "review_3_author",
-      "label": "Author name",
-      "default": "Emma L."
-    },
-    {
-      "type": "text",
-      "id": "review_3_date",
-      "label": "Review date",
-      "default": "January 5, 2026"
-    },
-    {
-      "type": "checkbox",
-      "id": "review_3_verified",
-      "label": "Verified purchase",
-      "default": false
-    },
-    {
-      "type": "textarea",
-      "id": "review_3_response",
-      "label": "Brand response"
-    },
-    {
-      "type": "header",
-      "content": "Review 4"
-    },
-    {
-      "type": "range",
-      "id": "review_4_rating",
-      "label": "Rating",
-      "min": 1,
-      "max": 5,
-      "step": 1,
-      "default": 4
-    },
-    {
-      "type": "text",
-      "id": "review_4_title",
-      "label": "Review title",
-      "default": "Great scent, long lasting"
-    },
-    {
-      "type": "textarea",
-      "id": "review_4_text",
-      "label": "Review text",
-      "default": "I've been using this for a month now and it's definitely one of my favorites. The projection is great and it lasts all day."
-    },
-    {
-      "type": "text",
-      "id": "review_4_author",
-      "label": "Author name",
-      "default": "Michael R."
-    },
-    {
-      "type": "text",
-      "id": "review_4_date",
-      "label": "Review date",
-      "default": "December 28, 2025"
-    },
-    {
-      "type": "checkbox",
-      "id": "review_4_verified",
-      "label": "Verified purchase",
-      "default": true
-    },
-    {
-      "type": "textarea",
-      "id": "review_4_response",
-      "label": "Brand response"
-    },
-    {
-      "type": "header",
-      "content": "Review 5"
-    },
-    {
-      "type": "range",
-      "id": "review_5_rating",
-      "label": "Rating",
-      "min": 1,
-      "max": 5,
-      "step": 1,
-      "default": 3
-    },
-    {
-      "type": "text",
-      "id": "review_5_title",
-      "label": "Review title",
-      "default": "Nice but overhyped"
-    },
-    {
-      "type": "textarea",
-      "id": "review_5_text",
-      "label": "Review text",
-      "default": "It's a good fragrance but I expected more based on the reviews. The scent doesn't last as long as I hoped. Still decent quality."
-    },
-    {
-      "type": "text",
-      "id": "review_5_author",
-      "label": "Author name",
-      "default": "David K."
-    },
-    {
-      "type": "text",
-      "id": "review_5_date",
-      "label": "Review date",
-      "default": "December 15, 2025"
-    },
-    {
-      "type": "checkbox",
-      "id": "review_5_verified",
-      "label": "Verified purchase",
-      "default": true
-    },
-    {
-      "type": "textarea",
-      "id": "review_5_response",
-      "label": "Brand response",
-      "default": "Thank you for your honest feedback David! We recommend trying the extrait version for longer longevity."
-    },
-    {
-      "type": "header",
-      "content": "Review 6"
-    },
-    {
-      "type": "range",
-      "id": "review_6_rating",
-      "label": "Rating",
-      "min": 1,
-      "max": 5,
-      "step": 1,
-      "default": 5
-    },
-    {
-      "type": "text",
-      "id": "review_6_title",
-      "label": "Review title",
-      "default": "My signature scent"
-    },
-    {
-      "type": "textarea",
-      "id": "review_6_text",
-      "label": "Review text",
-      "default": "I get compliments every single time I wear this. It's sophisticated, unique, and incredibly well-blended. Already ordered my backup bottle!"
-    },
-    {
-      "type": "text",
-      "id": "review_6_author",
-      "label": "Author name",
-      "default": "Olivia P."
-    },
-    {
-      "type": "text",
-      "id": "review_6_date",
-      "label": "Review date",
-      "default": "November 30, 2025"
-    },
-    {
-      "type": "checkbox",
-      "id": "review_6_verified",
-      "label": "Verified purchase",
-      "default": true
-    },
-    {
-      "type": "textarea",
-      "id": "review_6_response",
-      "label": "Brand response"
-    },
-    {
-      "type": "header",
-      "content": "Questions"
-    },
-    {
-      "type": "range",
-      "id": "question_count",
-      "label": "Number of questions",
-      "min": 1,
-      "max": 6,
-      "step": 1,
-      "default": 3
-    },
-    {
-      "type": "header",
-      "content": "Question 1"
-    },
-    {
-      "type": "text",
-      "id": "question_1_author",
-      "label": "Author name",
-      "default": "Jessica T."
-    },
-    {
-      "type": "textarea",
-      "id": "question_1_text",
-      "label": "Question",
-      "default": "How long does the fragrance typically last on skin?"
-    },
-    {
-      "type": "text",
-      "id": "question_1_date",
-      "label": "Date",
-      "default": "January 8, 2026"
-    },
-    {
-      "type": "textarea",
-      "id": "question_1_answer",
-      "label": "Answer",
-      "default": "Our fragrances typically last 6-8 hours on skin and even longer on clothing. For best results, apply to pulse points and moisturized skin."
-    },
-    {
-      "type": "header",
-      "content": "Question 2"
-    },
-    {
-      "type": "text",
-      "id": "question_2_author",
-      "label": "Author name",
-      "default": "Marcus W."
-    },
-    {
-      "type": "textarea",
-      "id": "question_2_text",
-      "label": "Question",
-      "default": "Is this suitable for sensitive skin?"
-    },
-    {
-      "type": "text",
-      "id": "question_2_date",
-      "label": "Date",
-      "default": "December 20, 2025"
-    },
-    {
-      "type": "textarea",
-      "id": "question_2_answer",
-      "label": "Answer",
-      "default": "Yes! All our fragrances are formulated without harsh chemicals and are dermatologist-tested. We recommend doing a patch test if you have extremely sensitive skin."
-    },
-    {
-      "type": "header",
-      "content": "Question 3"
-    },
-    {
-      "type": "text",
-      "id": "question_3_author",
-      "label": "Author name",
-      "default": "Priya K."
-    },
-    {
-      "type": "textarea",
-      "id": "question_3_text",
-      "label": "Question",
-      "default": "Do you offer samples or travel sizes?"
-    },
-    {
-      "type": "text",
-      "id": "question_3_date",
-      "label": "Date",
-      "default": "December 5, 2025"
-    },
-    {
-      "type": "textarea",
-      "id": "question_3_answer",
-      "label": "Answer",
-      "default": "Yes, we do offer travel-sized options! Check the product page for size availability. We're also working on a sample discovery set - stay tuned!"
     },
     {
       "type": "header",
