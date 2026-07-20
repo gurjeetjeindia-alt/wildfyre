@@ -303,6 +303,10 @@
       "type": "_blocks",
       "name": "Cart discount code",
       "settings": {}
+    },
+    "178457054736523364": {
+      "type": "_blocks",
+      "settings": {}
     }
   },
   "order": [
@@ -320,6 +324,7 @@
     "17845689412c28638d",
     "17845693366583685e",
     "17845698177a26ada8",
-    "blocks_9TpwGi"
+    "blocks_9TpwGi",
+    "178457054736523364"
   ]
 }
