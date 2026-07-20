@@ -1,0 +1,703 @@
+{% doc %}
+  @prompt
+    Create a cart page section block for the cart template with a discount code input. All settings configurable via theme editor — no hardcoded values. The block must:
+    - Have a discount code text input and an Apply button (label configurable in settings)
+    - On apply, validate the entered code against the configured code in settings
+    - Dynamically update ALL of the following without page reload:
+      - Each line item's price (strikethrough original + discounted price)
+      - The cart subtotal / estimated total shown on the page
+      - The checkout button URL to include the discount code as a query parameter (e.g., /checkout?discount=CODE) so the discount is pre-applied at Shopify checkout
+    - Show a "You save ₹X" or "You save X%" summary line below the total
+    - Success message and error message text configurable in settings
+    - Discount type (percentage or fixed amount) and discount value configurable in settings
+    - Targets and updates the existing cart total/subtotal DOM elements already present in the theme
+    - Minimal luxury aesthetic, mobile responsive
+    - Must appear as an addable block inside the Cart template in the theme editor left panel
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-cart-discount-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding: {{ block.settings.padding }}px;
+    background-color: {{ block.settings.background_color }};
+    border: {{ block.settings.border_thickness }}px solid {{ block.settings.border_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+    margin: {{ block.settings.margin_top }}px 0 {{ block.settings.margin_bottom }}px;
+  }
+
+  .ai-cart-discount-form-{{ ai_gen_id }} {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .ai-cart-discount-input-{{ ai_gen_id }} {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid {{ block.settings.input_border_color }};
+    border-radius: {{ block.settings.input_border_radius }}px;
+    font-size: {{ block.settings.input_font_size }}px;
+    color: {{ block.settings.text_color }};
+    background-color: {{ block.settings.input_background_color }};
+  }
+
+  .ai-cart-discount-input-{{ ai_gen_id }}::placeholder {
+    color: {{ block.settings.placeholder_color }};
+  }
+
+  .ai-cart-discount-button-{{ ai_gen_id }} {
+    padding: 12px 24px;
+    background-color: {{ block.settings.button_color }};
+    color: {{ block.settings.button_text_color }};
+    border: {{ block.settings.button_border_thickness }}px solid {{ block.settings.button_border_color }};
+    border-radius: {{ block.settings.button_border_radius }}px;
+    font-size: {{ block.settings.button_font_size }}px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s ease;
+  }
+
+  .ai-cart-discount-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_color }};
+  }
+
+  .ai-cart-discount-message-{{ ai_gen_id }} {
+    padding: 12px;
+    border-radius: {{ block.settings.message_border_radius }}px;
+    font-size: {{ block.settings.message_font_size }}px;
+    margin-bottom: 12px;
+    display: none;
+  }
+
+  .ai-cart-discount-message-{{ ai_gen_id }}.success {
+    background-color: {{ block.settings.success_bg_color }};
+    color: {{ block.settings.success_text_color }};
+    display: block;
+  }
+
+  .ai-cart-discount-message-{{ ai_gen_id }}.error {
+    background-color: {{ block.settings.error_bg_color }};
+    color: {{ block.settings.error_text_color }};
+    display: block;
+  }
+
+  .ai-cart-discount-savings-{{ ai_gen_id }} {
+    padding: 12px;
+    background-color: {{ block.settings.savings_bg_color }};
+    color: {{ block.settings.savings_text_color }};
+    border-radius: {{ block.settings.savings_border_radius }}px;
+    font-size: {{ block.settings.savings_font_size }}px;
+    font-weight: 600;
+    text-align: {{ block.settings.savings_alignment }};
+    display: none;
+  }
+
+  .ai-cart-discount-savings-{{ ai_gen_id }}.active {
+    display: block;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-cart-discount-form-{{ ai_gen_id }} {
+      flex-direction: column;
+    }
+
+    .ai-cart-discount-button-{{ ai_gen_id }} {
+      width: 100%;
+    }
+  }
+{% endstyle %}
+
+<cart-discount-{{ ai_gen_id }}
+  class="ai-cart-discount-{{ ai_gen_id }}"
+  data-discount-code="{{ block.settings.discount_code }}"
+  data-discount-type="{{ block.settings.discount_type }}"
+  data-discount-value="{{ block.settings.discount_value }}"
+  data-success-message="{{ block.settings.success_message }}"
+  data-error-message="{{ block.settings.error_message }}"
+  data-currency-symbol="{{ cart.currency.symbol }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-cart-discount-message-{{ ai_gen_id }}"></div>
+
+  <div class="ai-cart-discount-form-{{ ai_gen_id }}">
+    <input
+      type="text"
+      class="ai-cart-discount-input-{{ ai_gen_id }}"
+      placeholder="{{ block.settings.input_placeholder }}"
+      aria-label="Discount code"
+    >
+    <button
+      type="button"
+      class="ai-cart-discount-button-{{ ai_gen_id }}"
+    >
+      {{ block.settings.button_label }}
+    </button>
+  </div>
+
+  <div class="ai-cart-discount-savings-{{ ai_gen_id }}"></div>
+</cart-discount-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class CartDiscount{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.discountCode = this.dataset.discountCode;
+        this.discountType = this.dataset.discountType;
+        this.discountValue = parseFloat(this.dataset.discountValue);
+        this.successMessage = this.dataset.successMessage;
+        this.errorMessage = this.dataset.errorMessage;
+        this.currencySymbol = this.dataset.currencySymbol;
+        this.appliedDiscount = null;
+      }
+
+      connectedCallback() {
+        this.input = this.querySelector('.ai-cart-discount-input-{{ ai_gen_id }}');
+        this.button = this.querySelector('.ai-cart-discount-button-{{ ai_gen_id }}');
+        this.messageEl = this.querySelector('.ai-cart-discount-message-{{ ai_gen_id }}');
+        this.savingsEl = this.querySelector('.ai-cart-discount-savings-{{ ai_gen_id }}');
+
+        this.button.addEventListener('click', () => this.applyDiscount());
+        this.input.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            this.applyDiscount();
+          }
+        });
+
+        this.checkUrlForDiscount();
+      }
+
+      checkUrlForDiscount() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlDiscount = urlParams.get('discount');
+        if (urlDiscount && urlDiscount.toUpperCase() === this.discountCode.toUpperCase()) {
+          this.input.value = urlDiscount;
+          this.applyDiscount();
+        }
+      }
+
+      applyDiscount() {
+        const enteredCode = this.input.value.trim();
+
+        if (!enteredCode) {
+          this.showMessage(this.errorMessage, 'error');
+          return;
+        }
+
+        if (enteredCode.toUpperCase() !== this.discountCode.toUpperCase()) {
+          this.showMessage(this.errorMessage, 'error');
+          this.savingsEl.classList.remove('active');
+          this.appliedDiscount = null;
+          this.updateCart();
+          return;
+        }
+
+        this.appliedDiscount = {
+          code: enteredCode,
+          type: this.discountType,
+          value: this.discountValue
+        };
+
+        this.showMessage(this.successMessage, 'success');
+        this.updateCart();
+      }
+
+      showMessage(message, type) {
+        this.messageEl.textContent = message;
+        this.messageEl.className = 'ai-cart-discount-message-{{ ai_gen_id }} ' + type;
+      }
+
+      updateCart() {
+        fetch('/cart.js')
+          .then(response => response.json())
+          .then(cart => {
+            this.updateLineItems(cart);
+            this.updateTotals(cart);
+            this.updateCheckoutButton();
+          });
+      }
+
+      updateLineItems(cart) {
+        cart.items.forEach((item, index) => {
+          const lineItemPrice = document.querySelector(`[data-cart-item-index="${index + 1}"] .cart-item__price, [data-index="${index + 1}"] .cart-item__price, .cart-item[data-index="${index + 1}"] .price, .cart-item:nth-child(${index + 1}) .cart-item__price`);
+          
+          if (lineItemPrice) {
+            const originalPrice = item.original_line_price;
+            let discountedPrice = originalPrice;
+
+            if (this.appliedDiscount) {
+              if (this.appliedDiscount.type === 'percentage') {
+                discountedPrice = originalPrice * (1 - this.appliedDiscount.value / 100);
+              } else {
+                const perItemDiscount = (this.appliedDiscount.value * 100) / item.quantity;
+                discountedPrice = Math.max(0, originalPrice - perItemDiscount);
+              }
+            }
+
+            if (this.appliedDiscount && discountedPrice < originalPrice) {
+              lineItemPrice.innerHTML = `
+                <span style="text-decoration: line-through; opacity: 0.6; margin-right: 8px;">
+                  ${this.formatMoney(originalPrice)}
+                </span>
+                <span style="color: {{ block.settings.discount_price_color }}; font-weight: 600;">
+                  ${this.formatMoney(discountedPrice)}
+                </span>
+              `;
+            } else {
+              lineItemPrice.innerHTML = this.formatMoney(originalPrice);
+            }
+          }
+        });
+      }
+
+      updateTotals(cart) {
+        const originalTotal = cart.total_price;
+        let discountedTotal = originalTotal;
+        let savingsAmount = 0;
+
+        if (this.appliedDiscount) {
+          if (this.appliedDiscount.type === 'percentage') {
+            savingsAmount = originalTotal * (this.appliedDiscount.value / 100);
+            discountedTotal = originalTotal - savingsAmount;
+          } else {
+            savingsAmount = this.appliedDiscount.value * 100;
+            discountedTotal = Math.max(0, originalTotal - savingsAmount);
+          }
+        }
+
+        const totalSelectors = [
+          '.cart__footer .totals__total-value',
+          '.cart-drawer__footer .totals__total-value',
+          '[data-cart-total]',
+          '.cart__total',
+          '.cart-subtotal',
+          '.totals__subtotal-value'
+        ];
+
+        totalSelectors.forEach(selector => {
+          const totalEl = document.querySelector(selector);
+          if (totalEl) {
+            if (this.appliedDiscount && discountedTotal < originalTotal) {
+              totalEl.innerHTML = `
+                <span style="text-decoration: line-through; opacity: 0.6; margin-right: 8px; font-size: 0.9em;">
+                  ${this.formatMoney(originalTotal)}
+                </span>
+                <span style="color: {{ block.settings.discount_price_color }}; font-weight: 600;">
+                  ${this.formatMoney(discountedTotal)}
+                </span>
+              `;
+            } else {
+              totalEl.textContent = this.formatMoney(originalTotal);
+            }
+          }
+        });
+
+        if (this.appliedDiscount && savingsAmount > 0) {
+          if (this.discountType === 'percentage') {
+            this.savingsEl.textContent = `You save ${this.appliedDiscount.value}% (${this.formatMoney(savingsAmount)})`;
+          } else {
+            this.savingsEl.textContent = `You save ${this.formatMoney(savingsAmount)}`;
+          }
+          this.savingsEl.classList.add('active');
+        } else {
+          this.savingsEl.classList.remove('active');
+        }
+      }
+
+      updateCheckoutButton() {
+        const checkoutButtons = document.querySelectorAll('[name="checkout"], .cart__checkout-button, .cart__checkout, a[href="/checkout"]');
+        
+        checkoutButtons.forEach(button => {
+          if (this.appliedDiscount) {
+            const checkoutUrl = `/checkout?discount=${encodeURIComponent(this.appliedDiscount.code)}`;
+            
+            if (button.tagName === 'A') {
+              button.href = checkoutUrl;
+            } else {
+              button.setAttribute('data-discount-url', checkoutUrl);
+              button.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = checkoutUrl;
+              });
+            }
+          } else {
+            if (button.tagName === 'A') {
+              button.href = '/checkout';
+            } else {
+              button.removeAttribute('data-discount-url');
+            }
+          }
+        });
+      }
+
+      formatMoney(cents) {
+        const amount = (cents / 100).toFixed(2);
+        return `${this.currencySymbol}${amount}`;
+      }
+    }
+
+    customElements.define('cart-discount-{{ ai_gen_id }}', CartDiscount{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Cart discount code",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Discount settings"
+    },
+    {
+      "type": "text",
+      "id": "discount_code",
+      "label": "Discount code",
+      "default": "SAVE10"
+    },
+    {
+      "type": "select",
+      "id": "discount_type",
+      "label": "Discount type",
+      "options": [
+        {
+          "value": "percentage",
+          "label": "Percentage"
+        },
+        {
+          "value": "fixed",
+          "label": "Fixed amount"
+        }
+      ],
+      "default": "percentage"
+    },
+    {
+      "type": "range",
+      "id": "discount_value",
+      "label": "Discount value",
+      "min": 1,
+      "max": 100,
+      "step": 1,
+      "default": 10,
+      "info": "For percentage: enter 10 for 10%. For fixed: enter amount in your currency (e.g., 100 for ₹100)"
+    },
+    {
+      "type": "header",
+      "content": "Input field"
+    },
+    {
+      "type": "text",
+      "id": "input_placeholder",
+      "label": "Input placeholder",
+      "default": "Enter discount code"
+    },
+    {
+      "type": "range",
+      "id": "input_font_size",
+      "label": "Input font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "input_border_radius",
+      "label": "Input border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "input_background_color",
+      "label": "Input background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "input_border_color",
+      "label": "Input border",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "placeholder_color",
+      "label": "Placeholder text",
+      "default": "#999999"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Apply"
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "label": "Button font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Button border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "button_border_thickness",
+      "label": "Button border thickness",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button background",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_color",
+      "label": "Button hover background",
+      "default": "#242833"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Button border",
+      "default": "#121212"
+    },
+    {
+      "type": "header",
+      "content": "Messages"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "Discount code applied successfully"
+    },
+    {
+      "type": "text",
+      "id": "error_message",
+      "label": "Error message",
+      "default": "Invalid discount code"
+    },
+    {
+      "type": "range",
+      "id": "message_font_size",
+      "label": "Message font size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "message_border_radius",
+      "label": "Message border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "success_bg_color",
+      "label": "Success background",
+      "default": "#d4edda"
+    },
+    {
+      "type": "color",
+      "id": "success_text_color",
+      "label": "Success text",
+      "default": "#155724"
+    },
+    {
+      "type": "color",
+      "id": "error_bg_color",
+      "label": "Error background",
+      "default": "#f8d7da"
+    },
+    {
+      "type": "color",
+      "id": "error_text_color",
+      "label": "Error text",
+      "default": "#721c24"
+    },
+    {
+      "type": "header",
+      "content": "Savings display"
+    },
+    {
+      "type": "range",
+      "id": "savings_font_size",
+      "label": "Savings font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "savings_border_radius",
+      "label": "Savings border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "select",
+      "id": "savings_alignment",
+      "label": "Savings alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "color",
+      "id": "savings_bg_color",
+      "label": "Savings background",
+      "default": "#f3f3f3"
+    },
+    {
+      "type": "color",
+      "id": "savings_text_color",
+      "label": "Savings text",
+      "default": "#121212"
+    },
+    {
+      "type": "header",
+      "content": "Price display"
+    },
+    {
+      "type": "color",
+      "id": "discount_price_color",
+      "label": "Discounted price",
+      "default": "#d82c0d"
+    },
+    {
+      "type": "header",
+      "content": "Block style"
+    },
+    {
+      "type": "range",
+      "id": "padding",
+      "label": "Padding",
+      "min": 0,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Margin top",
+      "min": 0,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Margin bottom",
+      "min": 0,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "border_thickness",
+      "label": "Border thickness",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#121212"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cart discount code"
+    }
+  ],
+  "tag": null
+}
+{% endschema %}
