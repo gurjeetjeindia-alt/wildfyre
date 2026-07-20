@@ -1,6 +1,407 @@
+{% doc %}
+  @prompt
+    Create a luxury editorial-style discount popup block for the product page with ALL content configurable via Shopify theme editor settings (no hardcoded text or values). Settings should include:
+    - Popup heading text
+    - Subheading or body text
+    - Discount code field (merchant enters their actual Shopify discount code)
+    - CTA button label
+    - Delay before popup appears (in seconds)
+    - Toggle to enable/disable the popup
+    - Background overlay color with opacity control
+    - Popup background color
+    - Text color
+    The popup should:
+    - Show only once per session using localStorage
+    - Have a close (×) button
+    - Copy the discount code to clipboard on CTA click with a confirmation message
+    - Be mobile-responsive and centered on screen
+    - Match a luxury fragrance brand aesthetic: minimal, editorial, understated, premium
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-discount-popup-{{ ai_gen_id }} {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+  }
+
+  .ai-discount-popup-{{ ai_gen_id }}.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .ai-discount-popup-overlay-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: {{ block.settings.overlay_color }};
+    opacity: {{ block.settings.overlay_opacity | divided_by: 100.0 }};
+  }
+
+  .ai-discount-popup-content-{{ ai_gen_id }} {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    background-color: {{ block.settings.popup_background_color }};
+    color: {{ block.settings.popup_text_color }};
+    padding: 60px 40px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    transition: transform 0.4s ease;
+  }
+
+  .ai-discount-popup-{{ ai_gen_id }}.active .ai-discount-popup-content-{{ ai_gen_id }} {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .ai-discount-popup-close-{{ ai_gen_id }} {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    color: {{ block.settings.popup_text_color }};
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+  }
+
+  .ai-discount-popup-close-{{ ai_gen_id }}:hover {
+    opacity: 1;
+  }
+
+  .ai-discount-popup-heading-{{ ai_gen_id }} {
+    font-size: 28px;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    margin: 0 0 16px;
+    text-transform: uppercase;
+  }
+
+  .ai-discount-popup-subheading-{{ ai_gen_id }} {
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0 0 32px;
+    opacity: 0.8;
+  }
+
+  .ai-discount-popup-code-wrapper-{{ ai_gen_id }} {
+    margin: 0 0 24px;
+  }
+
+  .ai-discount-popup-code-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: 16px 32px;
+    border: 1px solid {{ block.settings.popup_text_color }};
+    font-size: 18px;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .ai-discount-popup-button-{{ ai_gen_id }} {
+    background-color: {{ block.settings.popup_text_color }};
+    color: {{ block.settings.popup_background_color }};
+    border: none;
+    padding: 16px 48px;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+  }
+
+  .ai-discount-popup-button-{{ ai_gen_id }}:hover {
+    opacity: 0.8;
+  }
+
+  .ai-discount-popup-confirmation-{{ ai_gen_id }} {
+    margin-top: 12px;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .ai-discount-popup-confirmation-{{ ai_gen_id }}.visible {
+    opacity: 0.7;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-discount-popup-content-{{ ai_gen_id }} {
+      padding: 40px 24px;
+      max-width: 90%;
+    }
+
+    .ai-discount-popup-heading-{{ ai_gen_id }} {
+      font-size: 22px;
+    }
+
+    .ai-discount-popup-subheading-{{ ai_gen_id }} {
+      font-size: 13px;
+    }
+
+    .ai-discount-popup-code-{{ ai_gen_id }} {
+      font-size: 16px;
+      padding: 12px 24px;
+    }
+
+    .ai-discount-popup-button-{{ ai_gen_id }} {
+      padding: 14px 32px;
+      font-size: 13px;
+    }
+  }
+{% endstyle %}
+
+{% if block.settings.popup_enabled %}
+  <discount-popup-{{ ai_gen_id }}
+    class="ai-discount-popup-{{ ai_gen_id }}"
+    data-delay="{{ block.settings.popup_delay }}"
+    {{ block.shopify_attributes }}
+  >
+    <div class="ai-discount-popup-overlay-{{ ai_gen_id }}"></div>
+    <div class="ai-discount-popup-content-{{ ai_gen_id }}">
+      <button
+        class="ai-discount-popup-close-{{ ai_gen_id }}"
+        aria-label="Close popup"
+      >
+        ×
+      </button>
+
+      {% if block.settings.popup_heading != blank %}
+        <h2 class="ai-discount-popup-heading-{{ ai_gen_id }}">
+          {{ block.settings.popup_heading }}
+        </h2>
+      {% endif %}
+
+      {% if block.settings.popup_subheading != blank %}
+        <p class="ai-discount-popup-subheading-{{ ai_gen_id }}">
+          {{ block.settings.popup_subheading }}
+        </p>
+      {% endif %}
+
+      {% if block.settings.discount_code != blank %}
+        <div class="ai-discount-popup-code-wrapper-{{ ai_gen_id }}">
+          <div class="ai-discount-popup-code-{{ ai_gen_id }}">
+            {{ block.settings.discount_code }}
+          </div>
+        </div>
+
+        <button class="ai-discount-popup-button-{{ ai_gen_id }}">
+          {{ block.settings.cta_button_label }}
+        </button>
+
+        <div class="ai-discount-popup-confirmation-{{ ai_gen_id }}">
+          Code copied to clipboard
+        </div>
+      {% endif %}
+    </div>
+  </discount-popup-{{ ai_gen_id }}>
+
+  <script>
+    (function() {
+      class DiscountPopup{{ ai_gen_id }} extends HTMLElement {
+        constructor() {
+          super();
+          this.storageKey = 'ai_discount_popup_{{ ai_gen_id }}_shown';
+        }
+
+        connectedCallback() {
+          if (this.hasBeenShown()) {
+            return;
+          }
+
+          this.closeButton = this.querySelector('.ai-discount-popup-close-{{ ai_gen_id }}');
+          this.overlay = this.querySelector('.ai-discount-popup-overlay-{{ ai_gen_id }}');
+          this.ctaButton = this.querySelector('.ai-discount-popup-button-{{ ai_gen_id }}');
+          this.confirmation = this.querySelector('.ai-discount-popup-confirmation-{{ ai_gen_id }}');
+          this.discountCode = '{{ block.settings.discount_code }}';
+          this.delay = parseInt(this.dataset.delay) * 1000;
+
+          this.setupEventListeners();
+          this.schedulePopup();
+        }
+
+        hasBeenShown() {
+          return sessionStorage.getItem(this.storageKey) === 'true';
+        }
+
+        markAsShown() {
+          sessionStorage.setItem(this.storageKey, 'true');
+        }
+
+        setupEventListeners() {
+          this.closeButton.addEventListener('click', () => this.closePopup());
+          this.overlay.addEventListener('click', () => this.closePopup());
+
+          if (this.ctaButton) {
+            this.ctaButton.addEventListener('click', () => this.copyCode());
+          }
+
+          document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.classList.contains('active')) {
+              this.closePopup();
+            }
+          });
+        }
+
+        schedulePopup() {
+          setTimeout(() => {
+            this.showPopup();
+          }, this.delay);
+        }
+
+        showPopup() {
+          this.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        }
+
+        closePopup() {
+          this.classList.remove('active');
+          document.body.style.overflow = '';
+          this.markAsShown();
+        }
+
+        copyCode() {
+          if (!this.discountCode) return;
+
+          navigator.clipboard.writeText(this.discountCode).then(() => {
+            this.confirmation.classList.add('visible');
+            setTimeout(() => {
+              this.confirmation.classList.remove('visible');
+            }, 2000);
+          }).catch(() => {
+            const textArea = document.createElement('textarea');
+            textArea.value = this.discountCode;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+              document.execCommand('copy');
+              this.confirmation.classList.add('visible');
+              setTimeout(() => {
+                this.confirmation.classList.remove('visible');
+              }, 2000);
+            } catch (err) {
+              console.error('Failed to copy code');
+            }
+            document.body.removeChild(textArea);
+          });
+        }
+      }
+
+      customElements.define('discount-popup-{{ ai_gen_id }}', DiscountPopup{{ ai_gen_id }});
+    })();
+  </script>
+{% endif %}
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Discount popup",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Popup settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "popup_enabled",
+      "label": "Enable popup",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "popup_delay",
+      "label": "Delay before showing",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "s",
+      "default": 3
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "popup_heading",
+      "label": "Heading",
+      "default": "Exclusive offer"
+    },
+    {
+      "type": "textarea",
+      "id": "popup_subheading",
+      "label": "Subheading",
+      "default": "Use this code at checkout for a special discount on your first order"
+    },
+    {
+      "type": "text",
+      "id": "discount_code",
+      "label": "Discount code",
+      "default": "WELCOME10"
+    },
+    {
+      "type": "text",
+      "id": "cta_button_label",
+      "label": "Button label",
+      "default": "Copy code"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 60
+    },
+    {
+      "type": "color",
+      "id": "popup_background_color",
+      "label": "Popup background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "popup_text_color",
+      "label": "Text color",
+      "default": "#121212"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Discount popup"
+    }
+  ]
+}
 {% endschema %}
