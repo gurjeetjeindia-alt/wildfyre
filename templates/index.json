@@ -261,6 +261,31 @@
         "ai_gen_block_00b6f36_BawBe6"
       ],
       "settings": {}
+    },
+    "17845686348854efd1": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_cd4f803_F8mKfC": {
+          "type": "ai_gen_block_cd4f803",
+          "settings": {
+            "popup_enabled": true,
+            "popup_delay": 3,
+            "popup_heading": "Exclusive offer",
+            "popup_subheading": "Use this code at checkout for a special discount on your first order",
+            "discount_code": "WELCOME10",
+            "cta_button_label": "Copy code",
+            "overlay_color": "#000000",
+            "overlay_opacity": 60,
+            "popup_background_color": "#ffffff",
+            "popup_text_color": "#121212"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_cd4f803_F8mKfC"
+      ],
+      "settings": {}
     }
   },
   "order": [
@@ -273,6 +298,7 @@
     "slideshow_pBUmHk",
     "1783755980e5fcd4a4",
     "custom_liquid_hMTQRi",
-    "178385716416096ac0"
+    "178385716416096ac0",
+    "17845686348854efd1"
   ]
 }
