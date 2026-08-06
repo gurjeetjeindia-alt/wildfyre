@@ -99,25 +99,57 @@
     "1784011241d29dbaf9": {
       "type": "_blocks",
       "blocks": {
-        "dossier_reviews_EKijwX": {
-          "type": "dossier-reviews",
-          "name": "Dossier Reviews",
+        "ai_gen_block_bbfb264_waEVRD": {
+          "type": "ai_gen_block_bbfb264",
+          "name": "Dossier reviews",
           "settings": {
+            "section_title": "Customer reviews",
             "desktop_width_percent": 100,
-            "section_padding": 60,
+            "heading_font": "assistant_n4",
+            "body_font": "assistant_n4",
+            "title_size": 32,
+            "letter_spacing": 1,
+            "text_transform": "uppercase",
             "background_color": "#ffffff",
-            "section_title": "Customer Reviews",
-            "title_size": 36,
-            "initial_review_count": 3,
-            "brand_name": "Wildfyre",
-            "brand_email": "support@wildfyre.com",
-            "button_text": "See All Reviews"
+            "text_color": "#121212",
+            "heading_color": "#121212",
+            "muted_text_color": "#666666",
+            "border_color": "#e0e0e0",
+            "star_fill_color": "#121212",
+            "star_empty_color": "#e0e0e0",
+            "bar_background": "#f3f3f3",
+            "bar_fill_color": "#121212",
+            "button_background": "#121212",
+            "button_text_color": "#ffffff",
+            "button_border_color": "#121212",
+            "button_hover_background": "#ffffff",
+            "button_hover_text": "#121212",
+            "card_background": "#ffffff",
+            "verified_background": "#f3f3f3",
+            "verified_text": "#121212",
+            "verified_border": "#e0e0e0",
+            "success_background": "#e8f5e9",
+            "success_text": "#2e7d32",
+            "success_border": "#4caf50",
+            "error_background": "#ffebee",
+            "error_text": "#c62828",
+            "error_border": "#ef5350",
+            "max_width": 1000,
+            "section_padding": 60,
+            "header_spacing": 40,
+            "title_margin": 20,
+            "summary_spacing": 40,
+            "controls_spacing": 30,
+            "card_spacing": 30,
+            "card_padding": 30,
+            "modal_padding": 50,
+            "border_thickness": 1
           },
           "blocks": {}
         }
       },
       "block_order": [
-        "dossier_reviews_EKijwX"
+        "ai_gen_block_bbfb264_waEVRD"
       ],
       "settings": {}
     },

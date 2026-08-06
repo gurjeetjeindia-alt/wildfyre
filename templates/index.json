@@ -363,6 +363,56 @@
         "ai_gen_block_bbfb264_L7YrDc"
       ],
       "settings": {}
+    },
+    "178601718344242e31": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_f136347_R9dELU": {
+          "type": "ai_gen_block_f136347",
+          "settings": {
+            "section_title": "Reviews",
+            "write_review_text": "Write a review",
+            "desktop_width_percent": 100,
+            "max_width": 1200,
+            "section_padding": 60,
+            "horizontal_padding": 20,
+            "title_size": 28,
+            "title_transform": "uppercase",
+            "title_spacing": 20,
+            "summary_padding": 30,
+            "summary_spacing": 40,
+            "header_spacing": 30,
+            "card_padding": 30,
+            "card_spacing": 20,
+            "controls_spacing": 30,
+            "background_color": "#ffffff",
+            "text_color": "#121212",
+            "muted_text_color": "#666666",
+            "body_text_color": "#333333",
+            "border_color": "#e0e0e0",
+            "border_thickness": 1,
+            "card_bg_color": "#ffffff",
+            "star_color": "#121212",
+            "star_empty_color": "#e0e0e0",
+            "bar_bg_color": "#f0f0f0",
+            "bar_fill_color": "#121212",
+            "button_bg_color": "#121212",
+            "button_text_color": "#ffffff",
+            "button_border_color": "#121212",
+            "button_border_thickness": 1,
+            "button_hover_bg_color": "#333333",
+            "button_hover_text_color": "#ffffff",
+            "verified_bg_color": "#f0f0f0",
+            "verified_text_color": "#121212",
+            "error_color": "#d82c0d"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_f136347_R9dELU"
+      ],
+      "settings": {}
     }
   },
   "order": [
@@ -382,6 +432,7 @@
     "17845698177a26ada8",
     "blocks_9TpwGi",
     "178457054736523364",
-    "17860163234ddb7664"
+    "17860163234ddb7664",
+    "178601718344242e31"
   ]
 }
