@@ -101,7 +101,7 @@
       "blocks": {
         "ai_gen_block_bbfb264_waEVRD": {
           "type": "ai_gen_block_bbfb264",
-          "name": "Dossier reviews",
+          "name": "Dossier reviews asthetic",
           "settings": {
             "section_title": "Customer reviews",
             "desktop_width_percent": 100,
@@ -173,20 +173,6 @@
     },
     "1784305177cbb4cea1": {
       "type": "apps",
-      "blocks": {
-        "judge_me_reviews_review_widget_nN9d7N": {
-          "type": "shopify://apps/judge-me-reviews/blocks/review_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
-          "settings": {
-            "review_data": "sample_data",
-            "max_width": 1200,
-            "show_shop_reviews": false,
-            "empty_state": "empty_widget"
-          }
-        }
-      },
-      "block_order": [
-        "judge_me_reviews_review_widget_nN9d7N"
-      ],
       "settings": {
         "include_margins": true
       }
