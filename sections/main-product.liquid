@@ -766,12 +766,6 @@
                   </div>
                 </div>
 
-                
-
-                <p class="dossier-inspired">
-                  Inspired by <strong>{% if section.settings.inspired_by_brand != blank %}{{ section.settings.inspired_by_brand }}{% else %}MFK's{% endif %}</strong> {% if section.settings.inspired_by_name != blank %}{{ section.settings.inspired_by_name }}{% else %}Baccarat Rouge 540{% endif %}<br>
-                  (Retail price {% if section.settings.retail_price != blank %}${{ section.settings.retail_price }}{% else %}$665{% endif %})
-                </p>
               {%- when 'variant_picker' -%}
                 <div class="dossier-size-selector" {{ block.shopify_attributes }}>
                   <h3 class="dossier-size-label">Size</h3>
