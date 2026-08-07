@@ -577,373 +577,324 @@
 <div id="judgeme_product_reviews" class="judgeme-widget" data-product-id="{{ product.id }}" style="display: none;"></div>
 
 <script>
-  (function() {
-    // Initialize Judge.me Widget
-    if (typeof jdgm !== 'undefined') {
-      jdgm.init();
-    } else {
-      // Load Judge.me widget script
-      var script = document.createElement('script');
-      script.src = 'https://cdn.judge.me/widget.js';
-      script.async = true;
-      script.onload = function() {
-        if (typeof jdgm !== 'undefined') {
-          jdgm.init();
-        }
-      };
-      document.head.appendChild(script);
+document.addEventListener('DOMContentLoaded', function() {
+  // This is for a specific product ({{ product.id }})
+  // Reviews are loaded per product, not for the whole website
+  
+  var productId = {{ product.id | json }};
+  var apiToken = 'lE-kQ1qbvvxbIKiDqkDA30TGpPw';
+  var shopDomain = 'yj2f0t-t1.myshopify.com';
+  var privateApiToken = 'iklABK2zmVhlgPFwVNj3JpEgmeM';
+  
+  var reviews = [];
+  var currentSort = 'recent';
+  
+  // Get DOM elements
+  var reviewsList = document.getElementById('reviews-list-{{ ai_gen_id }}');
+  var avgRatingEl = document.getElementById('avg-rating-{{ ai_gen_id }}');
+  var avgStarsEl = document.getElementById('avg-stars-{{ ai_gen_id }}');
+  var totalCountEl = document.getElementById('total-count-{{ ai_gen_id }}');
+  var sortSelect = document.getElementById('sort-{{ ai_gen_id }}');
+  var writeReviewBtn = document.getElementById('write-review-btn-{{ ai_gen_id }}');
+  var modal = document.getElementById('review-modal-{{ ai_gen_id }}');
+  var modalClose = document.getElementById('modal-close-{{ ai_gen_id }}');
+  var reviewForm = document.getElementById('review-form-{{ ai_gen_id }}');
+  var starSelector = document.getElementById('star-selector-{{ ai_gen_id }}');
+  var ratingInput = document.getElementById('rating-input-{{ ai_gen_id }}');
+  var submitBtn = document.getElementById('submit-btn-{{ ai_gen_id }}');
+  var formMessage = document.getElementById('form-message-{{ ai_gen_id }}');
+  var ratingError = document.getElementById('rating-error-{{ ai_gen_id }}');
+  
+  // Check if elements exist
+  if (!reviewsList || !writeReviewBtn || !modal) {
+    console.error('Required elements not found');
+    return;
+  }
+  
+  // Render stars function
+  function renderStars(rating) {
+    var fullStars = Math.floor(rating);
+    var hasHalfStar = rating % 1 >= 0.5;
+    var starsHtml = '';
+    
+    for (var i = 0; i < fullStars; i++) {
+      starsHtml += '<svg width="16" height="16" viewBox="0 0 24 24" fill="{{ block.settings.star_fill_color }}" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
     }
-
-    // Custom review rendering with Judge.me data
-    function renderCustomReviews{{ ai_gen_id }}() {
-      const productId = {{ product.id | json }};
-      const reviewsList = document.getElementById('reviews-list-{{ ai_gen_id }}');
-      const avgRatingEl = document.getElementById('avg-rating-{{ ai_gen_id }}');
-      const avgStarsEl = document.getElementById('avg-stars-{{ ai_gen_id }}');
-      const totalCountEl = document.getElementById('total-count-{{ ai_gen_id }}');
-      const sortSelect = document.getElementById('sort-{{ ai_gen_id }}');
-      const writeReviewBtn = document.getElementById('write-review-btn-{{ ai_gen_id }}');
-      const modal = document.getElementById('review-modal-{{ ai_gen_id }}');
-      const modalClose = document.getElementById('modal-close-{{ ai_gen_id }}');
-      const reviewForm = document.getElementById('review-form-{{ ai_gen_id }}');
-      const starSelector = document.getElementById('star-selector-{{ ai_gen_id }}');
-      const ratingInput = document.getElementById('rating-input-{{ ai_gen_id }}');
-      const submitBtn = document.getElementById('submit-btn-{{ ai_gen_id }}');
-      const formMessage = document.getElementById('form-message-{{ ai_gen_id }}');
-      const ratingError = document.getElementById('rating-error-{{ ai_gen_id }}');
+    
+    if (hasHalfStar) {
+      starsHtml += '<svg width="16" height="16" viewBox="0 0 24 24" fill="{{ block.settings.star_fill_color }}" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="half-{{ ai_gen_id }}"><stop offset="50%" stop-color="{{ block.settings.star_fill_color }}"/><stop offset="50%" stop-color="{{ block.settings.star_empty_color }}"/></linearGradient></defs><path fill="url(#half-{{ ai_gen_id }})" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
+    }
+    
+    var emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+    for (var i = 0; i < emptyStars; i++) {
+      starsHtml += '<svg width="16" height="16" viewBox="0 0 24 24" fill="{{ block.settings.star_empty_color }}" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
+    }
+    
+    return starsHtml;
+  }
+  
+  // Escape HTML function
+  function escapeHtml(text) {
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+  
+  // Render reviews
+  function renderReviews() {
+    if (reviews.length === 0) {
+      reviewsList.innerHTML = '<div class="ai-reviews-empty-{{ ai_gen_id }}">No reviews yet. Be the first to write one!</div>';
+      return;
+    }
+    
+    var sortedReviews = reviews.slice();
+    
+    if (currentSort === 'highest') {
+      sortedReviews.sort(function(a, b) { return b.rating - a.rating; });
+    } else if (currentSort === 'lowest') {
+      sortedReviews.sort(function(a, b) { return a.rating - b.rating; });
+    } else {
+      sortedReviews.sort(function(a, b) { return new Date(b.created_at) - new Date(a.created_at); });
+    }
+    
+    reviewsList.innerHTML = sortedReviews.map(function(review) {
+      var date = new Date(review.created_at);
+      var formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      var reviewerName = review.reviewer && review.reviewer.name ? review.reviewer.name : (review.name || 'Anonymous');
+      var reviewTitle = review.title || '';
+      var reviewBody = review.body || review.content || '';
+      var verified = review.verified || review.verified_buyer || false;
       
-      let reviews = [];
-      let currentSort = 'recent';
-
-      // Function to render stars
-      function renderStars(rating) {
-        const fullStars = Math.floor(rating);
-        const hasHalfStar = rating % 1 >= 0.5;
-        let starsHtml = '';
-
-        for (let i = 0; i < fullStars; i++) {
-          starsHtml += `<svg width="16" height="16" viewBox="0 0 24 24" fill="{{ block.settings.star_fill_color }}" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
-        }
-
-        if (hasHalfStar) {
-          starsHtml += `<svg width="16" height="16" viewBox="0 0 24 24" fill="{{ block.settings.star_fill_color }}" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="half-{{ ai_gen_id }}"><stop offset="50%" stop-color="{{ block.settings.star_fill_color }}"/><stop offset="50%" stop-color="{{ block.settings.star_empty_color }}"/></linearGradient></defs><path fill="url(#half-{{ ai_gen_id }})" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
-        }
-
-        const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-        for (let i = 0; i < emptyStars; i++) {
-          starsHtml += `<svg width="16" height="16" viewBox="0 0 24 24" fill="{{ block.settings.star_empty_color }}" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
-        }
-
-        return starsHtml;
+      return '<div class="ai-reviews-card-{{ ai_gen_id }}">' +
+        '<div class="ai-reviews-card-header-{{ ai_gen_id }}">' +
+          '<div class="ai-reviews-card-stars-{{ ai_gen_id }}">' + renderStars(review.rating) + '</div>' +
+          '<div class="ai-reviews-card-date-{{ ai_gen_id }}">' + formattedDate + '</div>' +
+        '</div>' +
+        (reviewTitle ? '<h3 class="ai-reviews-card-title-{{ ai_gen_id }}">' + escapeHtml(reviewTitle) + '</h3>' : '') +
+        '<div class="ai-reviews-card-body-{{ ai_gen_id }}">' + escapeHtml(reviewBody) + '</div>' +
+        '<div class="ai-reviews-card-footer-{{ ai_gen_id }}">' +
+          '<div class="ai-reviews-card-author-{{ ai_gen_id }}">' + escapeHtml(reviewerName) + '</div>' +
+          (verified ? '<span class="ai-reviews-verified-badge-{{ ai_gen_id }}">Verified buyer</span>' : '') +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+  
+  // Render summary
+  function renderSummary() {
+    if (reviews.length === 0) {
+      avgRatingEl.textContent = '—';
+      avgStarsEl.innerHTML = '';
+      totalCountEl.textContent = 'No reviews yet';
+      return;
+    }
+    
+    var totalRating = reviews.reduce(function(sum, review) { return sum + (review.rating || 0); }, 0);
+    var avgRating = (totalRating / reviews.length).toFixed(1);
+    
+    avgRatingEl.textContent = avgRating;
+    avgStarsEl.innerHTML = renderStars(parseFloat(avgRating));
+    totalCountEl.textContent = reviews.length + ' ' + (reviews.length === 1 ? 'review' : 'reviews');
+    
+    var breakdown = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+    reviews.forEach(function(review) {
+      var rating = review.rating || 0;
+      if (rating >= 1 && rating <= 5) {
+        breakdown[rating]++;
       }
-
-      // Function to escape HTML
-      function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-      }
-
-      // Render reviews
-      function renderReviews() {
-        if (reviews.length === 0) {
-          reviewsList.innerHTML = `<div class="ai-reviews-empty-{{ ai_gen_id }}">No reviews yet. Be the first to write one!</div>`;
-          return;
+    });
+    
+    for (var i = 1; i <= 5; i++) {
+      var percentage = reviews.length > 0 ? (breakdown[i] / reviews.length) * 100 : 0;
+      var barEl = document.getElementById('bar-' + i + '-{{ ai_gen_id }}');
+      var countEl = document.getElementById('count-' + i + '-{{ ai_gen_id }}');
+      
+      if (barEl) barEl.style.width = percentage + '%';
+      if (countEl) countEl.textContent = breakdown[i];
+    }
+  }
+  
+  // Fetch reviews
+  function fetchReviews() {
+    reviewsList.innerHTML = '<div class="ai-reviews-loading-{{ ai_gen_id }}">Loading reviews...</div>';
+    
+    var url = 'https://judge.me/api/v1/reviews?api_token=' + apiToken + '&shop_domain=' + shopDomain + '&product_id=' + productId;
+    
+    fetch(url)
+      .then(function(response) {
+        if (!response.ok) {
+          throw new Error('Failed to fetch reviews');
         }
-
-        let sortedReviews = [...reviews];
-        switch (currentSort) {
-          case 'highest':
-            sortedReviews.sort((a, b) => b.rating - a.rating);
-            break;
-          case 'lowest':
-            sortedReviews.sort((a, b) => a.rating - b.rating);
-            break;
-          case 'recent':
-          default:
-            sortedReviews.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-        }
-
-        reviewsList.innerHTML = sortedReviews.map((review) => {
-          const date = new Date(review.created_at);
-          const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-          const reviewerName = review.reviewer?.name || review.name || 'Anonymous';
-          const reviewTitle = review.title || '';
-          const reviewBody = review.body || review.content || '';
-          const verified = review.verified || review.verified_buyer || false;
-
-          return `
-            <div class="ai-reviews-card-{{ ai_gen_id }}">
-              <div class="ai-reviews-card-header-{{ ai_gen_id }}">
-                <div class="ai-reviews-card-stars-{{ ai_gen_id }}">
-                  ${renderStars(review.rating)}
-                </div>
-                <div class="ai-reviews-card-date-{{ ai_gen_id }}">${formattedDate}</div>
-              </div>
-              ${reviewTitle ? `<h3 class="ai-reviews-card-title-{{ ai_gen_id }}">${escapeHtml(reviewTitle)}</h3>` : ''}
-              <div class="ai-reviews-card-body-{{ ai_gen_id }}">${escapeHtml(reviewBody)}</div>
-              <div class="ai-reviews-card-footer-{{ ai_gen_id }}">
-                <div class="ai-reviews-card-author-{{ ai_gen_id }}">${escapeHtml(reviewerName)}</div>
-                ${verified ? `<span class="ai-reviews-verified-badge-{{ ai_gen_id }}">Verified buyer</span>` : ''}
-              </div>
-            </div>
-          `;
-        }).join('');
+        return response.json();
+      })
+      .then(function(data) {
+        reviews = data.reviews || [];
+        renderSummary();
+        renderReviews();
+      })
+      .catch(function(error) {
+        console.error('Error fetching reviews:', error);
+        reviewsList.innerHTML = '<div class="ai-reviews-error-{{ ai_gen_id }}">Unable to load reviews. Please try again later.</div>';
+      });
+  }
+  
+  // Modal functions
+  function openModal() {
+    modal.classList.add('active');
+    formMessage.style.display = 'none';
+    ratingError.style.display = 'none';
+    document.body.style.overflow = 'hidden';
+  }
+  
+  function closeModal() {
+    modal.classList.remove('active');
+    reviewForm.reset();
+    setRating(0);
+    formMessage.style.display = 'none';
+    ratingError.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+  
+  // Star rating functions
+  function setRating(value) {
+    ratingInput.value = value;
+    var starBtns = starSelector.querySelectorAll('[data-star-value]');
+    starBtns.forEach(function(btn) {
+      var btnValue = parseInt(btn.dataset.starValue);
+      if (btnValue <= value) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
       }
-
-      // Render summary
-      function renderSummary() {
-        if (reviews.length === 0) {
-          avgRatingEl.textContent = '—';
-          avgStarsEl.innerHTML = '';
-          totalCountEl.textContent = 'No reviews yet';
-          return;
-        }
-
-        const totalRating = reviews.reduce((sum, review) => sum + (review.rating || 0), 0);
-        const avgRating = (totalRating / reviews.length).toFixed(1);
-
-        avgRatingEl.textContent = avgRating;
-        avgStarsEl.innerHTML = renderStars(parseFloat(avgRating));
-        totalCountEl.textContent = `${reviews.length} ${reviews.length === 1 ? 'review' : 'reviews'}`;
-
-        const breakdown = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
-        reviews.forEach((review) => {
-          const rating = review.rating || 0;
-          if (rating >= 1 && rating <= 5) {
-            breakdown[rating]++;
-          }
-        });
-
-        for (let i = 1; i <= 5; i++) {
-          const percentage = reviews.length > 0 ? (breakdown[i] / reviews.length) * 100 : 0;
-          const barEl = document.getElementById(`bar-${i}-{{ ai_gen_id }}`);
-          const countEl = document.getElementById(`count-${i}-{{ ai_gen_id }}`);
-          
-          if (barEl) barEl.style.width = `${percentage}%`;
-          if (countEl) countEl.textContent = breakdown[i];
-        }
+    });
+    
+    if (ratingError) {
+      ratingError.style.display = 'none';
+    }
+  }
+  
+  // Form submission
+  function submitReview(e) {
+    e.preventDefault();
+    
+    var formData = new FormData(reviewForm);
+    var rating = formData.get('rating');
+    
+    // Validate rating
+    if (!rating || rating === '' || rating === '0') {
+      if (ratingError) {
+        ratingError.style.display = 'block';
       }
-
-      // Fetch reviews from Judge.me widget
-      function fetchReviews() {
-        // Try to get reviews from Judge.me widget
-        if (typeof jdgm !== 'undefined' && jdgm.getReviews) {
-          reviews = jdgm.getReviews(productId) || [];
-          renderSummary();
-          renderReviews();
-        } else {
-          // Fallback: use Judge.me public API (may have CORS issues)
-          const apiToken = 'lE-kQ1qbvvxbIKiDqkDA30TGpPw';
-          const shopDomain = 'yj2f0t-t1.myshopify.com';
-          
-          fetch(`https://judge.me/api/v1/reviews?api_token=${apiToken}&shop_domain=${shopDomain}&product_id=${productId}`)
-            .then(response => response.json())
-            .then(data => {
-              reviews = data.reviews || [];
-              renderSummary();
-              renderReviews();
-            })
-            .catch(error => {
-              console.error('Error fetching reviews:', error);
-              reviewsList.innerHTML = `<div class="ai-reviews-error-{{ ai_gen_id }}">Unable to load reviews. Please try again later.</div>`;
-            });
-        }
+      showFormMessage('Please select a rating', 'error');
+      return;
+    }
+    
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+    
+    var reviewData = {
+      shop_domain: shopDomain,
+      platform: 'shopify',
+      product_id: productId,
+      email: formData.get('email'),
+      name: formData.get('name'),
+      rating: parseInt(rating),
+      title: formData.get('title'),
+      body: formData.get('body')
+    };
+    
+    fetch('https://judge.me/api/v1/reviews?api_token=' + privateApiToken, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ review: reviewData })
+    })
+    .then(function(response) {
+      if (!response.ok) {
+        throw new Error('Failed to submit review');
       }
-
-      // Modal functions
-      function openModal() {
-        modal.classList.add('active');
-        formMessage.style.display = 'none';
-        ratingError.style.display = 'none';
-        document.body.style.overflow = 'hidden';
-      }
-
-      function closeModal() {
-        modal.classList.remove('active');
+      return response.json();
+    })
+    .then(function(result) {
+      if (result.review) {
+        showFormMessage('Thank you! Your review has been submitted and is pending approval.', 'success');
         reviewForm.reset();
         setRating(0);
-        formMessage.style.display = 'none';
-        ratingError.style.display = 'none';
-        document.body.style.overflow = '';
-      }
-
-      // Star rating functions
-      function setRating(value) {
-        ratingInput.value = value;
-        starSelector.querySelectorAll('[data-star-value]').forEach((btn) => {
-          const btnValue = parseInt(btn.dataset.starValue);
-          if (btnValue <= value) {
-            btn.classList.add('active');
-          } else {
-            btn.classList.remove('active');
-          }
-        });
         
-        if (ratingError) {
-          ratingError.style.display = 'none';
-        }
-      }
-
-      // Form submission via Shopify form proxy
-      async function submitReview(e) {
-        e.preventDefault();
-        
-        const formData = new FormData(reviewForm);
-        const rating = formData.get('rating');
-        
-        // Validate rating
-        if (!rating || rating === '' || rating === '0') {
-          if (ratingError) {
-            ratingError.style.display = 'block';
-          }
-          showFormMessage('Please select a rating', 'error');
-          return;
-        }
-
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Submitting...';
-
-        try {
-          // Use Shopify's contact form or app proxy to avoid CORS
-          // First try to submit via Judge.me using their public API through a proxy
-          const reviewData = {
-            shop_domain: 'yj2f0t-t1.myshopify.com',
-            platform: 'shopify',
-            product_id: productId,
-            email: formData.get('email'),
-            name: formData.get('name'),
-            rating: parseInt(rating),
-            title: formData.get('title'),
-            body: formData.get('body')
-          };
-
-          // Create a proxy URL through your Shopify theme app proxy
-          // This is a common pattern to avoid CORS issues
-          const proxyUrl = '/apps/judgeme-proxy/reviews';
-          
-          try {
-            const response = await fetch(proxyUrl, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ review: reviewData })
-            });
-
-            if (response.ok) {
-              const result = await response.json();
-              if (result.success) {
-                showFormMessage('Thank you! Your review has been submitted and is pending approval.', 'success');
-                reviewForm.reset();
-                setRating(0);
-                
-                setTimeout(() => {
-                  closeModal();
-                  fetchReviews();
-                }, 2000);
-                return;
-              }
-            }
-          } catch (proxyError) {
-            console.log('Proxy not available, trying direct submission');
-          }
-
-          // Fallback: Try direct submission (may have CORS issues)
-          const directResponse = await fetch(`https://judge.me/api/v1/reviews?api_token=iklABK2zmVhlgPFwVNj3JpEgmeM`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ review: reviewData })
-          });
-
-          if (directResponse.ok) {
-            const result = await directResponse.json();
-            if (result.review) {
-              showFormMessage('Thank you! Your review has been submitted and is pending approval.', 'success');
-              reviewForm.reset();
-              setRating(0);
-              
-              setTimeout(() => {
-                closeModal();
-                fetchReviews();
-              }, 2000);
-            } else {
-              throw new Error('Review submission failed');
-            }
-          } else {
-            throw new Error('Failed to submit review');
-          }
-        } catch (error) {
-          console.error('Review submission error:', error);
-          showFormMessage('Unable to submit review directly. Please contact us or try again later.', 'error');
-        } finally {
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Submit review';
-        }
-      }
-
-      function showFormMessage(message, type) {
-        formMessage.textContent = message;
-        formMessage.className = `ai-reviews-form-message-{{ ai_gen_id }} ${type}`;
-        formMessage.style.display = 'block';
-      }
-
-      // Event listeners
-      sortSelect.addEventListener('change', () => {
-        currentSort = sortSelect.value;
-        renderReviews();
-      });
-
-      writeReviewBtn.addEventListener('click', openModal);
-      modalClose.addEventListener('click', closeModal);
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
+        setTimeout(function() {
           closeModal();
-        }
-      });
-
-      starSelector.querySelectorAll('[data-star-value]').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const value = parseInt(btn.dataset.starValue);
-          setRating(value);
-        });
-        
-        btn.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            const value = parseInt(btn.dataset.starValue);
-            setRating(value);
-          }
-        });
-      });
-
-      reviewForm.addEventListener('submit', submitReview);
-
-      // Initialize
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', fetchReviews);
-      } else {
-        fetchReviews();
-      }
-
-      // Poll for Judge.me widget to be ready
-      let pollCount = 0;
-      const pollInterval = setInterval(() => {
-        pollCount++;
-        if (typeof jdgm !== 'undefined' && jdgm.getReviews) {
-          clearInterval(pollInterval);
           fetchReviews();
-        } else if (pollCount > 20) {
-          clearInterval(pollInterval);
+        }, 2000);
+      } else {
+        throw new Error('Review submission failed');
+      }
+    })
+    .catch(function(error) {
+      console.error('Review submission error:', error);
+      showFormMessage('Unable to submit review. Please try again later.', 'error');
+    })
+    .finally(function() {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit review';
+    });
+  }
+  
+  function showFormMessage(message, type) {
+    formMessage.textContent = message;
+    formMessage.className = 'ai-reviews-form-message-{{ ai_gen_id }} ' + type;
+    formMessage.style.display = 'block';
+  }
+  
+  // Event listeners
+  if (sortSelect) {
+    sortSelect.addEventListener('change', function() {
+      currentSort = sortSelect.value;
+      renderReviews();
+    });
+  }
+  
+  if (writeReviewBtn) {
+    writeReviewBtn.addEventListener('click', openModal);
+  }
+  
+  if (modalClose) {
+    modalClose.addEventListener('click', closeModal);
+  }
+  
+  if (modal) {
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+  }
+  
+  if (starSelector) {
+    var starBtns = starSelector.querySelectorAll('[data-star-value]');
+    starBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var value = parseInt(btn.dataset.starValue);
+        setRating(value);
+      });
+      
+      btn.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          var value = parseInt(btn.dataset.starValue);
+          setRating(value);
         }
-      }, 500);
-    }
-
-    // Initialize custom reviews
-    renderCustomReviews{{ ai_gen_id }}();
-  })();
+      });
+    });
+  }
+  
+  if (reviewForm) {
+    reviewForm.addEventListener('submit', submitReview);
+  }
+  
+  // Initial fetch
+  fetchReviews();
+});
 </script>
 
 {% schema %}
