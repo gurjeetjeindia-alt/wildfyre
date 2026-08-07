@@ -1,888 +1,231 @@
 {% doc %}
   @prompt
-    Build a custom product reviews section that uses the Judge.me JavaScript SDK to fetch and display reviews in a luxury editorial Dossier-style UI. Use the Judge.me public API token "lE-kQ1qbvvxbIKiDqkDA30TGpPw" and shop domain "yj2f0t-t1.myshopify.com". The block should: use the Judge.me Reviews Widget SDK (https://cdn.judge.me/widget.js) to load reviews without CORS issues, render review cards with star rating (SVG stars), reviewer name, review date, review title, review body, and verified badge if applicable. Include client-side sorting (most recent, highest rated, lowest rated). Include a "Write a Review" button that opens the Judge.me review form modal. Show aggregate rating summary at the top (average stars, total count, rating breakdown bars). Style everything in a minimal luxury editorial aesthetic — clean sans-serif typography, generous whitespace, thin borders, muted tones, no heavy shadows. Make it fully responsive and mobile-friendly. The product_id should be dynamically pulled from the Shopify product object using Liquid ({{ product.id }}).
+    Create a styled wrapper for the native Judge.me review widget that applies a luxury editorial Dossier-style aesthetic. The block should: include the native Judge.me widget, apply custom CSS to override Judge.me's default styling to match a luxury design (clean sans-serif typography, generous whitespace, thin borders, muted tones, no heavy shadows), use custom fonts (EB Garamond for headings, Inter for body), maintain all native Judge.me functionality (review submission, star ratings, sorting), and be fully responsive. The product_id should be dynamically pulled from the Shopify product object using Liquid ({{ product.id }}).
 {% enddoc %}
 {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
 
 {% style %}
-  .ai-reviews-dossier-{{ ai_gen_id }} {
-    display: block;
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  .dossier-reviews-wrapper-{{ ai_gen_id }} {
+    font-family: 'Inter', sans-serif;
+    color: #000;
+    background: #fff;
     width: {{ block.settings.desktop_width_percent }}%;
     max-width: 100%;
-    padding: {{ block.settings.section_padding }}px 0;
-    font-family: {{ block.settings.body_font.family }}, sans-serif;
-    color: {{ block.settings.text_color }};
-    background-color: {{ block.settings.background_color }};
-  }
-
-  .ai-reviews-container-{{ ai_gen_id }} {
-    max-width: {{ block.settings.max_width }}px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: {{ block.settings.section_padding }}px 20px;
   }
 
-  .ai-reviews-header-{{ ai_gen_id }} {
-    margin-bottom: {{ block.settings.header_spacing }}px;
-    padding-bottom: {{ block.settings.header_spacing }}px;
-    border-bottom: {{ block.settings.border_thickness }}px solid {{ block.settings.border_color }};
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-widget {
+    font-family: 'Inter', sans-serif !important;
   }
 
-  .ai-reviews-title-{{ ai_gen_id }} {
-    font-family: {{ block.settings.heading_font.family }}, sans-serif;
-    font-size: {{ block.settings.title_size }}px;
-    font-weight: 400;
-    letter-spacing: {{ block.settings.letter_spacing }}px;
-    text-transform: {{ block.settings.text_transform }};
-    margin: 0 0 {{ block.settings.title_margin }}px;
-    color: {{ block.settings.heading_color }};
+  /* Override Judge.me title styling */
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-widget__title {
+    font-family: 'EB Garamond', serif !important;
+    font-size: {{ block.settings.title_size }}px !important;
+    font-weight: 600 !important;
+    color: #000 !important;
+    letter-spacing: -0.02em !important;
+    text-transform: none !important;
+    margin-bottom: 2rem !important;
   }
 
-  .ai-reviews-summary-{{ ai_gen_id }} {
-    display: flex;
-    align-items: flex-start;
-    gap: 40px;
-    margin-bottom: {{ block.settings.summary_spacing }}px;
+  /* Override Judge.me star styling */
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-widget__summary-stars,
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-review__stars,
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-review-widget__stars {
+    color: #f59e0b !important;
   }
 
-  .ai-reviews-summary-left-{{ ai_gen_id }} {
-    flex-shrink: 0;
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-star {
+    color: #f59e0b !important;
   }
 
-  .ai-reviews-avg-rating-{{ ai_gen_id }} {
-    font-size: 48px;
-    font-weight: 300;
-    line-height: 1;
-    margin-bottom: 8px;
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-star.jdgm--off {
+    color: #e5e7eb !important;
   }
 
-  .ai-reviews-stars-display-{{ ai_gen_id }} {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 8px;
+  /* Override Judge.me review card styling */
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-review-card {
+    border: 1px solid #e5e7eb !important;
+    border-radius: 0 !important;
+    padding: 2rem !important;
+    margin-bottom: 1rem !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    transition: background 0.2s ease !important;
   }
 
-  .ai-reviews-total-count-{{ ai_gen_id }} {
-    font-size: 14px;
-    color: {{ block.settings.muted_text_color }};
-    letter-spacing: 0.5px;
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-review-card:hover {
+    background: #fafafa !important;
   }
 
-  .ai-reviews-breakdown-{{ ai_gen_id }} {
-    flex-grow: 1;
-    max-width: 400px;
+  /* Override Judge.me review header styling */
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-review__header {
+    margin-bottom: 1rem !important;
   }
 
-  .ai-reviews-breakdown-row-{{ ai_gen_id }} {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 8px;
+  /* Override Judge.me reviewer name styling */
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-review__author {
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 600 !important;
+    color: #000 !important;
+    font-size: 1rem !important;
   }
 
-  .ai-reviews-breakdown-label-{{ ai_gen_id }} {
-    font-size: 13px;
-    width: 50px;
-    color: {{ block.settings.muted_text_color }};
+  /* Override Judge.me review body styling */
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-review__body {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 0.9375rem !important;
+    line-height: 1.6 !important;
+    color: #374151 !important;
   }
 
-  .ai-reviews-breakdown-bar-{{ ai_gen_id }} {
-    flex-grow: 1;
-    height: 6px;
-    background-color: {{ block.settings.bar_background }};
-    border-radius: 3px;
-    overflow: hidden;
+  /* Override Judge.me review title styling */
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-review__title {
+    font-family: 'EB Garamond', serif !important;
+    font-size: 1.125rem !important;
+    font-weight: 600 !important;
+    color: #000 !important;
+    margin-bottom: 0.625rem !important;
   }
 
-  .ai-reviews-breakdown-fill-{{ ai_gen_id }} {
-    height: 100%;
-    background-color: {{ block.settings.bar_fill_color }};
-    transition: width 0.3s ease;
+  /* Override Judge.me verified badge styling */
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-review__verified-badge {
+    font-size: 0.6875rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    color: #2563eb !important;
+    border: 1.5px solid #2563eb !important;
+    padding: 0.125rem 0.4375rem !important;
+    letter-spacing: 0.05em !important;
+    border-radius: 2px !important;
+    background: transparent !important;
   }
 
-  .ai-reviews-breakdown-count-{{ ai_gen_id }} {
-    font-size: 13px;
-    width: 30px;
-    text-align: right;
-    color: {{ block.settings.muted_text_color }};
+  /* Override Judge.me write review button styling */
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-write-rev-btn {
+    background: #000 !important;
+    color: #fff !important;
+    border: 2px solid #000 !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 0.875rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.12em !important;
+    padding: 1rem 1.5rem !important;
+    transition: all 0.25s ease !important;
   }
 
-  .ai-reviews-controls-{{ ai_gen_id }} {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: {{ block.settings.controls_spacing }}px;
-    padding-bottom: {{ block.settings.controls_spacing }}px;
-    border-bottom: {{ block.settings.border_thickness }}px solid {{ block.settings.border_color }};
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-write-rev-btn:hover {
+    background: #fff !important;
+    color: #000 !important;
   }
 
-  .ai-reviews-sort-{{ ai_gen_id }} {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+  /* Override Judge.me sort dropdown styling */
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-sort-dropdown {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 0.9375rem !important;
+    color: #000 !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 0 !important;
+    background: #fff !important;
   }
 
-  .ai-reviews-sort-label-{{ ai_gen_id }} {
-    font-size: 13px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    color: {{ block.settings.muted_text_color }};
+  /* Override Judge.me pagination styling */
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-paginator {
+    margin-top: 2rem !important;
   }
 
-  .ai-reviews-sort-select-{{ ai_gen_id }} {
-    padding: 8px 12px;
-    border: {{ block.settings.border_thickness }}px solid {{ block.settings.border_color }};
-    background-color: transparent;
-    font-family: inherit;
-    font-size: 14px;
-    color: {{ block.settings.text_color }};
-    cursor: pointer;
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-paginator__page,
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-paginator__prev-page,
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-paginator__next-page {
+    font-family: 'Inter', sans-serif !important;
+    color: #000 !important;
+    border: 1px solid #e5e7eb !important;
+    background: #fff !important;
   }
 
-  .ai-reviews-write-btn-{{ ai_gen_id }} {
-    padding: 12px 32px;
-    background-color: {{ block.settings.button_background }};
-    color: {{ block.settings.button_text_color }};
-    border: {{ block.settings.border_thickness }}px solid {{ block.settings.button_border_color }};
-    font-family: inherit;
-    font-size: 13px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.3s ease;
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-paginator__page.jdgm--active,
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-paginator__page:hover {
+    background: #000 !important;
+    color: #fff !important;
   }
 
-  .ai-reviews-write-btn-{{ ai_gen_id }}:hover {
-    background-color: {{ block.settings.button_hover_background }};
-    color: {{ block.settings.button_hover_text }};
+  /* Override Judge.me modal styling */
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-modal {
+    font-family: 'Inter', sans-serif !important;
+    border-radius: 0 !important;
+    border: 1px solid #e5e7eb !important;
   }
 
-  .ai-reviews-list-{{ ai_gen_id }} {
-    display: grid;
-    gap: {{ block.settings.card_spacing }}px;
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-modal__title {
+    font-family: 'EB Garamond', serif !important;
+    font-size: 1.5rem !important;
+    font-weight: 600 !important;
+    color: #000 !important;
   }
 
-  .ai-reviews-card-{{ ai_gen_id }} {
-    padding: {{ block.settings.card_padding }}px;
-    border: {{ block.settings.border_thickness }}px solid {{ block.settings.border_color }};
-    background-color: {{ block.settings.card_background }};
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-form__label {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 0.875rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    color: #000 !important;
   }
 
-  .ai-reviews-card-header-{{ ai_gen_id }} {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 16px;
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-form__input,
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-form__textarea {
+    font-family: 'Inter', sans-serif !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    color: #000 !important;
   }
 
-  .ai-reviews-card-stars-{{ ai_gen_id }} {
-    display: flex;
-    gap: 3px;
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-form__submit-btn {
+    background: #000 !important;
+    color: #fff !important;
+    border: 2px solid #000 !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 0.875rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.12em !important;
   }
 
-  .ai-reviews-card-date-{{ ai_gen_id }} {
-    font-size: 12px;
-    color: {{ block.settings.muted_text_color }};
-    letter-spacing: 0.5px;
+  .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-form__submit-btn:hover {
+    background: #fff !important;
+    color: #000 !important;
   }
 
-  .ai-reviews-card-title-{{ ai_gen_id }} {
-    font-size: 16px;
-    font-weight: 500;
-    margin: 0 0 12px;
-    color: {{ block.settings.heading_color }};
-  }
-
-  .ai-reviews-card-body-{{ ai_gen_id }} {
-    font-size: 14px;
-    line-height: 1.6;
-    margin-bottom: 12px;
-    color: {{ block.settings.text_color }};
-  }
-
-  .ai-reviews-card-footer-{{ ai_gen_id }} {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 13px;
-  }
-
-  .ai-reviews-card-author-{{ ai_gen_id }} {
-    color: {{ block.settings.text_color }};
-  }
-
-  .ai-reviews-verified-badge-{{ ai_gen_id }} {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 10px;
-    background-color: {{ block.settings.verified_background }};
-    color: {{ block.settings.verified_text }};
-    font-size: 11px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    border: {{ block.settings.border_thickness }}px solid {{ block.settings.verified_border }};
-  }
-
-  .ai-reviews-loading-{{ ai_gen_id }},
-  .ai-reviews-error-{{ ai_gen_id }},
-  .ai-reviews-empty-{{ ai_gen_id }} {
-    text-align: center;
-    padding: 60px 20px;
-    font-size: 14px;
-    color: {{ block.settings.muted_text_color }};
-  }
-
-  .ai-reviews-modal-{{ ai_gen_id }} {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    z-index: 9999;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-
-  .ai-reviews-modal-{{ ai_gen_id }}.active {
-    display: flex;
-  }
-
-  .ai-reviews-modal-content-{{ ai_gen_id }} {
-    background-color: {{ block.settings.background_color }};
-    max-width: 600px;
-    width: 100%;
-    max-height: 90vh;
-    overflow-y: auto;
-    padding: {{ block.settings.modal_padding }}px;
-    border: {{ block.settings.border_thickness }}px solid {{ block.settings.border_color }};
-  }
-
-  .ai-reviews-modal-header-{{ ai_gen_id }} {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 32px;
-    padding-bottom: 20px;
-    border-bottom: {{ block.settings.border_thickness }}px solid {{ block.settings.border_color }};
-  }
-
-  .ai-reviews-modal-title-{{ ai_gen_id }} {
-    font-family: {{ block.settings.heading_font.family }}, sans-serif;
-    font-size: 24px;
-    font-weight: 400;
-    letter-spacing: {{ block.settings.letter_spacing }}px;
-    text-transform: {{ block.settings.text_transform }};
-    margin: 0;
-    color: {{ block.settings.heading_color }};
-  }
-
-  .ai-reviews-modal-close-{{ ai_gen_id }} {
-    background: none;
-    border: none;
-    font-size: 28px;
-    cursor: pointer;
-    color: {{ block.settings.text_color }};
-    padding: 0;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .ai-reviews-form-{{ ai_gen_id }} {
-    display: grid;
-    gap: 24px;
-  }
-
-  .ai-reviews-form-group-{{ ai_gen_id }} {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .ai-reviews-form-label-{{ ai_gen_id }} {
-    font-size: 13px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    color: {{ block.settings.text_color }};
-  }
-
-  .ai-reviews-form-input-{{ ai_gen_id }},
-  .ai-reviews-form-textarea-{{ ai_gen_id }} {
-    padding: 12px 16px;
-    border: {{ block.settings.border_thickness }}px solid {{ block.settings.border_color }};
-    background-color: transparent;
-    font-family: inherit;
-    font-size: 14px;
-    color: {{ block.settings.text_color }};
-  }
-
-  .ai-reviews-form-textarea-{{ ai_gen_id }} {
-    min-height: 120px;
-    resize: vertical;
-  }
-
-  .ai-reviews-star-selector-{{ ai_gen_id }} {
-    display: flex;
-    gap: 8px;
-  }
-
-  .ai-reviews-star-btn-{{ ai_gen_id }} {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    width: 32px;
-    height: 32px;
-    transition: transform 0.2s ease;
-  }
-
-  .ai-reviews-star-btn-{{ ai_gen_id }}:hover {
-    transform: scale(1.1);
-  }
-
-  .ai-reviews-star-btn-{{ ai_gen_id }}:focus {
-    outline: 2px solid {{ block.settings.border_color }};
-    outline-offset: 2px;
-    border-radius: 4px;
-  }
-
-  .ai-reviews-star-btn-{{ ai_gen_id }} svg {
-    width: 100%;
-    height: 100%;
-    fill: {{ block.settings.star_empty_color }};
-    transition: fill 0.2s ease;
-  }
-
-  .ai-reviews-star-btn-{{ ai_gen_id }}:hover svg {
-    fill: {{ block.settings.star_fill_color }};
-  }
-
-  .ai-reviews-star-btn-{{ ai_gen_id }}.active svg {
-    fill: {{ block.settings.star_fill_color }};
-  }
-
-  .ai-reviews-form-submit-{{ ai_gen_id }} {
-    padding: 14px 40px;
-    background-color: {{ block.settings.button_background }};
-    color: {{ block.settings.button_text_color }};
-    border: {{ block.settings.border_thickness }}px solid {{ block.settings.button_border_color }};
-    font-family: inherit;
-    font-size: 13px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    justify-self: start;
-  }
-
-  .ai-reviews-form-submit-{{ ai_gen_id }}:hover {
-    background-color: {{ block.settings.button_hover_background }};
-    color: {{ block.settings.button_hover_text }};
-  }
-
-  .ai-reviews-form-submit-{{ ai_gen_id }}:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .ai-reviews-form-message-{{ ai_gen_id }} {
-    padding: 12px 16px;
-    font-size: 14px;
-    border: {{ block.settings.border_thickness }}px solid;
-  }
-
-  .ai-reviews-form-message-{{ ai_gen_id }}.success {
-    background-color: {{ block.settings.success_background }};
-    color: {{ block.settings.success_text }};
-    border-color: {{ block.settings.success_border }};
-  }
-
-  .ai-reviews-form-message-{{ ai_gen_id }}.error {
-    background-color: {{ block.settings.error_background }};
-    color: {{ block.settings.error_text }};
-    border-color: {{ block.settings.error_border }};
-  }
-
-  .ai-reviews-rating-error-{{ ai_gen_id }} {
-    font-size: 12px;
-    color: {{ block.settings.error_text }};
-    margin-top: 4px;
-  }
-
+  /* Mobile responsive */
   @media screen and (max-width: 749px) {
-    .ai-reviews-dossier-{{ ai_gen_id }} {
-      width: 100%;
+    .dossier-reviews-wrapper-{{ ai_gen_id }} {
+      width: 100% !important;
+      padding: {{ block.settings.section_padding | times: 0.7 }}px 15px !important;
     }
 
-    .ai-reviews-summary-{{ ai_gen_id }} {
-      flex-direction: column;
-      gap: 24px;
+    .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-widget__title {
+      font-size: {{ block.settings.title_size | times: 0.7 }}px !important;
     }
 
-    .ai-reviews-breakdown-{{ ai_gen_id }} {
-      max-width: 100%;
-    }
-
-    .ai-reviews-controls-{{ ai_gen_id }} {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 16px;
-    }
-
-    .ai-reviews-sort-{{ ai_gen_id }} {
-      justify-content: space-between;
-    }
-
-    .ai-reviews-title-{{ ai_gen_id }} {
-      font-size: {{ block.settings.title_size | times: 0.8 }}px;
+    .dossier-reviews-wrapper-{{ ai_gen_id }} .jdgm-review-card {
+      padding: 1.5rem !important;
     }
   }
 {% endstyle %}
 
-<div class="ai-reviews-dossier-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
-  <div class="ai-reviews-container-{{ ai_gen_id }}">
-    <div class="ai-reviews-header-{{ ai_gen_id }}">
-      <h2 class="ai-reviews-title-{{ ai_gen_id }}">{{ block.settings.section_title }}</h2>
-      
-      <div class="ai-reviews-summary-{{ ai_gen_id }}">
-        <div class="ai-reviews-summary-left-{{ ai_gen_id }}">
-          <div class="ai-reviews-avg-rating-{{ ai_gen_id }}" id="avg-rating-{{ ai_gen_id }}">—</div>
-          <div class="ai-reviews-stars-display-{{ ai_gen_id }}" id="avg-stars-{{ ai_gen_id }}"></div>
-          <div class="ai-reviews-total-count-{{ ai_gen_id }}" id="total-count-{{ ai_gen_id }}">Loading reviews...</div>
-        </div>
-        
-        <div class="ai-reviews-breakdown-{{ ai_gen_id }}" id="breakdown-{{ ai_gen_id }}">
-          {% for i in (1..5) %}
-            {% assign star_num = 6 | minus: i %}
-            <div class="ai-reviews-breakdown-row-{{ ai_gen_id }}">
-              <div class="ai-reviews-breakdown-label-{{ ai_gen_id }}">{{ star_num }} stars</div>
-              <div class="ai-reviews-breakdown-bar-{{ ai_gen_id }}">
-                <div class="ai-reviews-breakdown-fill-{{ ai_gen_id }}" id="bar-{{ star_num }}-{{ ai_gen_id }}" style="width: 0%"></div>
-              </div>
-              <div class="ai-reviews-breakdown-count-{{ ai_gen_id }}" id="count-{{ star_num }}-{{ ai_gen_id }}">0</div>
-            </div>
-          {% endfor %}
-        </div>
-      </div>
-    </div>
-
-    <div class="ai-reviews-controls-{{ ai_gen_id }}">
-      <div class="ai-reviews-sort-{{ ai_gen_id }}">
-        <label class="ai-reviews-sort-label-{{ ai_gen_id }}" for="sort-{{ ai_gen_id }}">Sort by</label>
-        <select class="ai-reviews-sort-select-{{ ai_gen_id }}" id="sort-{{ ai_gen_id }}">
-          <option value="recent">Most recent</option>
-          <option value="highest">Highest rated</option>
-          <option value="lowest">Lowest rated</option>
-        </select>
-      </div>
-      
-      <button class="ai-reviews-write-btn-{{ ai_gen_id }}" id="write-review-btn-{{ ai_gen_id }}">
-        Write a review
-      </button>
-    </div>
-
-    <div class="ai-reviews-list-{{ ai_gen_id }}" id="reviews-list-{{ ai_gen_id }}">
-      <div class="ai-reviews-loading-{{ ai_gen_id }}">Loading reviews...</div>
-    </div>
-  </div>
-
-  <!-- Custom Review Modal -->
-  <div class="ai-reviews-modal-{{ ai_gen_id }}" id="review-modal-{{ ai_gen_id }}">
-    <div class="ai-reviews-modal-content-{{ ai_gen_id }}">
-      <div class="ai-reviews-modal-header-{{ ai_gen_id }}">
-        <h3 class="ai-reviews-modal-title-{{ ai_gen_id }}">Write a review</h3>
-        <button class="ai-reviews-modal-close-{{ ai_gen_id }}" id="modal-close-{{ ai_gen_id }}" aria-label="Close modal">×</button>
-      </div>
-
-      <form class="ai-reviews-form-{{ ai_gen_id }}" id="review-form-{{ ai_gen_id }}">
-        <div class="ai-reviews-form-group-{{ ai_gen_id }}">
-          <label class="ai-reviews-form-label-{{ ai_gen_id }}" for="review-name-{{ ai_gen_id }}">Name</label>
-          <input
-            type="text"
-            id="review-name-{{ ai_gen_id }}"
-            class="ai-reviews-form-input-{{ ai_gen_id }}"
-            name="name"
-            required
-          >
-        </div>
-
-        <div class="ai-reviews-form-group-{{ ai_gen_id }}">
-          <label class="ai-reviews-form-label-{{ ai_gen_id }}" for="review-email-{{ ai_gen_id }}">Email</label>
-          <input
-            type="email"
-            id="review-email-{{ ai_gen_id }}"
-            class="ai-reviews-form-input-{{ ai_gen_id }}"
-            name="email"
-            required
-          >
-        </div>
-
-        <div class="ai-reviews-form-group-{{ ai_gen_id }}">
-          <label class="ai-reviews-form-label-{{ ai_gen_id }}">Rating <span style="color: {{ block.settings.muted_text_color }};">(required)</span></label>
-          <div class="ai-reviews-star-selector-{{ ai_gen_id }}" id="star-selector-{{ ai_gen_id }}">
-            {% for i in (1..5) %}
-              <button type="button" class="ai-reviews-star-btn-{{ ai_gen_id }}" data-star-value="{{ i }}" tabindex="0" aria-label="{{ i }} star{{ i | pluralize }}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                </svg>
-              </button>
-            {% endfor %}
-          </div>
-          <input type="hidden" name="rating" id="rating-input-{{ ai_gen_id }}" value="" required>
-          <div class="ai-reviews-rating-error-{{ ai_gen_id }}" id="rating-error-{{ ai_gen_id }}" style="color: {{ block.settings.error_text }}; font-size: 12px; margin-top: 4px; display: none;">Please select a rating</div>
-        </div>
-
-        <div class="ai-reviews-form-group-{{ ai_gen_id }}">
-          <label class="ai-reviews-form-label-{{ ai_gen_id }}" for="review-title-{{ ai_gen_id }}">Review title</label>
-          <input
-            type="text"
-            id="review-title-{{ ai_gen_id }}"
-            class="ai-reviews-form-input-{{ ai_gen_id }}"
-            name="title"
-            required
-          >
-        </div>
-
-        <div class="ai-reviews-form-group-{{ ai_gen_id }}">
-          <label class="ai-reviews-form-label-{{ ai_gen_id }}" for="review-body-{{ ai_gen_id }}">Review</label>
-          <textarea
-            id="review-body-{{ ai_gen_id }}"
-            class="ai-reviews-form-textarea-{{ ai_gen_id }}"
-            name="body"
-            required
-          ></textarea>
-        </div>
-
-        <div class="ai-reviews-form-message-{{ ai_gen_id }}" id="form-message-{{ ai_gen_id }}" style="display: none;"></div>
-
-        <button type="submit" class="ai-reviews-form-submit-{{ ai_gen_id }}" id="submit-btn-{{ ai_gen_id }}">
-          Submit review
-        </button>
-      </form>
-    </div>
-  </div>
+<div class="dossier-reviews-wrapper-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <!-- Native Judge.me Widget -->
+  <div id="judgeme_product_reviews" class="jdgm-widget" data-product-id="{{ product.id }}"></div>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  // This is for a specific product ({{ product.id }})
-  // Reviews are loaded per product, not for the whole website
-  
-  var productId = {{ product.id | json }};
-  var apiToken = 'lE-kQ1qbvvxbIKiDqkDA30TGpPw';
-  var shopDomain = 'yj2f0t-t1.myshopify.com';
-  
-  var reviews = [];
-  var currentSort = 'recent';
-  
-  // Get DOM elements
-  var reviewsList = document.getElementById('reviews-list-{{ ai_gen_id }}');
-  var avgRatingEl = document.getElementById('avg-rating-{{ ai_gen_id }}');
-  var avgStarsEl = document.getElementById('avg-stars-{{ ai_gen_id }}');
-  var totalCountEl = document.getElementById('total-count-{{ ai_gen_id }}');
-  var sortSelect = document.getElementById('sort-{{ ai_gen_id }}');
-  var writeReviewBtn = document.getElementById('write-review-btn-{{ ai_gen_id }}');
-  var modal = document.getElementById('review-modal-{{ ai_gen_id }}');
-  var modalClose = document.getElementById('modal-close-{{ ai_gen_id }}');
-  var reviewForm = document.getElementById('review-form-{{ ai_gen_id }}');
-  var starSelector = document.getElementById('star-selector-{{ ai_gen_id }}');
-  var ratingInput = document.getElementById('rating-input-{{ ai_gen_id }}');
-  var submitBtn = document.getElementById('submit-btn-{{ ai_gen_id }}');
-  var formMessage = document.getElementById('form-message-{{ ai_gen_id }}');
-  var ratingError = document.getElementById('rating-error-{{ ai_gen_id }}');
-  
-  // Check if elements exist
-  if (!reviewsList || !writeReviewBtn || !modal) {
-    console.error('Required elements not found');
-    return;
-  }
-  
-  // Render stars function
-  function renderStars(rating) {
-    var fullStars = Math.floor(rating);
-    var hasHalfStar = rating % 1 >= 0.5;
-    var starsHtml = '';
-    
-    for (var i = 0; i < fullStars; i++) {
-      starsHtml += '<svg width="16" height="16" viewBox="0 0 24 24" fill="{{ block.settings.star_fill_color }}" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
-    }
-    
-    if (hasHalfStar) {
-      starsHtml += '<svg width="16" height="16" viewBox="0 0 24 24" fill="{{ block.settings.star_fill_color }}" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="half-{{ ai_gen_id }}"><stop offset="50%" stop-color="{{ block.settings.star_fill_color }}"/><stop offset="50%" stop-color="{{ block.settings.star_empty_color }}"/></linearGradient></defs><path fill="url(#half-{{ ai_gen_id }})" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
-    }
-    
-    var emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-    for (var i = 0; i < emptyStars; i++) {
-      starsHtml += '<svg width="16" height="16" viewBox="0 0 24 24" fill="{{ block.settings.star_empty_color }}" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
-    }
-    
-    return starsHtml;
-  }
-  
-  // Escape HTML function
-  function escapeHtml(text) {
-    var div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
-  
-  // Render reviews
-  function renderReviews() {
-    if (reviews.length === 0) {
-      reviewsList.innerHTML = '<div class="ai-reviews-empty-{{ ai_gen_id }}">No reviews yet. Be the first to write one!</div>';
-      return;
-    }
-    
-    var sortedReviews = reviews.slice();
-    
-    if (currentSort === 'highest') {
-      sortedReviews.sort(function(a, b) { return b.rating - a.rating; });
-    } else if (currentSort === 'lowest') {
-      sortedReviews.sort(function(a, b) { return a.rating - b.rating; });
-    } else {
-      sortedReviews.sort(function(a, b) { return new Date(b.created_at) - new Date(a.created_at); });
-    }
-    
-    reviewsList.innerHTML = sortedReviews.map(function(review) {
-      var date = new Date(review.created_at);
-      var formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-      var reviewerName = review.reviewer && review.reviewer.name ? review.reviewer.name : (review.name || 'Anonymous');
-      var reviewTitle = review.title || '';
-      var reviewBody = review.body || review.content || '';
-      var verified = review.verified || review.verified_buyer || false;
-      
-      return '<div class="ai-reviews-card-{{ ai_gen_id }}">' +
-        '<div class="ai-reviews-card-header-{{ ai_gen_id }}">' +
-          '<div class="ai-reviews-card-stars-{{ ai_gen_id }}">' + renderStars(review.rating) + '</div>' +
-          '<div class="ai-reviews-card-date-{{ ai_gen_id }}">' + formattedDate + '</div>' +
-        '</div>' +
-        (reviewTitle ? '<h3 class="ai-reviews-card-title-{{ ai_gen_id }}">' + escapeHtml(reviewTitle) + '</h3>' : '') +
-        '<div class="ai-reviews-card-body-{{ ai_gen_id }}">' + escapeHtml(reviewBody) + '</div>' +
-        '<div class="ai-reviews-card-footer-{{ ai_gen_id }}">' +
-          '<div class="ai-reviews-card-author-{{ ai_gen_id }}">' + escapeHtml(reviewerName) + '</div>' +
-          (verified ? '<span class="ai-reviews-verified-badge-{{ ai_gen_id }}">Verified buyer</span>' : '') +
-        '</div>' +
-      '</div>';
-    }).join('');
-  }
-  
-  // Render summary
-  function renderSummary() {
-    if (reviews.length === 0) {
-      avgRatingEl.textContent = '—';
-      avgStarsEl.innerHTML = '';
-      totalCountEl.textContent = 'No reviews yet';
-      return;
-    }
-    
-    var totalRating = reviews.reduce(function(sum, review) { return sum + (review.rating || 0); }, 0);
-    var avgRating = (totalRating / reviews.length).toFixed(1);
-    
-    avgRatingEl.textContent = avgRating;
-    avgStarsEl.innerHTML = renderStars(parseFloat(avgRating));
-    totalCountEl.textContent = reviews.length + ' ' + (reviews.length === 1 ? 'review' : 'reviews');
-    
-    var breakdown = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
-    reviews.forEach(function(review) {
-      var rating = review.rating || 0;
-      if (rating >= 1 && rating <= 5) {
-        breakdown[rating]++;
-      }
-    });
-    
-    for (var i = 1; i <= 5; i++) {
-      var percentage = reviews.length > 0 ? (breakdown[i] / reviews.length) * 100 : 0;
-      var barEl = document.getElementById('bar-' + i + '-{{ ai_gen_id }}');
-      var countEl = document.getElementById('count-' + i + '-{{ ai_gen_id }}');
-      
-      if (barEl) barEl.style.width = percentage + '%';
-      if (countEl) countEl.textContent = breakdown[i];
-    }
-  }
-  
-  // Fetch reviews from Judge.me API
-  function fetchReviews() {
-    reviewsList.innerHTML = '<div class="ai-reviews-loading-{{ ai_gen_id }}">Loading reviews...</div>';
-    
-    var url = 'https://judge.me/api/v1/reviews?api_token=' + apiToken + '&shop_domain=' + shopDomain + '&product_id=' + productId;
-    
-    fetch(url)
-      .then(function(response) {
-        if (!response.ok) {
-          throw new Error('Failed to fetch reviews');
-        }
-        return response.json();
-      })
-      .then(function(data) {
-        reviews = data.reviews || [];
-        renderSummary();
-        renderReviews();
-      })
-      .catch(function(error) {
-        console.error('Error fetching reviews:', error);
-        reviewsList.innerHTML = '<div class="ai-reviews-error-{{ ai_gen_id }}">Unable to load reviews. Please try again later.</div>';
-      });
-  }
-  
-  // Modal functions
-  function openModal() {
-    modal.classList.add('active');
-    formMessage.style.display = 'none';
-    ratingError.style.display = 'none';
-    document.body.style.overflow = 'hidden';
-  }
-  
-  function closeModal() {
-    modal.classList.remove('active');
-    reviewForm.reset();
-    setRating(0);
-    formMessage.style.display = 'none';
-    ratingError.style.display = 'none';
-    document.body.style.overflow = '';
-  }
-  
-  // Star rating functions
-  function setRating(value) {
-    ratingInput.value = value;
-    var starBtns = starSelector.querySelectorAll('[data-star-value]');
-    starBtns.forEach(function(btn) {
-      var btnValue = parseInt(btn.dataset.starValue);
-      if (btnValue <= value) {
-        btn.classList.add('active');
-      } else {
-        btn.classList.remove('active');
-      }
-    });
-    
-    if (ratingError) {
-      ratingError.style.display = 'none';
-    }
-  }
-  
-  // Submit review to Judge.me API with proper structure
-  function submitReview(e) {
-    e.preventDefault();
-    
-    var formData = new FormData(reviewForm);
-    var rating = formData.get('rating');
-    
-    // Validate rating
-    if (!rating || rating === '' || rating === '0') {
-      if (ratingError) {
-        ratingError.style.display = 'block';
-      }
-      showFormMessage('Please select a rating', 'error');
-      return;
-    }
-    
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting...';
-    
-    var reviewData = {
-      api_token: apiToken,
-      shop_domain: shopDomain,
-      platform: 'shopify',
-      id: productId,
-      email: formData.get('email'),
-      name: formData.get('name'),
-      rating: parseInt(rating),
-      title: formData.get('title'),
-      body: formData.get('body')
-    };
-    
-    console.log('Submitting review to Judge.me:', reviewData);
-    
-    fetch('https://judge.me/api/v1/reviews', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(reviewData)
-    })
-    .then(function(response) {
-      console.log('Response status:', response.status);
-      return response.json();
-    })
-    .then(function(data) {
-      console.log('Response data:', data);
-      
-      if (data.review) {
-        showFormMessage('Thank you! Your review has been submitted and is pending approval.', 'success');
-        reviewForm.reset();
-        setRating(0);
-        
-        setTimeout(function() {
-          closeModal();
-          fetchReviews();
-        }, 2000);
-      } else {
-        throw new Error('Review submission failed');
-      }
-    })
-    .catch(function(error) {
-      console.error('Review submission error:', error);
-      showFormMessage('Unable to submit review. Please try again later.', 'error');
-    })
-    .finally(function() {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Submit review';
-    });
-  }
-  
-  function showFormMessage(message, type) {
-    formMessage.textContent = message;
-    formMessage.className = 'ai-reviews-form-message-{{ ai_gen_id }} ' + type;
-    formMessage.style.display = 'block';
-  }
-  
-  // Event listeners
-  if (sortSelect) {
-    sortSelect.addEventListener('change', function() {
-      currentSort = sortSelect.value;
-      renderReviews();
-    });
-  }
-  
-  writeReviewBtn.addEventListener('click', openModal);
-  modalClose.addEventListener('click', closeModal);
-  modal.addEventListener('click', function(e) {
-    if (e.target === modal) {
-      closeModal();
-    }
-  });
-  
-  if (starSelector) {
-    var starBtns = starSelector.querySelectorAll('[data-star-value]');
-    starBtns.forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        var value = parseInt(btn.dataset.starValue);
-        setRating(value);
-      });
-      
-      btn.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          var value = parseInt(btn.dataset.starValue);
-          setRating(value);
-        }
-      });
-    });
-  }
-  
-  if (reviewForm) {
-    reviewForm.addEventListener('submit', submitReview);
-  }
-  
-  // Initial fetch
-  fetchReviews();
-});
-</script>
-
+<!-- Load Judge.me Widget Script -->
+<script src="https://cdn.judge.me/widget.js" async></script>
 {% schema %}
 {
   "name": "Dossier reviews",
@@ -890,13 +233,7 @@ document.addEventListener('DOMContentLoaded', function() {
   "settings": [
     {
       "type": "header",
-      "content": "Content"
-    },
-    {
-      "type": "text",
-      "id": "section_title",
-      "label": "Section title",
-      "default": "Customer reviews"
+      "content": "Layout"
     },
     {
       "type": "range",
@@ -907,236 +244,6 @@ document.addEventListener('DOMContentLoaded', function() {
       "step": 5,
       "unit": "%",
       "default": 100
-    },
-    {
-      "type": "header",
-      "content": "Typography"
-    },
-    {
-      "type": "font_picker",
-      "id": "heading_font",
-      "label": "Heading font",
-      "default": "assistant_n4"
-    },
-    {
-      "type": "font_picker",
-      "id": "body_font",
-      "label": "Body font",
-      "default": "assistant_n4"
-    },
-    {
-      "type": "range",
-      "id": "title_size",
-      "label": "Title size",
-      "min": 16,
-      "max": 48,
-      "step": 2,
-      "unit": "px",
-      "default": 32
-    },
-    {
-      "type": "range",
-      "id": "letter_spacing",
-      "label": "Letter spacing",
-      "min": 0,
-      "max": 5,
-      "step": 0.5,
-      "unit": "px",
-      "default": 1
-    },
-    {
-      "type": "select",
-      "id": "text_transform",
-      "label": "Text transform",
-      "options": [
-        { "value": "none", "label": "None" },
-        { "value": "uppercase", "label": "Uppercase" },
-        { "value": "lowercase", "label": "Lowercase" },
-        { "value": "capitalize", "label": "Capitalize" }
-      ],
-      "default": "uppercase"
-    },
-    {
-      "type": "header",
-      "content": "Colors"
-    },
-    {
-      "type": "color",
-      "id": "background_color",
-      "label": "Background",
-      "default": "#ffffff"
-    },
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "Text",
-      "default": "#121212"
-    },
-    {
-      "type": "color",
-      "id": "heading_color",
-      "label": "Headings",
-      "default": "#121212"
-    },
-    {
-      "type": "color",
-      "id": "muted_text_color",
-      "label": "Muted text",
-      "default": "#666666"
-    },
-    {
-      "type": "color",
-      "id": "border_color",
-      "label": "Borders",
-      "default": "#e0e0e0"
-    },
-    {
-      "type": "header",
-      "content": "Stars"
-    },
-    {
-      "type": "color",
-      "id": "star_fill_color",
-      "label": "Star fill",
-      "default": "#121212"
-    },
-    {
-      "type": "color",
-      "id": "star_empty_color",
-      "label": "Star empty",
-      "default": "#e0e0e0"
-    },
-    {
-      "type": "header",
-      "content": "Rating breakdown"
-    },
-    {
-      "type": "color",
-      "id": "bar_background",
-      "label": "Bar background",
-      "default": "#f3f3f3"
-    },
-    {
-      "type": "color",
-      "id": "bar_fill_color",
-      "label": "Bar fill",
-      "default": "#121212"
-    },
-    {
-      "type": "header",
-      "content": "Buttons"
-    },
-    {
-      "type": "color",
-      "id": "button_background",
-      "label": "Background",
-      "default": "#121212"
-    },
-    {
-      "type": "color",
-      "id": "button_text_color",
-      "label": "Text",
-      "default": "#ffffff"
-    },
-    {
-      "type": "color",
-      "id": "button_border_color",
-      "label": "Border",
-      "default": "#121212"
-    },
-    {
-      "type": "color",
-      "id": "button_hover_background",
-      "label": "Hover background",
-      "default": "#ffffff"
-    },
-    {
-      "type": "color",
-      "id": "button_hover_text",
-      "label": "Hover text",
-      "default": "#121212"
-    },
-    {
-      "type": "header",
-      "content": "Review cards"
-    },
-    {
-      "type": "color",
-      "id": "card_background",
-      "label": "Card background",
-      "default": "#ffffff"
-    },
-    {
-      "type": "color",
-      "id": "verified_background",
-      "label": "Verified badge background",
-      "default": "#f3f3f3"
-    },
-    {
-      "type": "color",
-      "id": "verified_text",
-      "label": "Verified badge text",
-      "default": "#121212"
-    },
-    {
-      "type": "color",
-      "id": "verified_border",
-      "label": "Verified badge border",
-      "default": "#e0e0e0"
-    },
-    {
-      "type": "header",
-      "content": "Form messages"
-    },
-    {
-      "type": "color",
-      "id": "success_background",
-      "label": "Success background",
-      "default": "#e8f5e9"
-    },
-    {
-      "type": "color",
-      "id": "success_text",
-      "label": "Success text",
-      "default": "#2e7d32"
-    },
-    {
-      "type": "color",
-      "id": "success_border",
-      "label": "Success border",
-      "default": "#4caf50"
-    },
-    {
-      "type": "color",
-      "id": "error_background",
-      "label": "Error background",
-      "default": "#ffebee"
-    },
-    {
-      "type": "color",
-      "id": "error_text",
-      "label": "Error text",
-      "default": "#c62828"
-    },
-    {
-      "type": "color",
-      "id": "error_border",
-      "label": "Error border",
-      "default": "#ef5350"
-    },
-    {
-      "type": "header",
-      "content": "Layout"
-    },
-    {
-      "type": "range",
-      "id": "max_width",
-      "label": "Max width",
-      "min": 600,
-      "max": 1400,
-      "step": 100,
-      "unit": "px",
-      "default": 1000
     },
     {
       "type": "range",
@@ -1150,83 +257,13 @@ document.addEventListener('DOMContentLoaded', function() {
     },
     {
       "type": "range",
-      "id": "header_spacing",
-      "label": "Header spacing",
-      "min": 20,
-      "max": 80,
-      "step": 10,
+      "id": "title_size",
+      "label": "Title size",
+      "min": 24,
+      "max": 48,
+      "step": 2,
       "unit": "px",
-      "default": 40
-    },
-    {
-      "type": "range",
-      "id": "title_margin",
-      "label": "Title margin",
-      "min": 10,
-      "max": 50,
-      "step": 5,
-      "unit": "px",
-      "default": 20
-    },
-    {
-      "type": "range",
-      "id": "summary_spacing",
-      "label": "Summary spacing",
-      "min": 20,
-      "max": 80,
-      "step": 10,
-      "unit": "px",
-      "default": 40
-    },
-    {
-      "type": "range",
-      "id": "controls_spacing",
-      "label": "Controls spacing",
-      "min": 10,
-      "max": 50,
-      "step": 5,
-      "unit": "px",
-      "default": 30
-    },
-    {
-      "type": "range",
-      "id": "card_spacing",
-      "label": "Card spacing",
-      "min": 10,
-      "max": 50,
-      "step": 5,
-      "unit": "px",
-      "default": 30
-    },
-    {
-      "type": "range",
-      "id": "card_padding",
-      "label": "Card padding",
-      "min": 10,
-      "max": 50,
-      "step": 5,
-      "unit": "px",
-      "default": 30
-    },
-    {
-      "type": "range",
-      "id": "modal_padding",
-      "label": "Modal padding",
-      "min": 20,
-      "max": 80,
-      "step": 10,
-      "unit": "px",
-      "default": 50
-    },
-    {
-      "type": "range",
-      "id": "border_thickness",
-      "label": "Border thickness",
-      "min": 0,
-      "max": 4,
-      "step": 1,
-      "unit": "px",
-      "default": 1
+      "default": 32
     }
   ],
   "presets": [
