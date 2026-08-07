@@ -773,7 +773,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   
-  // Form submission
+  // Form submission - redirect to Judge.me review page
   function submitReview(e) {
     e.preventDefault();
     
@@ -790,54 +790,27 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting...';
+    submitBtn.textContent = 'Redirecting to review form...';
     
-    var reviewData = {
-      shop_domain: shopDomain,
-      platform: 'shopify',
-      product_id: productId,
-      email: formData.get('email'),
-      name: formData.get('name'),
-      rating: parseInt(rating),
-      title: formData.get('title'),
-      body: formData.get('body')
-    };
+    // Construct Judge.me review URL
+    var judgeMeUrl = 'https://judge.me/reviews/new?shop_domain=' + shopDomain + 
+                     '&product_id=' + productId + 
+                     '&name=' + encodeURIComponent(formData.get('name')) +
+                     '&email=' + encodeURIComponent(formData.get('email')) +
+                     '&rating=' + rating +
+                     '&title=' + encodeURIComponent(formData.get('title')) +
+                     '&body=' + encodeURIComponent(formData.get('body'));
     
-    fetch('https://judge.me/api/v1/reviews?api_token=' + privateApiToken, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ review: reviewData })
-    })
-    .then(function(response) {
-      if (!response.ok) {
-        throw new Error('Failed to submit review');
-      }
-      return response.json();
-    })
-    .then(function(result) {
-      if (result.review) {
-        showFormMessage('Thank you! Your review has been submitted and is pending approval.', 'success');
-        reviewForm.reset();
-        setRating(0);
-        
-        setTimeout(function() {
-          closeModal();
-          fetchReviews();
-        }, 2000);
-      } else {
-        throw new Error('Review submission failed');
-      }
-    })
-    .catch(function(error) {
-      console.error('Review submission error:', error);
-      showFormMessage('Unable to submit review. Please try again later.', 'error');
-    })
-    .finally(function() {
+    showFormMessage('Redirecting to secure review form...', 'success');
+    
+    setTimeout(function() {
+      window.open(judgeMeUrl, '_blank');
+      closeModal();
+      reviewForm.reset();
+      setRating(0);
       submitBtn.disabled = false;
       submitBtn.textContent = 'Submit review';
-    });
+    }, 1500);
   }
   
   function showFormMessage(message, type) {
