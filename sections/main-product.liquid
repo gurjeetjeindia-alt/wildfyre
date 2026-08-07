@@ -288,6 +288,41 @@
       color: #9a3412;
     }
 
+    .dossier-product-highlights {
+      margin-bottom: 2.5rem;
+      padding: 1.25rem;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+    }
+
+    .dossier-highlight-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      color: #374151;
+      margin-bottom: 0.75rem;
+      line-height: 1.5;
+    }
+
+    .dossier-highlight-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .dossier-highlight-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.25rem;
+      height: 1.25rem;
+      background: #000;
+      color: #fff;
+      border-radius: 50%;
+      font-size: 0.75rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
     .dossier-add-to-cart {
       width: 100%;
       background: #000;
@@ -793,8 +828,23 @@
                 </div>
 
                 <div class="dossier-badges">
-                  <span class="dossier-badge gray">{{ section.settings.badge_crafted | default: 'Crafted in France' }}</span>
-                  <span class="dossier-badge orange">{{ section.settings.badge_scent_family | default: 'Scent Family: Warm' }}</span>
+                  <span class="dossier-badge gray">{{ section.settings.badge_crafted | default: 'Premium Quality' }}</span>
+                  <span class="dossier-badge orange">{{ section.settings.badge_scent_family | default: 'Long-lasting Fragrance' }}</span>
+                </div>
+
+                <div class="dossier-product-highlights">
+                  <p class="dossier-highlight-item">
+                    <span class="dossier-highlight-icon">✓</span>
+                    {{ section.settings.highlight_1 | default: 'Paraben-free formula' }}
+                  </p>
+                  <p class="dossier-highlight-item">
+                    <span class="dossier-highlight-icon">✓</span>
+                    {{ section.settings.highlight_2 | default: 'Cruelty-free production' }}
+                  </p>
+                  <p class="dossier-highlight-item">
+                    <span class="dossier-highlight-icon">✓</span>
+                    {{ section.settings.highlight_3 | default: 'Free shipping on orders over $50' }}
+                  </p>
                 </div>
 
               {%- when 'buy_buttons' -%}
@@ -1757,6 +1807,28 @@
       "id": "badge_scent_family",
       "label": "Scent Family Badge Text",
       "default": "Scent Family: Warm"
+    },
+    {
+      "type": "header",
+      "content": "Product Highlights"
+    },
+    {
+      "type": "text",
+      "id": "highlight_1",
+      "label": "Highlight 1",
+      "default": "Paraben-free formula"
+    },
+    {
+      "type": "text",
+      "id": "highlight_2",
+      "label": "Highlight 2",
+      "default": "Cruelty-free production"
+    },
+    {
+      "type": "text",
+      "id": "highlight_3",
+      "label": "Highlight 3",
+      "default": "Free shipping on orders over $50"
     },
     {
       "type": "text",
