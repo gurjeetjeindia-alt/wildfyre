@@ -232,186 +232,22 @@
     color: {{ block.settings.muted_text_color }};
   }
 
-  .ai-reviews-modal-{{ ai_gen_id }} {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    z-index: 9999;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
+  /* Hide Judge.me default widget but keep it functional */
+  .judgeme-widget {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
   }
-
-  .ai-reviews-modal-{{ ai_gen_id }}.active {
-    display: flex;
-  }
-
-  .ai-reviews-modal-content-{{ ai_gen_id }} {
-    background-color: {{ block.settings.background_color }};
-    max-width: 600px;
-    width: 100%;
-    max-height: 90vh;
-    overflow-y: auto;
-    padding: {{ block.settings.modal_padding }}px;
-    border: {{ block.settings.border_thickness }}px solid {{ block.settings.border_color }};
-  }
-
-  .ai-reviews-modal-header-{{ ai_gen_id }} {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 32px;
-    padding-bottom: 20px;
-    border-bottom: {{ block.settings.border_thickness }}px solid {{ block.settings.border_color }};
-  }
-
-  .ai-reviews-modal-title-{{ ai_gen_id }} {
-    font-family: {{ block.settings.heading_font.family }}, sans-serif;
-    font-size: 24px;
-    font-weight: 400;
-    letter-spacing: {{ block.settings.letter_spacing }}px;
-    text-transform: {{ block.settings.text_transform }};
-    margin: 0;
-    color: {{ block.settings.heading_color }};
-  }
-
-  .ai-reviews-modal-close-{{ ai_gen_id }} {
-    background: none;
-    border: none;
-    font-size: 28px;
-    cursor: pointer;
-    color: {{ block.settings.text_color }};
-    padding: 0;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .ai-reviews-form-{{ ai_gen_id }} {
-    display: grid;
-    gap: 24px;
-  }
-
-  .ai-reviews-form-group-{{ ai_gen_id }} {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .ai-reviews-form-label-{{ ai_gen_id }} {
-    font-size: 13px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    color: {{ block.settings.text_color }};
-  }
-
-  .ai-reviews-form-input-{{ ai_gen_id }},
-  .ai-reviews-form-textarea-{{ ai_gen_id }} {
-    padding: 12px 16px;
-    border: {{ block.settings.border_thickness }}px solid {{ block.settings.border_color }};
-    background-color: transparent;
-    font-family: inherit;
-    font-size: 14px;
-    color: {{ block.settings.text_color }};
-  }
-
-  .ai-reviews-form-textarea-{{ ai_gen_id }} {
-    min-height: 120px;
-    resize: vertical;
-  }
-
-  .ai-reviews-star-selector-{{ ai_gen_id }} {
-    display: flex;
-    gap: 8px;
-  }
-
-  .ai-reviews-star-btn-{{ ai_gen_id }} {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    width: 32px;
-    height: 32px;
-    transition: transform 0.2s ease;
-  }
-
-  .ai-reviews-star-btn-{{ ai_gen_id }}:hover {
-    transform: scale(1.1);
-  }
-
-  .ai-reviews-star-btn-{{ ai_gen_id }}:focus {
-    outline: 2px solid {{ block.settings.border_color }};
-    outline-offset: 2px;
-    border-radius: 4px;
-  }
-
-  .ai-reviews-star-btn-{{ ai_gen_id }} svg {
-    width: 100%;
-    height: 100%;
-    fill: {{ block.settings.star_empty_color }};
-    transition: fill 0.2s ease;
-  }
-
-  .ai-reviews-star-btn-{{ ai_gen_id }}:hover svg {
-    fill: {{ block.settings.star_fill_color }};
-  }
-
-  .ai-reviews-star-btn-{{ ai_gen_id }}.active svg {
-    fill: {{ block.settings.star_fill_color }};
-  }
-
-  .ai-reviews-form-submit-{{ ai_gen_id }} {
-    padding: 14px 40px;
-    background-color: {{ block.settings.button_background }};
-    color: {{ block.settings.button_text_color }};
-    border: {{ block.settings.border_thickness }}px solid {{ block.settings.button_border_color }};
-    font-family: inherit;
-    font-size: 13px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    justify-self: start;
-  }
-
-  .ai-reviews-form-submit-{{ ai_gen_id }}:hover {
-    background-color: {{ block.settings.button_hover_background }};
-    color: {{ block.settings.button_hover_text }};
-  }
-
-  .ai-reviews-form-submit-{{ ai_gen_id }}:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .ai-reviews-form-message-{{ ai_gen_id }} {
-    padding: 12px 16px;
-    font-size: 14px;
-    border: {{ block.settings.border_thickness }}px solid;
-  }
-
-  .ai-reviews-form-message-{{ ai_gen_id }}.success {
-    background-color: {{ block.settings.success_background }};
-    color: {{ block.settings.success_text }};
-    border-color: {{ block.settings.success_border }};
-  }
-
-  .ai-reviews-form-message-{{ ai_gen_id }}.error {
-    background-color: {{ block.settings.error_background }};
-    color: {{ block.settings.error_text }};
-    border-color: {{ block.settings.error_border }};
-  }
-
-  .ai-reviews-rating-error-{{ ai_gen_id }} {
-    font-size: 12px;
-    color: {{ block.settings.error_text }};
-    margin-top: 4px;
+  
+  /* Show Judge.me modal when active */
+  .judgeme-widget .jdgm-modal {
+    position: fixed !important;
+    z-index: 10000 !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
   }
 
   @media screen and (max-width: 749px) {
@@ -490,83 +326,11 @@
       <div class="ai-reviews-loading-{{ ai_gen_id }}">Loading reviews...</div>
     </div>
   </div>
-
-  <!-- Custom Review Modal -->
-  <div class="ai-reviews-modal-{{ ai_gen_id }}" id="review-modal-{{ ai_gen_id }}">
-    <div class="ai-reviews-modal-content-{{ ai_gen_id }}">
-      <div class="ai-reviews-modal-header-{{ ai_gen_id }}">
-        <h3 class="ai-reviews-modal-title-{{ ai_gen_id }}">Write a review</h3>
-        <button class="ai-reviews-modal-close-{{ ai_gen_id }}" id="modal-close-{{ ai_gen_id }}" aria-label="Close modal">×</button>
-      </div>
-
-      <form class="ai-reviews-form-{{ ai_gen_id }}" id="review-form-{{ ai_gen_id }}">
-        <div class="ai-reviews-form-group-{{ ai_gen_id }}">
-          <label class="ai-reviews-form-label-{{ ai_gen_id }}" for="review-name-{{ ai_gen_id }}">Name</label>
-          <input
-            type="text"
-            id="review-name-{{ ai_gen_id }}"
-            class="ai-reviews-form-input-{{ ai_gen_id }}"
-            name="name"
-            required
-          >
-        </div>
-
-        <div class="ai-reviews-form-group-{{ ai_gen_id }}">
-          <label class="ai-reviews-form-label-{{ ai_gen_id }}" for="review-email-{{ ai_gen_id }}">Email</label>
-          <input
-            type="email"
-            id="review-email-{{ ai_gen_id }}"
-            class="ai-reviews-form-input-{{ ai_gen_id }}"
-            name="email"
-            required
-          >
-        </div>
-
-        <div class="ai-reviews-form-group-{{ ai_gen_id }}">
-          <label class="ai-reviews-form-label-{{ ai_gen_id }}">Rating <span style="color: {{ block.settings.muted_text_color }};">(required)</span></label>
-          <div class="ai-reviews-star-selector-{{ ai_gen_id }}" id="star-selector-{{ ai_gen_id }}">
-            {% for i in (1..5) %}
-              <button type="button" class="ai-reviews-star-btn-{{ ai_gen_id }}" data-star-value="{{ i }}" tabindex="0" aria-label="{{ i }} star{{ i | pluralize }}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                </svg>
-              </button>
-            {% endfor %}
-          </div>
-          <input type="hidden" name="rating" id="rating-input-{{ ai_gen_id }}" value="" required>
-          <div class="ai-reviews-rating-error-{{ ai_gen_id }}" id="rating-error-{{ ai_gen_id }}" style="color: {{ block.settings.error_text }}; font-size: 12px; margin-top: 4px; display: none;">Please select a rating</div>
-        </div>
-
-        <div class="ai-reviews-form-group-{{ ai_gen_id }}">
-          <label class="ai-reviews-form-label-{{ ai_gen_id }}" for="review-title-{{ ai_gen_id }}">Review title</label>
-          <input
-            type="text"
-            id="review-title-{{ ai_gen_id }}"
-            class="ai-reviews-form-input-{{ ai_gen_id }}"
-            name="title"
-            required
-          >
-        </div>
-
-        <div class="ai-reviews-form-group-{{ ai_gen_id }}">
-          <label class="ai-reviews-form-label-{{ ai_gen_id }}" for="review-body-{{ ai_gen_id }}">Review</label>
-          <textarea
-            id="review-body-{{ ai_gen_id }}"
-            class="ai-reviews-form-textarea-{{ ai_gen_id }}"
-            name="body"
-            required
-          ></textarea>
-        </div>
-
-        <div class="ai-reviews-form-message-{{ ai_gen_id }}" id="form-message-{{ ai_gen_id }}" style="display: none;"></div>
-
-        <button type="submit" class="ai-reviews-form-submit-{{ ai_gen_id }}" id="submit-btn-{{ ai_gen_id }}">
-          Submit review
-        </button>
-      </form>
-    </div>
-  </div>
 </div>
+
+<!-- Judge.me Widget for form functionality -->
+<div id="judgeme_product_reviews" class="judgeme-widget" data-product-id="{{ product.id }}"></div>
+<script src="https://cdn.judge.me/widget.js" async></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -575,7 +339,6 @@ document.addEventListener('DOMContentLoaded', function() {
   
   var productId = {{ product.id | json }};
   var apiToken = 'lE-kQ1qbvvxbIKiDqkDA30TGpPw';
-  var privateApiToken = 'iklABK2zmVhlgPFwVNj3JpEgmeM';
   var shopDomain = 'yj2f0t-t1.myshopify.com';
   
   var reviews = [];
@@ -588,17 +351,9 @@ document.addEventListener('DOMContentLoaded', function() {
   var totalCountEl = document.getElementById('total-count-{{ ai_gen_id }}');
   var sortSelect = document.getElementById('sort-{{ ai_gen_id }}');
   var writeReviewBtn = document.getElementById('write-review-btn-{{ ai_gen_id }}');
-  var modal = document.getElementById('review-modal-{{ ai_gen_id }}');
-  var modalClose = document.getElementById('modal-close-{{ ai_gen_id }}');
-  var reviewForm = document.getElementById('review-form-{{ ai_gen_id }}');
-  var starSelector = document.getElementById('star-selector-{{ ai_gen_id }}');
-  var ratingInput = document.getElementById('rating-input-{{ ai_gen_id }}');
-  var submitBtn = document.getElementById('submit-btn-{{ ai_gen_id }}');
-  var formMessage = document.getElementById('form-message-{{ ai_gen_id }}');
-  var ratingError = document.getElementById('rating-error-{{ ai_gen_id }}');
   
   // Check if elements exist
-  if (!reviewsList || !writeReviewBtn || !modal) {
+  if (!reviewsList || !writeReviewBtn) {
     console.error('Required elements not found');
     return;
   }
@@ -730,108 +485,26 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   }
   
-  // Modal functions
-  function openModal() {
-    modal.classList.add('active');
-    formMessage.style.display = 'none';
-    ratingError.style.display = 'none';
-    document.body.style.overflow = 'hidden';
-  }
-  
-  function closeModal() {
-    modal.classList.remove('active');
-    reviewForm.reset();
-    setRating(0);
-    formMessage.style.display = 'none';
-    ratingError.style.display = 'none';
-    document.body.style.overflow = '';
-  }
-  
-  // Star rating functions
-  function setRating(value) {
-    ratingInput.value = value;
-    var starBtns = starSelector.querySelectorAll('[data-star-value]');
-    starBtns.forEach(function(btn) {
-      var btnValue = parseInt(btn.dataset.starValue);
-      if (btnValue <= value) {
-        btn.classList.add('active');
-      } else {
-        btn.classList.remove('active');
-      }
-    });
-    
-    if (ratingError) {
-      ratingError.style.display = 'none';
-    }
-  }
-  
-  // Submit review to Judge.me API using no-cors mode
-  function submitReview(e) {
-    e.preventDefault();
-    
-    var formData = new FormData(reviewForm);
-    var rating = formData.get('rating');
-    
-    // Validate rating
-    if (!rating || rating === '' || rating === '0') {
-      if (ratingError) {
-        ratingError.style.display = 'block';
-      }
-      showFormMessage('Please select a rating', 'error');
+  // Write review button - opens Judge.me widget form
+  writeReviewBtn.addEventListener('click', function() {
+    // Try to open Judge.me widget form
+    if (typeof jdgm !== 'undefined' && jdgm.openReviewForm) {
+      jdgm.openReviewForm(productId);
       return;
     }
     
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting...';
+    // Fallback: try to find and click Judge.me write review button
+    var judgemeWriteBtn = document.querySelector('.jdgm-write-review-btn');
+    if (judgemeWriteBtn) {
+      judgemeWriteBtn.click();
+      return;
+    }
     
-    var reviewData = {
-      shop_domain: shopDomain,
-      platform: 'shopify',
-      product_id: productId,
-      email: formData.get('email'),
-      name: formData.get('name'),
-      rating: parseInt(rating),
-      title: formData.get('title'),
-      body: formData.get('body')
-    };
-    
-    // Use no-cors mode to avoid CORS issues
-    fetch('https://judge.me/api/v1/reviews?api_token=' + privateApiToken, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ review: reviewData })
-    })
-    .then(function() {
-      // With no-cors, we can't read the response, but assume success
-      showFormMessage('Thank you! Your review has been submitted and is pending approval.', 'success');
-      reviewForm.reset();
-      setRating(0);
-      
-      setTimeout(function() {
-        closeModal();
-        fetchReviews();
-      }, 2000);
-    })
-    .catch(function(error) {
-      console.error('Review submission error:', error);
-      showFormMessage('Unable to submit review. Please try again later.', 'error');
-    })
-    .finally(function() {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Submit review';
-    });
-  }
+    // Last resort: alert user
+    alert('Review form is loading. Please try again in a moment or ensure Judge.me app is properly installed.');
+  });
   
-  function showFormMessage(message, type) {
-    formMessage.textContent = message;
-    formMessage.className = 'ai-reviews-form-message-{{ ai_gen_id }} ' + type;
-    formMessage.style.display = 'block';
-  }
-  
-  // Event listeners
+  // Sort functionality
   if (sortSelect) {
     sortSelect.addEventListener('change', function() {
       currentSort = sortSelect.value;
@@ -839,38 +512,19 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  writeReviewBtn.addEventListener('click', openModal);
-  modalClose.addEventListener('click', closeModal);
-  modal.addEventListener('click', function(e) {
-    if (e.target === modal) {
-      closeModal();
-    }
-  });
-  
-  if (starSelector) {
-    var starBtns = starSelector.querySelectorAll('[data-star-value]');
-    starBtns.forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        var value = parseInt(btn.dataset.starValue);
-        setRating(value);
-      });
-      
-      btn.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          var value = parseInt(btn.dataset.starValue);
-          setRating(value);
-        }
-      });
-    });
-  }
-  
-  if (reviewForm) {
-    reviewForm.addEventListener('submit', submitReview);
-  }
-  
   // Initial fetch
   fetchReviews();
+  
+  // Poll for Judge.me widget to be ready
+  var pollCount = 0;
+  var pollInterval = setInterval(function() {
+    pollCount++;
+    if (typeof jdgm !== 'undefined' && jdgm.openReviewForm) {
+      clearInterval(pollInterval);
+    } else if (pollCount > 20) {
+      clearInterval(pollInterval);
+    }
+  }, 500);
 });
 </script>
 
