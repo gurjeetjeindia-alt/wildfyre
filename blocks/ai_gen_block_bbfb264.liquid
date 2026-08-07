@@ -1,6 +1,6 @@
 {% doc %}
   @prompt
-    Build a custom product reviews section that fetches reviews from the Judge.me REST API and renders them in a luxury editorial Dossier-style UI. Use the Judge.me public API token "lE-kQ1qbvvxbIKiDqkDA30TGpPw" and shop domain "yj2f0t-t1.myshopify.com". The block should: fetch reviews via JavaScript using the Judge.me API endpoint (https://judge.me/api/v1/reviews?api_token=TOKEN&shop_domain=DOMAIN&product_id=PRODUCT_ID), render review cards with star rating (SVG stars), reviewer name, review date, review title, review body, and verified badge if applicable. Include client-side sorting (most recent, highest rated, lowest rated). Include a "Write a Review" button that opens a modal form with fields for name, email, rating (star selector), title, and body, which submits to the Judge.me review submission API (POST https://judge.me/api/v1/reviews). Show aggregate rating summary at the top (average stars, total count, rating breakdown bars). Style everything in a minimal luxury editorial aesthetic — clean sans-serif typography, generous whitespace, thin borders, muted tones, no heavy shadows. Make it fully responsive and mobile-friendly. The product_id should be dynamically pulled from the Shopify product object using Liquid ({{ product.id }}).
+    Build a custom product reviews section that uses the Judge.me JavaScript SDK to fetch and display reviews in a luxury editorial Dossier-style UI. Use the Judge.me public API token "lE-kQ1qbvvxbIKiDqkDA30TGpPw" and shop domain "yj2f0t-t1.myshopify.com". The block should: use the Judge.me Reviews Widget SDK (https://cdn.judge.me/widget.js) to load reviews without CORS issues, render review cards with star rating (SVG stars), reviewer name, review date, review title, review body, and verified badge if applicable. Include client-side sorting (most recent, highest rated, lowest rated). Include a "Write a Review" button that opens the Judge.me review form modal. Show aggregate rating summary at the top (average stars, total count, rating breakdown bars). Style everything in a minimal luxury editorial aesthetic — clean sans-serif typography, generous whitespace, thin borders, muted tones, no heavy shadows. Make it fully responsive and mobile-friendly. The product_id should be dynamically pulled from the Shopify product object using Liquid ({{ product.id }}).
 {% enddoc %}
 {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
 
@@ -232,186 +232,9 @@
     color: {{ block.settings.muted_text_color }};
   }
 
-  .ai-reviews-modal-{{ ai_gen_id }} {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    z-index: 9999;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-
-  .ai-reviews-modal-{{ ai_gen_id }}.active {
-    display: flex;
-  }
-
-  .ai-reviews-modal-content-{{ ai_gen_id }} {
-    background-color: {{ block.settings.background_color }};
-    max-width: 600px;
-    width: 100%;
-    max-height: 90vh;
-    overflow-y: auto;
-    padding: {{ block.settings.modal_padding }}px;
-    border: {{ block.settings.border_thickness }}px solid {{ block.settings.border_color }};
-  }
-
-  .ai-reviews-modal-header-{{ ai_gen_id }} {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 32px;
-    padding-bottom: 20px;
-    border-bottom: {{ block.settings.border_thickness }}px solid {{ block.settings.border_color }};
-  }
-
-  .ai-reviews-modal-title-{{ ai_gen_id }} {
-    font-family: {{ block.settings.heading_font.family }}, sans-serif;
-    font-size: 24px;
-    font-weight: 400;
-    letter-spacing: {{ block.settings.letter_spacing }}px;
-    text-transform: {{ block.settings.text_transform }};
-    margin: 0;
-    color: {{ block.settings.heading_color }};
-  }
-
-  .ai-reviews-modal-close-{{ ai_gen_id }} {
-    background: none;
-    border: none;
-    font-size: 28px;
-    cursor: pointer;
-    color: {{ block.settings.text_color }};
-    padding: 0;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .ai-reviews-form-{{ ai_gen_id }} {
-    display: grid;
-    gap: 24px;
-  }
-
-  .ai-reviews-form-group-{{ ai_gen_id }} {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .ai-reviews-form-label-{{ ai_gen_id }} {
-    font-size: 13px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    color: {{ block.settings.text_color }};
-  }
-
-  .ai-reviews-form-input-{{ ai_gen_id }},
-  .ai-reviews-form-textarea-{{ ai_gen_id }} {
-    padding: 12px 16px;
-    border: {{ block.settings.border_thickness }}px solid {{ block.settings.border_color }};
-    background-color: transparent;
-    font-family: inherit;
-    font-size: 14px;
-    color: {{ block.settings.text_color }};
-  }
-
-  .ai-reviews-form-textarea-{{ ai_gen_id }} {
-    min-height: 120px;
-    resize: vertical;
-  }
-
-  .ai-reviews-star-selector-{{ ai_gen_id }} {
-    display: flex;
-    gap: 8px;
-  }
-
-  .ai-reviews-star-btn-{{ ai_gen_id }} {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    width: 32px;
-    height: 32px;
-    transition: transform 0.2s ease;
-  }
-
-  .ai-reviews-star-btn-{{ ai_gen_id }}:hover {
-    transform: scale(1.1);
-  }
-
-  .ai-reviews-star-btn-{{ ai_gen_id }}:focus {
-    outline: 2px solid {{ block.settings.border_color }};
-    outline-offset: 2px;
-    border-radius: 4px;
-  }
-
-  .ai-reviews-star-btn-{{ ai_gen_id }} svg {
-    width: 100%;
-    height: 100%;
-    fill: {{ block.settings.star_empty_color }};
-    transition: fill 0.2s ease;
-  }
-
-  .ai-reviews-star-btn-{{ ai_gen_id }}:hover svg {
-    fill: {{ block.settings.star_fill_color }};
-  }
-
-  .ai-reviews-star-btn-{{ ai_gen_id }}.active svg {
-    fill: {{ block.settings.star_fill_color }};
-  }
-
-  .ai-reviews-form-submit-{{ ai_gen_id }} {
-    padding: 14px 40px;
-    background-color: {{ block.settings.button_background }};
-    color: {{ block.settings.button_text_color }};
-    border: {{ block.settings.border_thickness }}px solid {{ block.settings.button_border_color }};
-    font-family: inherit;
-    font-size: 13px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    justify-self: start;
-  }
-
-  .ai-reviews-form-submit-{{ ai_gen_id }}:hover {
-    background-color: {{ block.settings.button_hover_background }};
-    color: {{ block.settings.button_hover_text }};
-  }
-
-  .ai-reviews-form-submit-{{ ai_gen_id }}:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .ai-reviews-form-message-{{ ai_gen_id }} {
-    padding: 12px 16px;
-    font-size: 14px;
-    border: {{ block.settings.border_thickness }}px solid;
-  }
-
-  .ai-reviews-form-message-{{ ai_gen_id }}.success {
-    background-color: {{ block.settings.success_background }};
-    color: {{ block.settings.success_text }};
-    border-color: {{ block.settings.success_border }};
-  }
-
-  .ai-reviews-form-message-{{ ai_gen_id }}.error {
-    background-color: {{ block.settings.error_background }};
-    color: {{ block.settings.error_text }};
-    border-color: {{ block.settings.error_border }};
-  }
-
-  .ai-reviews-rating-error-{{ ai_gen_id }} {
-    font-size: 12px;
-    color: {{ block.settings.error_text }};
-    margin-top: 4px;
+  /* Hide Judge.me default widget */
+  .judgeme-widget {
+    display: none !important;
   }
 
   @media screen and (max-width: 749px) {
@@ -441,41 +264,30 @@
     .ai-reviews-title-{{ ai_gen_id }} {
       font-size: {{ block.settings.title_size | times: 0.8 }}px;
     }
-
-    .ai-reviews-modal-content-{{ ai_gen_id }} {
-      padding: {{ block.settings.modal_padding | times: 0.7 }}px;
-    }
   }
 {% endstyle %}
 
-<judge-me-reviews-{{ ai_gen_id }}
-  class="ai-reviews-dossier-{{ ai_gen_id }}"
-  data-product-id="{{ product.id }}"
-  data-api-token="lE-kQ1qbvvxbIKiDqkDA30TGpPw"
-  data-private-api-token="iklABK2zmVhlgPFwVNj3JpEgmeM"
-  data-shop-domain="yj2f0t-t1.myshopify.com"
-  {{ block.shopify_attributes }}
->
+<div class="ai-reviews-dossier-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
   <div class="ai-reviews-container-{{ ai_gen_id }}">
     <div class="ai-reviews-header-{{ ai_gen_id }}">
       <h2 class="ai-reviews-title-{{ ai_gen_id }}">{{ block.settings.section_title }}</h2>
       
       <div class="ai-reviews-summary-{{ ai_gen_id }}">
         <div class="ai-reviews-summary-left-{{ ai_gen_id }}">
-          <div class="ai-reviews-avg-rating-{{ ai_gen_id }}" data-avg-rating>—</div>
-          <div class="ai-reviews-stars-display-{{ ai_gen_id }}" data-avg-stars></div>
-          <div class="ai-reviews-total-count-{{ ai_gen_id }}" data-total-count>Loading reviews...</div>
+          <div class="ai-reviews-avg-rating-{{ ai_gen_id }}" id="avg-rating-{{ ai_gen_id }}">—</div>
+          <div class="ai-reviews-stars-display-{{ ai_gen_id }}" id="avg-stars-{{ ai_gen_id }}"></div>
+          <div class="ai-reviews-total-count-{{ ai_gen_id }}" id="total-count-{{ ai_gen_id }}">Loading reviews...</div>
         </div>
         
-        <div class="ai-reviews-breakdown-{{ ai_gen_id }}" data-breakdown>
+        <div class="ai-reviews-breakdown-{{ ai_gen_id }}" id="breakdown-{{ ai_gen_id }}">
           {% for i in (1..5) %}
             {% assign star_num = 6 | minus: i %}
             <div class="ai-reviews-breakdown-row-{{ ai_gen_id }}">
               <div class="ai-reviews-breakdown-label-{{ ai_gen_id }}">{{ star_num }} stars</div>
               <div class="ai-reviews-breakdown-bar-{{ ai_gen_id }}">
-                <div class="ai-reviews-breakdown-fill-{{ ai_gen_id }}" data-bar="{{ star_num }}" style="width: 0%"></div>
+                <div class="ai-reviews-breakdown-fill-{{ ai_gen_id }}" id="bar-{{ star_num }}-{{ ai_gen_id }}" style="width: 0%"></div>
               </div>
-              <div class="ai-reviews-breakdown-count-{{ ai_gen_id }}" data-count="{{ star_num }}">0</div>
+              <div class="ai-reviews-breakdown-count-{{ ai_gen_id }}" id="count-{{ star_num }}-{{ ai_gen_id }}">0</div>
             </div>
           {% endfor %}
         </div>
@@ -485,282 +297,60 @@
     <div class="ai-reviews-controls-{{ ai_gen_id }}">
       <div class="ai-reviews-sort-{{ ai_gen_id }}">
         <label class="ai-reviews-sort-label-{{ ai_gen_id }}" for="sort-{{ ai_gen_id }}">Sort by</label>
-        <select class="ai-reviews-sort-select-{{ ai_gen_id }}" id="sort-{{ ai_gen_id }}" data-sort-select>
+        <select class="ai-reviews-sort-select-{{ ai_gen_id }}" id="sort-{{ ai_gen_id }}">
           <option value="recent">Most recent</option>
           <option value="highest">Highest rated</option>
           <option value="lowest">Lowest rated</option>
         </select>
       </div>
       
-      <button class="ai-reviews-write-btn-{{ ai_gen_id }}" data-write-review-btn>
+      <button class="ai-reviews-write-btn-{{ ai_gen_id }}" id="write-review-btn-{{ ai_gen_id }}">
         Write a review
       </button>
     </div>
 
-    <div class="ai-reviews-list-{{ ai_gen_id }}" data-reviews-list>
+    <div class="ai-reviews-list-{{ ai_gen_id }}" id="reviews-list-{{ ai_gen_id }}">
       <div class="ai-reviews-loading-{{ ai_gen_id }}">Loading reviews...</div>
     </div>
   </div>
+</div>
 
-  <div class="ai-reviews-modal-{{ ai_gen_id }}" data-modal>
-    <div class="ai-reviews-modal-content-{{ ai_gen_id }}">
-      <div class="ai-reviews-modal-header-{{ ai_gen_id }}">
-        <h3 class="ai-reviews-modal-title-{{ ai_gen_id }}">Write a review</h3>
-        <button class="ai-reviews-modal-close-{{ ai_gen_id }}" data-modal-close aria-label="Close modal">×</button>
-      </div>
-
-      <form class="ai-reviews-form-{{ ai_gen_id }}" data-review-form>
-        <div class="ai-reviews-form-group-{{ ai_gen_id }}">
-          <label class="ai-reviews-form-label-{{ ai_gen_id }}" for="review-name-{{ ai_gen_id }}">Name</label>
-          <input
-            type="text"
-            id="review-name-{{ ai_gen_id }}"
-            class="ai-reviews-form-input-{{ ai_gen_id }}"
-            name="name"
-            required
-          >
-        </div>
-
-        <div class="ai-reviews-form-group-{{ ai_gen_id }}">
-          <label class="ai-reviews-form-label-{{ ai_gen_id }}" for="review-email-{{ ai_gen_id }}">Email</label>
-          <input
-            type="email"
-            id="review-email-{{ ai_gen_id }}"
-            class="ai-reviews-form-input-{{ ai_gen_id }}"
-            name="email"
-            required
-          >
-        </div>
-
-        <div class="ai-reviews-form-group-{{ ai_gen_id }}">
-          <label class="ai-reviews-form-label-{{ ai_gen_id }}">Rating <span style="color: {{ block.settings.muted_text_color }};">(required)</span></label>
-          <div class="ai-reviews-star-selector-{{ ai_gen_id }}" data-star-selector>
-            {% for i in (1..5) %}
-              <button type="button" class="ai-reviews-star-btn-{{ ai_gen_id }}" data-star-value="{{ i }}" tabindex="0" aria-label="{{ i }} star{{ i | pluralize }}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                </svg>
-              </button>
-            {% endfor %}
-          </div>
-          <input type="hidden" name="rating" data-rating-input value="" required>
-          <div class="ai-reviews-rating-error-{{ ai_gen_id }}" style="color: {{ block.settings.error_text }}; font-size: 12px; margin-top: 4px; display: none;">Please select a rating</div>
-        </div>
-
-        <div class="ai-reviews-form-group-{{ ai_gen_id }}">
-          <label class="ai-reviews-form-label-{{ ai_gen_id }}" for="review-title-{{ ai_gen_id }}">Review title</label>
-          <input
-            type="text"
-            id="review-title-{{ ai_gen_id }}"
-            class="ai-reviews-form-input-{{ ai_gen_id }}"
-            name="title"
-            required
-          >
-        </div>
-
-        <div class="ai-reviews-form-group-{{ ai_gen_id }}">
-          <label class="ai-reviews-form-label-{{ ai_gen_id }}" for="review-body-{{ ai_gen_id }}">Review</label>
-          <textarea
-            id="review-body-{{ ai_gen_id }}"
-            class="ai-reviews-form-textarea-{{ ai_gen_id }}"
-            name="body"
-            required
-          ></textarea>
-        </div>
-
-        <div class="ai-reviews-form-message-{{ ai_gen_id }}" data-form-message style="display: none;"></div>
-
-        <button type="submit" class="ai-reviews-form-submit-{{ ai_gen_id }}" data-submit-btn>
-          Submit review
-        </button>
-      </form>
-    </div>
-  </div>
-</judge-me-reviews-{{ ai_gen_id }}>
+<!-- Judge.me Widget -->
+<div id="judgeme_product_reviews" class="judgeme-widget" data-product-id="{{ product.id }}" style="display: none;"></div>
 
 <script>
   (function() {
-    class JudgeMeReviews{{ ai_gen_id }} extends HTMLElement {
-      constructor() {
-        super();
-        this.productId = this.dataset.productId;
-        this.apiToken = this.dataset.apiToken;
-        this.privateApiToken = this.dataset.privateApiToken;
-        this.shopDomain = this.dataset.shopDomain;
-        this.reviews = [];
-        this.currentSort = 'recent';
-      }
-
-      connectedCallback() {
-        this.cacheElements();
-        this.attachEventListeners();
-        this.fetchReviews();
-      }
-
-      cacheElements() {
-        this.reviewsList = this.querySelector('[data-reviews-list]');
-        this.sortSelect = this.querySelector('[data-sort-select]');
-        this.writeReviewBtn = this.querySelector('[data-write-review-btn]');
-        this.modal = this.querySelector('[data-modal]');
-        this.modalClose = this.querySelector('[data-modal-close]');
-        this.reviewForm = this.querySelector('[data-review-form]');
-        this.starSelector = this.querySelector('[data-star-selector]');
-        this.ratingInput = this.querySelector('[data-rating-input]');
-        this.submitBtn = this.querySelector('[data-submit-btn]');
-        this.formMessage = this.querySelector('[data-form-message]');
-        this.avgRatingEl = this.querySelector('[data-avg-rating]');
-        this.avgStarsEl = this.querySelector('[data-avg-stars]');
-        this.totalCountEl = this.querySelector('[data-total-count]');
-      }
-
-      attachEventListeners() {
-        this.sortSelect.addEventListener('change', () => {
-          this.currentSort = this.sortSelect.value;
-          this.renderReviews();
-        });
-
-        this.writeReviewBtn.addEventListener('click', () => {
-          this.openModal();
-        });
-
-        this.modalClose.addEventListener('click', () => {
-          this.closeModal();
-        });
-
-        this.modal.addEventListener('click', (e) => {
-          if (e.target === this.modal) {
-            this.closeModal();
-          }
-        });
-
-        this.starSelector.querySelectorAll('[data-star-value]').forEach((btn) => {
-          btn.addEventListener('click', () => {
-            const value = parseInt(btn.dataset.starValue);
-            this.setRating(value);
-          });
-          
-          btn.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              const value = parseInt(btn.dataset.starValue);
-              this.setRating(value);
-            }
-          });
-        });
-
-        this.reviewForm.addEventListener('submit', (e) => {
-          e.preventDefault();
-          this.submitReview();
-        });
-      }
-
-      async fetchReviews() {
-        try {
-          if (!this.productId) {
-            this.reviewsList.innerHTML = `<div class="ai-reviews-error-{{ ai_gen_id }}">Product ID not found. Please ensure this block is used on a product page.</div>`;
-            return;
-          }
-
-          const url = `https://judge.me/api/v1/reviews?api_token=${this.apiToken}&shop_domain=${this.shopDomain}&product_id=${this.productId}`;
-          const response = await fetch(url);
-          
-          if (!response.ok) {
-            throw new Error('Failed to fetch reviews');
-          }
-
-          const data = await response.json();
-          this.reviews = data.reviews || [];
-          this.renderSummary();
-          this.renderReviews();
-        } catch (error) {
-          console.error('Error fetching reviews:', error);
-          this.reviewsList.innerHTML = `<div class="ai-reviews-error-{{ ai_gen_id }}">Unable to load reviews. Please try again later.</div>`;
+    // Initialize Judge.me Widget
+    if (typeof jdgm !== 'undefined') {
+      jdgm.init();
+    } else {
+      // Load Judge.me widget script
+      var script = document.createElement('script');
+      script.src = 'https://cdn.judge.me/widget.js';
+      script.async = true;
+      script.onload = function() {
+        if (typeof jdgm !== 'undefined') {
+          jdgm.init();
         }
-      }
+      };
+      document.head.appendChild(script);
+    }
 
-      renderSummary() {
-        if (this.reviews.length === 0) {
-          this.avgRatingEl.textContent = '—';
-          this.avgStarsEl.innerHTML = '';
-          this.totalCountEl.textContent = 'No reviews yet';
-          return;
-        }
+    // Custom review rendering with Judge.me data
+    function renderCustomReviews{{ ai_gen_id }}() {
+      const productId = {{ product.id | json }};
+      const reviewsList = document.getElementById('reviews-list-{{ ai_gen_id }}');
+      const avgRatingEl = document.getElementById('avg-rating-{{ ai_gen_id }}');
+      const avgStarsEl = document.getElementById('avg-stars-{{ ai_gen_id }}');
+      const totalCountEl = document.getElementById('total-count-{{ ai_gen_id }}');
+      const sortSelect = document.getElementById('sort-{{ ai_gen_id }}');
+      const writeReviewBtn = document.getElementById('write-review-btn-{{ ai_gen_id }}');
+      
+      let reviews = [];
+      let currentSort = 'recent';
 
-        const totalRating = this.reviews.reduce((sum, review) => sum + (review.rating || 0), 0);
-        const avgRating = (totalRating / this.reviews.length).toFixed(1);
-        
-        this.avgRatingEl.textContent = avgRating;
-        this.avgStarsEl.innerHTML = this.renderStars(parseFloat(avgRating));
-        this.totalCountEl.textContent = `${this.reviews.length} ${this.reviews.length === 1 ? 'review' : 'reviews'}`;
-
-        const breakdown = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
-        this.reviews.forEach((review) => {
-          const rating = review.rating || 0;
-          if (rating >= 1 && rating <= 5) {
-            breakdown[rating]++;
-          }
-        });
-
-        for (let i = 1; i <= 5; i++) {
-          const percentage = this.reviews.length > 0 ? (breakdown[i] / this.reviews.length) * 100 : 0;
-          const barEl = this.querySelector(`[data-bar="${i}"]`);
-          const countEl = this.querySelector(`[data-count="${i}"]`);
-          
-          if (barEl) barEl.style.width = `${percentage}%`;
-          if (countEl) countEl.textContent = breakdown[i];
-        }
-      }
-
-      renderReviews() {
-        if (this.reviews.length === 0) {
-          this.reviewsList.innerHTML = `<div class="ai-reviews-empty-{{ ai_gen_id }}">No reviews yet. Be the first to write one!</div>`;
-          return;
-        }
-
-        const sortedReviews = this.sortReviews([...this.reviews]);
-        
-        this.reviewsList.innerHTML = sortedReviews.map((review) => {
-          const date = new Date(review.created_at);
-          const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-          
-          // Handle different response structures from Judge.me API
-          const reviewerName = review.reviewer?.name || review.name || 'Anonymous';
-          const reviewTitle = review.title || '';
-          const reviewBody = review.body || review.content || '';
-          const verified = review.verified || review.verified_buyer || false;
-          
-          return `
-            <div class="ai-reviews-card-{{ ai_gen_id }}">
-              <div class="ai-reviews-card-header-{{ ai_gen_id }}">
-                <div class="ai-reviews-card-stars-{{ ai_gen_id }}">
-                  ${this.renderStars(review.rating)}
-                </div>
-                <div class="ai-reviews-card-date-{{ ai_gen_id }}">${formattedDate}</div>
-              </div>
-              ${reviewTitle ? `<h3 class="ai-reviews-card-title-{{ ai_gen_id }}">${this.escapeHtml(reviewTitle)}</h3>` : ''}
-              <div class="ai-reviews-card-body-{{ ai_gen_id }}">${this.escapeHtml(reviewBody)}</div>
-              <div class="ai-reviews-card-footer-{{ ai_gen_id }}">
-                <div class="ai-reviews-card-author-{{ ai_gen_id }}">${this.escapeHtml(reviewerName)}</div>
-                ${verified ? `<span class="ai-reviews-verified-badge-{{ ai_gen_id }}">Verified buyer</span>` : ''}
-              </div>
-            </div>
-          `;
-        }).join('');
-      }
-
-      sortReviews(reviews) {
-        switch (this.currentSort) {
-          case 'highest':
-            return reviews.sort((a, b) => b.rating - a.rating);
-          case 'lowest':
-            return reviews.sort((a, b) => a.rating - b.rating);
-          case 'recent':
-          default:
-            return reviews.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-        }
-      }
-
-      renderStars(rating) {
+      // Function to render stars
+      function renderStars(rating) {
         const fullStars = Math.floor(rating);
         const hasHalfStar = rating % 1 >= 0.5;
         let starsHtml = '';
@@ -781,131 +371,163 @@
         return starsHtml;
       }
 
-      setRating(value) {
-        this.ratingInput.value = value;
-        this.starSelector.querySelectorAll('[data-star-value]').forEach((btn) => {
-          const btnValue = parseInt(btn.dataset.starValue);
-          if (btnValue <= value) {
-            btn.classList.add('active');
-          } else {
-            btn.classList.remove('active');
-          }
-        });
-        
-        // Hide error message when rating is selected
-        const errorEl = this.querySelector('.ai-reviews-rating-error-{{ ai_gen_id }}');
-        if (errorEl) {
-          errorEl.style.display = 'none';
-        }
-      }
-
-      async submitReview() {
-        const formData = new FormData(this.reviewForm);
-        const rating = formData.get('rating');
-        
-        // Validate rating
-        if (!rating || rating === '' || rating === '0') {
-          const errorEl = this.querySelector('.ai-reviews-rating-error-{{ ai_gen_id }}');
-          if (errorEl) {
-            errorEl.style.display = 'block';
-          }
-          this.showFormMessage('Please select a rating', 'error');
-          return;
-        }
-
-        const data = {
-          shop_domain: this.shopDomain,
-          platform: 'shopify',
-          product_id: this.productId,
-          email: formData.get('email'),
-          name: formData.get('name'),
-          rating: parseInt(rating),
-          title: formData.get('title'),
-          body: formData.get('body')
-        };
-
-        this.submitBtn.disabled = true;
-        this.submitBtn.textContent = 'Submitting...';
-
-        try {
-          const response = await fetch(`https://judge.me/api/v1/reviews?api_token=${this.privateApiToken}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ review: data })
-          });
-
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Failed to submit review');
-          }
-
-          const result = await response.json();
-          
-          if (result.review) {
-            this.showFormMessage('Thank you! Your review has been submitted and is pending approval.', 'success');
-            this.reviewForm.reset();
-            this.setRating(0);
-            
-            setTimeout(() => {
-              this.closeModal();
-              this.fetchReviews();
-            }, 2000);
-          } else {
-            throw new Error('Review submission failed');
-          }
-        } catch (error) {
-          console.error('Review submission error:', error);
-          this.showFormMessage(`Unable to submit review: ${error.message}. Please try again.`, 'error');
-        } finally {
-          this.submitBtn.disabled = false;
-          this.submitBtn.textContent = 'Submit review';
-        }
-      }
-
-      showFormMessage(message, type) {
-        this.formMessage.textContent = message;
-        this.formMessage.className = `ai-reviews-form-message-{{ ai_gen_id }} ${type}`;
-        this.formMessage.style.display = 'block';
-      }
-
-      openModal() {
-        this.modal.classList.add('active');
-        this.formMessage.style.display = 'none';
-        
-        // Hide rating error message
-        const errorEl = this.querySelector('.ai-reviews-rating-error-{{ ai_gen_id }}');
-        if (errorEl) {
-          errorEl.style.display = 'none';
-        }
-        
-        document.body.style.overflow = 'hidden';
-      }
-
-      closeModal() {
-        this.modal.classList.remove('active');
-        this.reviewForm.reset();
-        this.setRating(0);
-        this.formMessage.style.display = 'none';
-        
-        // Hide rating error message
-        const errorEl = this.querySelector('.ai-reviews-rating-error-{{ ai_gen_id }}');
-        if (errorEl) {
-          errorEl.style.display = 'none';
-        }
-        
-        document.body.style.overflow = '';
-      }
-
-      escapeHtml(text) {
+      // Function to escape HTML
+      function escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
       }
+
+      // Render reviews
+      function renderReviews() {
+        if (reviews.length === 0) {
+          reviewsList.innerHTML = `<div class="ai-reviews-empty-{{ ai_gen_id }}">No reviews yet. Be the first to write one!</div>`;
+          return;
+        }
+
+        let sortedReviews = [...reviews];
+        switch (currentSort) {
+          case 'highest':
+            sortedReviews.sort((a, b) => b.rating - a.rating);
+            break;
+          case 'lowest':
+            sortedReviews.sort((a, b) => a.rating - b.rating);
+            break;
+          case 'recent':
+          default:
+            sortedReviews.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        }
+
+        reviewsList.innerHTML = sortedReviews.map((review) => {
+          const date = new Date(review.created_at);
+          const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+          const reviewerName = review.reviewer?.name || review.name || 'Anonymous';
+          const reviewTitle = review.title || '';
+          const reviewBody = review.body || review.content || '';
+          const verified = review.verified || review.verified_buyer || false;
+
+          return `
+            <div class="ai-reviews-card-{{ ai_gen_id }}">
+              <div class="ai-reviews-card-header-{{ ai_gen_id }}">
+                <div class="ai-reviews-card-stars-{{ ai_gen_id }}">
+                  ${renderStars(review.rating)}
+                </div>
+                <div class="ai-reviews-card-date-{{ ai_gen_id }}">${formattedDate}</div>
+              </div>
+              ${reviewTitle ? `<h3 class="ai-reviews-card-title-{{ ai_gen_id }}">${escapeHtml(reviewTitle)}</h3>` : ''}
+              <div class="ai-reviews-card-body-{{ ai_gen_id }}">${escapeHtml(reviewBody)}</div>
+              <div class="ai-reviews-card-footer-{{ ai_gen_id }}">
+                <div class="ai-reviews-card-author-{{ ai_gen_id }}">${escapeHtml(reviewerName)}</div>
+                ${verified ? `<span class="ai-reviews-verified-badge-{{ ai_gen_id }}">Verified buyer</span>` : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Render summary
+      function renderSummary() {
+        if (reviews.length === 0) {
+          avgRatingEl.textContent = '—';
+          avgStarsEl.innerHTML = '';
+          totalCountEl.textContent = 'No reviews yet';
+          return;
+        }
+
+        const totalRating = reviews.reduce((sum, review) => sum + (review.rating || 0), 0);
+        const avgRating = (totalRating / reviews.length).toFixed(1);
+
+        avgRatingEl.textContent = avgRating;
+        avgStarsEl.innerHTML = renderStars(parseFloat(avgRating));
+        totalCountEl.textContent = `${reviews.length} ${reviews.length === 1 ? 'review' : 'reviews'}`;
+
+        const breakdown = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+        reviews.forEach((review) => {
+          const rating = review.rating || 0;
+          if (rating >= 1 && rating <= 5) {
+            breakdown[rating]++;
+          }
+        });
+
+        for (let i = 1; i <= 5; i++) {
+          const percentage = reviews.length > 0 ? (breakdown[i] / reviews.length) * 100 : 0;
+          const barEl = document.getElementById(`bar-${i}-{{ ai_gen_id }}`);
+          const countEl = document.getElementById(`count-${i}-{{ ai_gen_id }}`);
+          
+          if (barEl) barEl.style.width = `${percentage}%`;
+          if (countEl) countEl.textContent = breakdown[i];
+        }
+      }
+
+      // Fetch reviews from Judge.me widget
+      function fetchReviews() {
+        // Try to get reviews from Judge.me widget
+        if (typeof jdgm !== 'undefined' && jdgm.getReviews) {
+          reviews = jdgm.getReviews(productId) || [];
+          renderSummary();
+          renderReviews();
+        } else {
+          // Fallback: use Judge.me public API (may have CORS issues)
+          const apiToken = 'lE-kQ1qbvvxbIKiDqkDA30TGpPw';
+          const shopDomain = 'yj2f0t-t1.myshopify.com';
+          
+          fetch(`https://judge.me/api/v1/reviews?api_token=${apiToken}&shop_domain=${shopDomain}&product_id=${productId}`)
+            .then(response => response.json())
+            .then(data => {
+              reviews = data.reviews || [];
+              renderSummary();
+              renderReviews();
+            })
+            .catch(error => {
+              console.error('Error fetching reviews:', error);
+              reviewsList.innerHTML = `<div class="ai-reviews-error-{{ ai_gen_id }}">Unable to load reviews. Please try again later.</div>`;
+            });
+        }
+      }
+
+      // Event listeners
+      sortSelect.addEventListener('change', () => {
+        currentSort = sortSelect.value;
+        renderReviews();
+      });
+
+      writeReviewBtn.addEventListener('click', () => {
+        // Trigger Judge.me review form
+        if (typeof jdgm !== 'undefined' && jdgm.openReviewForm) {
+          jdgm.openReviewForm(productId);
+        } else {
+          // Fallback: try to find Judge.me write review button
+          const judgemeWriteBtn = document.querySelector('.jdgm-write-review-btn');
+          if (judgemeWriteBtn) {
+            judgemeWriteBtn.click();
+          } else {
+            alert('Review form is loading. Please try again in a moment.');
+          }
+        }
+      });
+
+      // Initialize
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', fetchReviews);
+      } else {
+        fetchReviews();
+      }
+
+      // Poll for Judge.me widget to be ready
+      let pollCount = 0;
+      const pollInterval = setInterval(() => {
+        pollCount++;
+        if (typeof jdgm !== 'undefined' && jdgm.getReviews) {
+          clearInterval(pollInterval);
+          fetchReviews();
+        } else if (pollCount > 20) {
+          clearInterval(pollInterval);
+        }
+      }, 500);
     }
 
-    customElements.define('judge-me-reviews-{{ ai_gen_id }}', JudgeMeReviews{{ ai_gen_id }});
+    // Initialize custom reviews
+    renderCustomReviews{{ ai_gen_id }}();
   })();
 </script>
 
