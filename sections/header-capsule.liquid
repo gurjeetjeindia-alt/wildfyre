@@ -90,12 +90,13 @@
 
   .site-header__cart {
     position: relative;
+    z-index: 1;
   }
 
   .site-header__cart-count {
     position: absolute;
-    top: -6px;
-    right: -10px;
+    top: -8px;
+    right: -12px;
     background: #fff;
     color: #000;
     font-size: 0.6rem;
@@ -107,13 +108,15 @@
     align-items: center;
     justify-content: center;
     line-height: 1;
+    z-index: 2;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
   }
 
   /* Mobile cart count - smaller */
   @media (max-width: 749px) {
     .site-header__cart-count {
-      top: -4px;
-      right: -6px;
+      top: -6px;
+      right: -8px;
       width: 12px;
       height: 12px;
       font-size: 0.5rem;
