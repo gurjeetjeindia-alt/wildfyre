@@ -73,6 +73,25 @@
   height:22px;
   cursor:pointer;
   color:#111;
+  position:relative;
+}
+
+.cart-count-bubble{
+  position:absolute;
+  top:-5px;
+  right:-8px;
+  background:#000;
+  color:#fff;
+  font-size:10px;
+  font-weight:700;
+  min-width:18px;
+  height:18px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 4px;
+  line-height:1;
 }
 
 .wf-header.scrolled{
@@ -133,6 +152,15 @@
     width:20px;
     height:20px;
   }
+
+  .cart-count-bubble{
+    top:-3px;
+    right:-6px;
+    min-width:16px;
+    height:16px;
+    font-size:9px;
+    padding:0 3px;
+  }
 }
 
 @media(min-width:750px) and (max-width:989px){
@@ -160,6 +188,15 @@
   .wf-icon{
     width:20px;
     height:20px;
+  }
+
+  .cart-count-bubble{
+    top:-4px;
+    right:-7px;
+    min-width:17px;
+    height:17px;
+    font-size:9px;
+    padding:0 3px;
   }
 }
 
@@ -218,12 +255,19 @@
         </svg>
       </a>
 
-      <a href="/cart">
+      <a href="/cart" style="position:relative;">
         <svg class="wf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="9" cy="21" r="1"></circle>
           <circle cx="20" cy="21" r="1"></circle>
           <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
         </svg>
+        {%- if cart != empty -%}
+          <div class="cart-count-bubble">
+            {%- if cart.item_count < 100 -%}
+              <span aria-hidden="true">{{ cart.item_count }}</span>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
       </a>
 
     </div>
