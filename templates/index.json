@@ -267,6 +267,7 @@
       "blocks": {
         "ai_gen_block_cd4f803_F8mKfC": {
           "type": "ai_gen_block_cd4f803",
+          "disabled": true,
           "settings": {
             "popup_enabled": true,
             "popup_delay": 3,
