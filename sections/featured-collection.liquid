@@ -119,6 +119,24 @@
     line-height: 1;
     color: #111;
     margin-bottom: 12px;
+    position: relative;
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .collection__title .title::after {
+    content: '';
+    display: block;
+    width: 42px;
+    height: 2px;
+    margin-top: 14px;
+    background: #111;
+    transform-origin: left center;
+    transition: width 0.3s ease;
+  }
+
+  .collection__title:hover .title::after {
+    width: 72px;
   }
 
   .collection__description {
@@ -153,7 +171,17 @@
   }
 
   .collection .card-wrapper:hover {
-    transform: none !important;
+    transform: translateY(-4px) !important;
+    z-index: 1;
+  }
+
+  .collection .card-wrapper {
+    transition: transform 0.3s ease;
+  }
+
+  .collection .card-wrapper:focus-within {
+    transform: translateY(-4px) !important;
+    z-index: 1;
   }
 
   .collection .card-wrapper:hover .card--card:before,
@@ -174,6 +202,19 @@
   .collection .card .media {
     background-color: transparent !important;
     border: none !important;
+  }
+
+  .collection.section-{{ section.id }}-padding .card__media {
+    overflow: hidden;
+  }
+
+  .collection.section-{{ section.id }}-padding .card__media .media img:first-child {
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .collection.section-{{ section.id }}-padding .card-wrapper:hover .card__media .media img:first-child,
+  .collection.section-{{ section.id }}-padding .card-wrapper:focus-within .card__media .media img:first-child {
+    transform: scale(1.035) !important;
   }
 
   .collection.section-{{ section.id }}-padding .card__content {
@@ -197,6 +238,15 @@
     letter-spacing: 0.03em !important;
     line-height: 1.1 !important;
     margin-bottom: 0.75rem !important;
+  }
+
+  .collection.section-{{ section.id }}-padding .card__heading a {
+    transition: color 0.25s ease;
+  }
+
+  .collection.section-{{ section.id }}-padding .card-wrapper:hover .card__heading a,
+  .collection.section-{{ section.id }}-padding .card-wrapper:focus-within .card__heading a {
+    color: #777;
   }
 
   .collection.section-{{ section.id }}-padding .card__media,
@@ -239,9 +289,39 @@
   }
 
   @media(max-width: 749px) {
+    .collection.section-{{ section.id }}-padding .collection__title.title-wrapper {
+      padding: 2rem 1.5rem 1.5rem !important;
+    }
+
     .collection__title .title {
       font-size: clamp(2rem, 8vw, 2.6rem);
       letter-spacing: 0.02em;
+    }
+
+    .collection.section-{{ section.id }}-padding .card__content {
+      padding: 1.25rem 0.9rem 1rem !important;
+    }
+
+    .collection.section-{{ section.id }}-padding .card__information .card__heading {
+      font-size: 1.55rem !important;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .collection .card-wrapper,
+    .collection.section-{{ section.id }}-padding .card__media .media img:first-child,
+    .collection__title .title::after {
+      transition: none;
+    }
+
+    .collection .card-wrapper:hover,
+    .collection .card-wrapper:focus-within {
+      transform: none !important;
+    }
+
+    .collection.section-{{ section.id }}-padding .card-wrapper:hover .card__media .media img:first-child,
+    .collection.section-{{ section.id }}-padding .card-wrapper:focus-within .card__media .media img:first-child {
+      transform: none !important;
     }
   }
 {%- endstyle -%}
