@@ -1,0 +1,97 @@
+{%- comment -%}
+  Product fragrance details
+
+  Preferred data source: Product metafields in the `custom` namespace:
+  - main_notes
+  - top_notes
+  - heart_notes
+  - base_notes
+
+  The handle-based values below keep the initial Wildfyre catalogue complete
+  until those metafields are populated in Shopify Admin. Metafields always
+  take precedence, so additional products require no theme changes.
+{%- endcomment -%}
+
+{%- assign fallback_description = blank -%}
+{%- assign fallback_main_notes = blank -%}
+{%- assign fallback_top_notes = blank -%}
+{%- assign fallback_heart_notes = blank -%}
+{%- assign fallback_base_notes = blank -%}
+
+{%- case product.handle -%}
+  {%- when 'wild-chills' -%}
+    {%- assign fallback_description = 'Wild, icy-cold, electric and deep blue. Bergamot and oceanic notes dive into marine air, herbal tea and ozonic freshness. Sandalwood closes with a warm depth beneath the wild, chilling cold.' -%}
+    {%- assign fallback_main_notes = 'Bergamot · Ozonic Accord · Marine Notes · Herbal Tea · Sandalwood · Musk' -%}
+    {%- assign fallback_top_notes = 'Bergamot · Orange · Marine Accord' -%}
+    {%- assign fallback_heart_notes = 'Herbal Tea · Ozonic Accord' -%}
+    {%- assign fallback_base_notes = 'Sandalwood · Musk' -%}
+  {%- when 'amalfi' -%}
+    {%- assign fallback_description = 'A fresh escape to the Amalfi Coast. An icy burst of bergamot opens into an aromatic heart of lavender and geranium, grounded by smooth cedarwood. Crisp, airy and effortlessly sophisticated.' -%}
+    {%- assign fallback_main_notes = 'Bergamot · Lavender · Cedarwood' -%}
+    {%- assign fallback_top_notes = 'Bergamot · Icy Accord' -%}
+    {%- assign fallback_heart_notes = 'Lavender · Geranium · Citrus Accord' -%}
+    {%- assign fallback_base_notes = 'Cedarwood · Amber · Musk' -%}
+  {%- when 'oud-for-darknights' -%}
+    {%- assign fallback_description = 'A tribute to the dark side of oud. Sensual fruits and warm nutmeg open the night, revealing precious agarwood at its heart. As the darkness deepens, musk and patchouli emerge, leaving behind a dark, sensual trail.' -%}
+    {%- assign fallback_main_notes = 'Sensual Fruits · Berries · Oud · Musk · Patchouli' -%}
+    {%- assign fallback_top_notes = 'Sensual Berries · Nutmeg · Lavender' -%}
+    {%- assign fallback_heart_notes = 'Agarwood (Oud)' -%}
+    {%- assign fallback_base_notes = 'Patchouli · Musk' -%}
+  {%- when 'tobacco-money' -%}
+    {%- assign fallback_description = 'A celebration of dark luxury. Rich tobacco leaves blend with creamy vanilla, creating a warm, seductive aura that feels effortlessly elegant. Dark, smooth and addictive.' -%}
+    {%- assign fallback_main_notes = 'Tobacco Leaves · Spices · Creamy Vanilla · Woods' -%}
+    {%- assign fallback_top_notes = 'Tobacco Leaf · Spices' -%}
+    {%- assign fallback_heart_notes = 'Vanilla · Tonka Bean · Cacao' -%}
+    {%- assign fallback_base_notes = 'Woody Notes · Amber · Musk' -%}
+  {%- when 'butterfly-kisses' -%}
+    {%- assign fallback_description = 'Juicy berries and mandarin orange bloom into exquisite jasmine and vanilla, melting into amber resin and velvety woods. Sweet, feminine and irresistibly captivating.' -%}
+    {%- assign fallback_main_notes = 'Juicy Berries · Mandarin Orange · Jasmine · Vanilla · Amber Resin · Woods' -%}
+    {%- assign fallback_top_notes = 'Blackcurrant · Strawberry · Mandarin Orange' -%}
+    {%- assign fallback_heart_notes = 'Jasmine · Vanilla' -%}
+    {%- assign fallback_base_notes = 'Warm Amber · Patchouli · Oakmoss' -%}
+  {%- when 'intimissi' -%}
+    {%- assign fallback_description = 'An intimate expression of sensuality. Luminous jasmine sambac and orange blossom melt into creamy vanilla and warm amber, settling on a soft sandalwood base that lingers close to the skin.' -%}
+    {%- assign fallback_main_notes = 'Jasmine · Jasmine Sambac · Orange Blossom · Warm Amber · Vanilla' -%}
+    {%- assign fallback_top_notes = 'Jasmine Sambac · Ambergris' -%}
+    {%- assign fallback_heart_notes = 'Vanilla · Orange Blossom' -%}
+    {%- assign fallback_base_notes = 'Sandalwood · Warm Amber · Vanilla Absolute' -%}
+{%- endcase -%}
+
+{%- assign main_notes = product.metafields.custom.main_notes.value | default: fallback_main_notes -%}
+{%- assign top_notes = product.metafields.custom.top_notes.value | default: fallback_top_notes -%}
+{%- assign heart_notes = product.metafields.custom.heart_notes.value | default: fallback_heart_notes -%}
+{%- assign base_notes = product.metafields.custom.base_notes.value | default: fallback_base_notes -%}
+
+{%- if product.description == blank and fallback_description != blank -%}
+  <div class="product__description rte quick-add-hidden">
+    <p>{{ fallback_description }}</p>
+  </div>
+{%- endif -%}
+
+{%- if main_notes != blank or top_notes != blank or heart_notes != blank or base_notes != blank -%}
+  <style>
+    .fragrance-notes { margin: 0; }
+    .fragrance-notes > div + div { margin-top: 1.2rem; }
+    .fragrance-notes dt { font-weight: 600; }
+    .fragrance-notes dd { margin: 0.35rem 0 0; }
+  </style>
+  <div class="product__accordion accordion quick-add-hidden">
+    <details open>
+      <summary>
+        <div class="summary__title">
+          {% render 'icon-accordion', icon: 'perfume' %}
+          <h2 class="h4 accordion__title">Fragrance notes</h2>
+        </div>
+        {{- 'icon-caret.svg' | inline_asset_content -}}
+      </summary>
+      <div class="accordion__content rte">
+        <dl class="fragrance-notes">
+          {%- if main_notes != blank -%}<div><dt>Main notes</dt><dd>{{ main_notes }}</dd></div>{%- endif -%}
+          {%- if top_notes != blank -%}<div><dt>Top notes</dt><dd>{{ top_notes }}</dd></div>{%- endif -%}
+          {%- if heart_notes != blank -%}<div><dt>Heart notes</dt><dd>{{ heart_notes }}</dd></div>{%- endif -%}
+          {%- if base_notes != blank -%}<div><dt>Base notes</dt><dd>{{ base_notes }}</dd></div>{%- endif -%}
+        </dl>
+      </div>
+    </details>
+  </div>
+{%- endif -%}
