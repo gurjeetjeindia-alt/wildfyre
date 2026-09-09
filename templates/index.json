@@ -41,9 +41,6 @@
     },
     "featured_collection_NErq4q": {
       "type": "featured-collection",
-      "custom_css": [
-        ".card__note {display: none;}"
-      ],
       "name": "t:sections.featured-collection.presets.name",
       "settings": {
         "collection": "new-arrivals",
@@ -126,50 +123,6 @@
         "show_text_below": true,
         "accessibility_info": "Slideshow about our brand"
       }
-    },
-    "1783755980e5fcd4a4": {
-      "type": "_blocks",
-      "blocks": {
-        "ai_gen_block_42638e0_gWTUnt": {
-          "type": "ai_gen_block_42638e0",
-          "settings": {
-            "collection": "all",
-            "products_limit": 20,
-            "show_header": true,
-            "title": "Featured Collection",
-            "subtitle": "Discover our curated selection",
-            "title_size": 32,
-            "subtitle_size": 16,
-            "title_color": "#121212",
-            "subtitle_color": "#666666",
-            "header_spacing": 40,
-            "section_padding": 60,
-            "edge_padding": 20,
-            "card_gap": 16,
-            "background_color": "#ffffff",
-            "card_width": 280,
-            "card_width_mobile": 220,
-            "image_aspect_ratio": 140,
-            "card_background": "#ffffff",
-            "card_border_radius": 0,
-            "card_info_padding": 20,
-            "text_alignment": "center",
-            "product_title_size": 14,
-            "product_price_size": 13,
-            "product_title_color": "#121212",
-            "product_price_color": "#666666",
-            "hover_lift": 4,
-            "hover_shadow_offset": 12,
-            "hover_shadow_blur": 25,
-            "hover_shadow_opacity": 0.1
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "ai_gen_block_42638e0_gWTUnt"
-      ],
-      "settings": {}
     },
     "custom_liquid_hMTQRi": {
       "type": "custom-liquid",
@@ -274,7 +227,6 @@
     "custom_liquid_4CcqaF",
     "featured_collection_NErq4q",
     "slideshow_pBUmHk",
-    "1783755980e5fcd4a4",
     "custom_liquid_hMTQRi",
     "178385716416096ac0",
     "17845686348854efd1",
