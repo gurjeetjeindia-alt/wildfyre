@@ -70,29 +70,6 @@
     },
     "slideshow_pBUmHk": {
       "type": "slideshow",
-      "blocks": {
-        "slide_4hHdFQ": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/horse-statue-on-trailer.jpg",
-            "image_overlay_opacity": 0,
-            "heading": "STORY OF CRAFTSMANSHIP",
-            "heading_size": "h1",
-            "subheading": "WILDFYRE captures the essence of modern luxury through carefully curated fragrance and visual storytelling.",
-            "button_label": "Button label",
-            "link": "",
-            "button_style_secondary": false,
-            "show_text_box": true,
-            "box_align": "middle-center",
-            "text_alignment": "center",
-            "text_alignment_mobile": "center",
-            "color_scheme": ""
-          }
-        }
-      },
-      "block_order": [
-        "slide_4hHdFQ"
-      ],
       "name": "t:sections.slideshow.presets.name",
       "settings": {
         "layout": "full_bleed",
