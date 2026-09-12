@@ -78,11 +78,6 @@
         "padding_bottom": 0
       }
     },
-    "blocks_9TpwGi": {
-      "type": "_blocks",
-      "name": "Cart discount code",
-      "settings": {}
-    },
     "slideshow_AQbmkK": {
       "type": "slideshow",
       "blocks": {
@@ -148,11 +143,11 @@
       "name": "t:sections.slideshow.presets.name",
       "settings": {
         "layout": "full_bleed",
-        "slide_height": "medium",
-        "slider_visual": "counter",
-        "auto_rotate": false,
-        "change_slides_speed": 5,
-        "image_behavior": "none",
+        "slide_height": "adapt_image",
+        "slider_visual": "numbers",
+        "auto_rotate": true,
+        "change_slides_speed": 3,
+        "image_behavior": "ambient",
         "show_text_below": true,
         "accessibility_info": "Slideshow about our brand"
       }
@@ -164,7 +159,6 @@
     "featured_collection_NErq4q",
     "custom_liquid_K7hdbB",
     "custom_liquid_hMTQRi",
-    "blocks_9TpwGi",
     "slideshow_AQbmkK"
   ]
 }
