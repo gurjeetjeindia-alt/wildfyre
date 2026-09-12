@@ -33,10 +33,10 @@
       "type": "featured-collection",
       "name": "t:sections.featured-collection.presets.name",
       "settings": {
-        "collection": "new-arrivals",
+        "collection": "frontpage",
         "products_to_show": 4,
         "title": "",
-        "heading_size": "hxl",
+        "heading_size": "hxxl",
         "description": "",
         "show_description": false,
         "description_style": "body",
