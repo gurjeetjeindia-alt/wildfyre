@@ -73,9 +73,9 @@
       ],
       "settings": {
         "color_scheme": "scheme-1",
-        "media_size": "large",
-        "gallery_layout": "stacked",
-        "mobile_thumbnails": "hide",
+        "media_size": "small",
+        "gallery_layout": "thumbnail_slider",
+        "mobile_thumbnails": "show",
         "media_position": "right",
         "image_zoom": "hover",
         "hide_variants": true,
