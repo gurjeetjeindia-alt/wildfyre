@@ -10,10 +10,10 @@
 {
   "current": {
     "logo_width": 210,
-    "type_header_font": "archivo_black_n4",
-    "heading_scale": 100,
+    "type_header_font": "bayon_n4",
+    "heading_scale": 150,
     "type_body_font": "bayon_n4",
-    "body_scale": 105,
+    "body_scale": 120,
     "page_width": 1600,
     "spacing_sections": 0,
     "spacing_grid_horizontal": 8,
