@@ -1,0 +1,329 @@
+{% comment %}
+  WILDFYRE - Product Image Slideshow
+  Automatically displays all images attached to the current product.
+{% endcomment %}
+
+<section class="wf-product-slideshow" id="WFProductSlideshow-{{ section.id }}">
+
+  <div class="wf-slider">
+
+    <button class="wf-arrow wf-prev" type="button" aria-label="Previous image">
+      &#10094;
+    </button>
+
+    <div class="wf-slides">
+
+      {% for media in product.media %}
+        {% if media.media_type == 'image' %}
+
+          <div class="wf-slide {% if forloop.first %}wf-active{% endif %}">
+            <img
+              src="{{ media | image_url: width: 1600 }}"
+              srcset="
+                {{ media | image_url: width: 600 }} 600w,
+                {{ media | image_url: width: 1000 }} 1000w,
+                {{ media | image_url: width: 1600 }} 1600w
+              "
+              sizes="(max-width: 749px) 100vw, 70vw"
+              alt="{{ media.alt | escape | default: product.title }}"
+              loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+              width="{{ media.width }}"
+              height="{{ media.height }}"
+            >
+          </div>
+
+        {% endif %}
+      {% endfor %}
+
+    </div>
+
+    <button class="wf-arrow wf-next" type="button" aria-label="Next image">
+      &#10095;
+    </button>
+
+  </div>
+
+
+  <!-- DOTS -->
+
+  <div class="wf-dots">
+
+    {% assign image_count = 0 %}
+
+    {% for media in product.media %}
+      {% if media.media_type == 'image' %}
+
+        {% assign image_count = image_count | plus: 1 %}
+
+        <button
+          class="wf-dot {% if image_count == 1 %}wf-dot-active{% endif %}"
+          type="button"
+          data-slide="{{ image_count | minus: 1 }}"
+          aria-label="Go to image {{ image_count }}">
+        </button>
+
+      {% endif %}
+    {% endfor %}
+
+  </div>
+
+</section>
+
+
+<style>
+
+#wf-product-slideshow-{{ section.id }} {
+  width: 100%;
+}
+
+.wf-product-slideshow {
+  width: 100%;
+  position: relative;
+  margin: 0 auto;
+}
+
+.wf-slider {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.wf-slides {
+  display: flex;
+  width: 100%;
+}
+
+.wf-slide {
+  min-width: 100%;
+  width: 100%;
+  display: none;
+  position: relative;
+}
+
+.wf-slide.wf-active {
+  display: block;
+}
+
+.wf-slide img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+
+/* ARROWS */
+
+.wf-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+
+  width: 44px;
+  height: 44px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: rgba(255,255,255,0.85);
+  color: #111;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 22px;
+
+  transition: all .25s ease;
+}
+
+.wf-arrow:hover {
+  background: #fff;
+  transform: translateY(-50%) scale(1.05);
+}
+
+.wf-prev {
+  left: 18px;
+}
+
+.wf-next {
+  right: 18px;
+}
+
+
+/* DOTS */
+
+.wf-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  gap: 8px;
+
+  margin-top: 18px;
+}
+
+.wf-dot {
+  width: 7px;
+  height: 7px;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 50%;
+
+  background: #c7c7c7;
+
+  cursor: pointer;
+
+  transition: all .25s ease;
+}
+
+.wf-dot-active {
+  width: 24px;
+  border-radius: 10px;
+  background: #111;
+}
+
+
+/* MOBILE */
+
+@media screen and (max-width: 749px) {
+
+  .wf-arrow {
+    width: 36px;
+    height: 36px;
+    font-size: 17px;
+  }
+
+  .wf-prev {
+    left: 10px;
+  }
+
+  .wf-next {
+    right: 10px;
+  }
+
+  .wf-dots {
+    margin-top: 12px;
+  }
+
+}
+
+</style>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const section = document.querySelector(
+    "#WFProductSlideshow-{{ section.id }}"
+  );
+
+  if (!section) return;
+
+  const slides = section.querySelectorAll(".wf-slide");
+  const dots = section.querySelectorAll(".wf-dot");
+
+  const prev = section.querySelector(".wf-prev");
+  const next = section.querySelector(".wf-next");
+
+  let current = 0;
+
+
+  function showSlide(index) {
+
+    if (index < 0) {
+      index = slides.length - 1;
+    }
+
+    if (index >= slides.length) {
+      index = 0;
+    }
+
+    slides.forEach((slide, i) => {
+      slide.classList.toggle("wf-active", i === index);
+    });
+
+    dots.forEach((dot, i) => {
+      dot.classList.toggle("wf-dot-active", i === index);
+    });
+
+    current = index;
+  }
+
+
+  if (next) {
+    next.addEventListener("click", function () {
+      showSlide(current + 1);
+    });
+  }
+
+
+  if (prev) {
+    prev.addEventListener("click", function () {
+      showSlide(current - 1);
+    });
+  }
+
+
+  dots.forEach((dot, index) => {
+
+    dot.addEventListener("click", function () {
+      showSlide(index);
+    });
+
+  });
+
+
+  /* SWIPE SUPPORT */
+
+  let startX = 0;
+  let endX = 0;
+
+  const slider = section.querySelector(".wf-slider");
+
+  slider.addEventListener("touchstart", function (e) {
+    startX = e.touches[0].clientX;
+  }, { passive: true });
+
+
+  slider.addEventListener("touchend", function (e) {
+
+    endX = e.changedTouches[0].clientX;
+
+    const difference = startX - endX;
+
+    if (Math.abs(difference) > 50) {
+
+      if (difference > 0) {
+        showSlide(current + 1);
+      } else {
+        showSlide(current - 1);
+      }
+
+    }
+
+  }, { passive: true });
+
+
+});
+
+</script>
+
+
+{% schema %}
+{
+  "name": "WF Product Slideshow",
+  "settings": [],
+  "presets": [
+    {
+      "name": "WF Product Slideshow"
+    }
+  ]
+}
+{% endschema %}
