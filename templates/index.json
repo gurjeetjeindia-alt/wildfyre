@@ -29,35 +29,6 @@
         "padding_bottom": 0
       }
     },
-    "featured_collection_NErq4q": {
-      "type": "featured-collection",
-      "name": "t:sections.featured-collection.presets.name",
-      "settings": {
-        "collection": "new-arrivals",
-        "products_to_show": 4,
-        "title": "",
-        "heading_size": "hxl",
-        "description": "",
-        "show_description": false,
-        "description_style": "body",
-        "columns_desktop": 4,
-        "enable_desktop_slider": true,
-        "full_width": false,
-        "show_view_all": true,
-        "view_all_style": "solid",
-        "color_scheme": "",
-        "image_ratio": "square",
-        "image_shape": "default",
-        "show_secondary_image": true,
-        "show_vendor": true,
-        "show_rating": true,
-        "quick_add": "standard",
-        "columns_mobile": "2",
-        "swipe_on_mobile": true,
-        "padding_top": 60,
-        "padding_bottom": 60
-      }
-    },
     "custom_liquid_K7hdbB": {
       "type": "custom-liquid",
       "name": "MEN WOMEN TAB",
@@ -66,43 +37,6 @@
         "color_scheme": "",
         "padding_top": 0,
         "padding_bottom": 0
-      }
-    },
-    "slideshow_pBUmHk": {
-      "type": "slideshow",
-      "blocks": {
-        "slide_4hHdFQ": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/horse-statue-on-trailer.jpg",
-            "image_overlay_opacity": 0,
-            "heading": "STORY OF CRAFTSMANSHIP",
-            "heading_size": "h1",
-            "subheading": "WILDFYRE captures the essence of modern luxury through carefully curated fragrance and visual storytelling.",
-            "button_label": "Button label",
-            "link": "",
-            "button_style_secondary": false,
-            "show_text_box": true,
-            "box_align": "middle-center",
-            "text_alignment": "center",
-            "text_alignment_mobile": "center",
-            "color_scheme": ""
-          }
-        }
-      },
-      "block_order": [
-        "slide_4hHdFQ"
-      ],
-      "name": "t:sections.slideshow.presets.name",
-      "settings": {
-        "layout": "full_bleed",
-        "slide_height": "medium",
-        "slider_visual": "counter",
-        "auto_rotate": false,
-        "change_slides_speed": 5,
-        "image_behavior": "none",
-        "show_text_below": true,
-        "accessibility_info": "Slideshow about our brand"
       }
     },
     "custom_liquid_hMTQRi": {
@@ -205,9 +139,7 @@
   "order": [
     "custom_liquid_AtKUJ6",
     "custom_liquid_4CcqaF",
-    "featured_collection_NErq4q",
     "custom_liquid_K7hdbB",
-    "slideshow_pBUmHk",
     "custom_liquid_hMTQRi",
     "178385716416096ac0",
     "17845686348854efd1",
