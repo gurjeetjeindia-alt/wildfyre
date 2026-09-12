@@ -68,8 +68,63 @@
         "padding_bottom": 0
       }
     },
-    "slideshow_pBUmHk": {
+    "custom_liquid_hMTQRi": {
+      "type": "custom-liquid",
+      "name": "SCROLLING TEXT",
+      "settings": {
+        "custom_liquid": "<style>\n.wildfyre-marquee-section{\n    width:100%;\n    background:#000;\n    overflow:hidden;\n    padding:10px 0;\n    border-top:px solid rgba(255,255,255,.08);\n    border-bottom:1px solid rgba(255,255,255,.08);\n}\n\n.wildfyre-marquee{\n    display:flex;\n    width:max-content;\n    animation:wildfyre-scroll 20s linear infinite;\n}\n\n.wildfyre-marquee:hover{\n    animation-play-state:paused;\n}\n\n.wildfyre-item{\n    color:#fff;\n    font-size:54px;\n    font-weight:500;\n    letter-spacing:.08em;\n    text-transform:uppercase;\n    white-space:nowrap;\n    padding:0 50px;\n    line-height:1;\n}\n\n.wildfyre-dot{\n    opacity:.35;\n    margin-left:30px;\n}\n\n@keyframes wildfyre-scroll{\n\n    0%{\n        transform:translateX(0);\n    }\n\n    100%{\n        transform:translateX(-50%);\n    }\n\n}\n\n@media(max-width:768px){\n\n.wildfyre-marquee-section{\n    padding:22px 0;\n}\n\n.wildfyre-item{\n    font-size:28px;\n    padding:0 30px;\n}\n\n.wildfyre-dot{\n    margin-left:30px;\n}\n\n}\n</style>\n\n<section class=\"wildfyre-marquee-section\">\n\n<div class=\"wildfyre-marquee\">\n\n<div class=\"wildfyre-item\">\nDESIGNER INSPIRED FRAGRANCES\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nCRAFTED IN FRANCE\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nLONG LASTING PERFORMANCE\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nLIMITED BATCH PRODUCTION\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nFREE SHIPPING ABOVE ₹999\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nPREMIUM GLASS BOTTLES\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nEAU DE PARFUM CONCENTRATION\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nMADE FOR MODERN ICONS\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<!-- Duplicate for seamless infinite scroll -->\n\n<div class=\"wildfyre-item\">\nDESIGNER INSPIRED FRAGRANCES\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nCRAFTED IN FRANCE\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nLONG LASTING PERFORMANCE\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nLIMITED BATCH PRODUCTION\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nFREE SHIPPING ABOVE ₹999\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nPREMIUM GLASS BOTTLES\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nEAU DE PARFUM CONCENTRATION\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nMADE FOR MODERN ICONS\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n</div>\n\n</section>",
+        "color_scheme": "",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "blocks_9TpwGi": {
+      "type": "_blocks",
+      "name": "Cart discount code",
+      "settings": {}
+    },
+    "slideshow_AQbmkK": {
       "type": "slideshow",
+      "blocks": {
+        "slide_WxLayr": {
+          "type": "slide",
+          "settings": {
+            "image_overlay_opacity": 0,
+            "heading": "Image slide",
+            "heading_size": "h1",
+            "subheading": "Tell your brand's story through images",
+            "button_label": "Button label",
+            "link": "",
+            "button_style_secondary": false,
+            "show_text_box": true,
+            "box_align": "middle-center",
+            "text_alignment": "center",
+            "text_alignment_mobile": "center",
+            "color_scheme": ""
+          }
+        },
+        "slide_trTmew": {
+          "type": "slide",
+          "settings": {
+            "image_overlay_opacity": 0,
+            "heading": "Image slide",
+            "heading_size": "h1",
+            "subheading": "Tell your brand's story through images",
+            "button_label": "Button label",
+            "link": "",
+            "button_style_secondary": false,
+            "show_text_box": true,
+            "box_align": "middle-center",
+            "text_alignment": "center",
+            "text_alignment_mobile": "center",
+            "color_scheme": ""
+          }
+        }
+      },
+      "block_order": [
+        "slide_WxLayr",
+        "slide_trTmew"
+      ],
       "name": "t:sections.slideshow.presets.name",
       "settings": {
         "layout": "full_bleed",
@@ -81,102 +136,6 @@
         "show_text_below": true,
         "accessibility_info": "Slideshow about our brand"
       }
-    },
-    "custom_liquid_hMTQRi": {
-      "type": "custom-liquid",
-      "name": "SCROLLING TEXT",
-      "settings": {
-        "custom_liquid": "<style>\n.wildfyre-marquee-section{\n    width:100%;\n    background:#000;\n    overflow:hidden;\n    padding:10px 0;\n    border-top:px solid rgba(255,255,255,.08);\n    border-bottom:1px solid rgba(255,255,255,.08);\n}\n\n.wildfyre-marquee{\n    display:flex;\n    width:max-content;\n    animation:wildfyre-scroll 20s linear infinite;\n}\n\n.wildfyre-marquee:hover{\n    animation-play-state:paused;\n}\n\n.wildfyre-item{\n    color:#fff;\n    font-size:54px;\n    font-weight:500;\n    letter-spacing:.08em;\n    text-transform:uppercase;\n    white-space:nowrap;\n    padding:0 50px;\n    line-height:1;\n}\n\n.wildfyre-dot{\n    opacity:.35;\n    margin-left:30px;\n}\n\n@keyframes wildfyre-scroll{\n\n    0%{\n        transform:translateX(0);\n    }\n\n    100%{\n        transform:translateX(-50%);\n    }\n\n}\n\n@media(max-width:768px){\n\n.wildfyre-marquee-section{\n    padding:22px 0;\n}\n\n.wildfyre-item{\n    font-size:28px;\n    padding:0 30px;\n}\n\n.wildfyre-dot{\n    margin-left:30px;\n}\n\n}\n</style>\n\n<section class=\"wildfyre-marquee-section\">\n\n<div class=\"wildfyre-marquee\">\n\n<div class=\"wildfyre-item\">\nDESIGNER INSPIRED FRAGRANCES\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nCRAFTED IN FRANCE\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nLONG LASTING PERFORMANCE\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nLIMITED BATCH PRODUCTION\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nFREE SHIPPING ABOVE ₹999\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nPREMIUM GLASS BOTTLES\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nEAU DE PARFUM CONCENTRATION\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nMADE FOR MODERN ICONS\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<!-- Duplicate for seamless infinite scroll -->\n\n<div class=\"wildfyre-item\">\nDESIGNER INSPIRED FRAGRANCES\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nCRAFTED IN FRANCE\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nLONG LASTING PERFORMANCE\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nLIMITED BATCH PRODUCTION\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nFREE SHIPPING ABOVE ₹999\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nPREMIUM GLASS BOTTLES\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nEAU DE PARFUM CONCENTRATION\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n<div class=\"wildfyre-item\">\nMADE FOR MODERN ICONS\n<span class=\"wildfyre-dot\">•</span>\n</div>\n\n</div>\n\n</section>",
-        "color_scheme": "",
-        "padding_top": 0,
-        "padding_bottom": 0
-      }
-    },
-    "178385716416096ac0": {
-      "type": "_blocks",
-      "blocks": {
-        "ai_gen_block_00b6f36_BawBe6": {
-          "type": "ai_gen_block_00b6f36",
-          "settings": {
-            "mobile_gap": 16,
-            "desktop_width_percent": 100
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "ai_gen_block_00b6f36_BawBe6"
-      ],
-      "settings": {}
-    },
-    "17845686348854efd1": {
-      "type": "_blocks",
-      "blocks": {
-        "ai_gen_block_cd4f803_F8mKfC": {
-          "type": "ai_gen_block_cd4f803",
-          "disabled": true,
-          "settings": {
-            "popup_enabled": true,
-            "popup_delay": 3,
-            "popup_heading": "Exclusive offer",
-            "popup_subheading": "Use this code at checkout for a special discount on your first order",
-            "discount_code": "WELCOME10",
-            "cta_button_label": "Copy code",
-            "overlay_color": "#000000",
-            "overlay_opacity": 60,
-            "popup_background_color": "#ffffff",
-            "popup_text_color": "#121212"
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "ai_gen_block_cd4f803_F8mKfC"
-      ],
-      "settings": {}
-    },
-    "17845689412c28638d": {
-      "type": "_blocks",
-      "settings": {}
-    },
-    "17845693366583685e": {
-      "type": "_blocks",
-      "settings": {}
-    },
-    "17845698177a26ada8": {
-      "type": "_blocks",
-      "settings": {}
-    },
-    "blocks_9TpwGi": {
-      "type": "_blocks",
-      "name": "Cart discount code",
-      "settings": {}
-    },
-    "178457054736523364": {
-      "type": "_blocks",
-      "settings": {}
-    },
-    "17860163234ddb7664": {
-      "type": "_blocks",
-      "blocks": {
-        "ai_gen_block_bbfb264_L7YrDc": {
-          "type": "ai_gen_block_bbfb264",
-          "settings": {
-            "desktop_width_percent": 100,
-            "section_padding": 60,
-            "title_size": 32
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "ai_gen_block_bbfb264_L7YrDc"
-      ],
-      "settings": {}
-    },
-    "178601718344242e31": {
-      "type": "_blocks",
-      "settings": {}
     }
   },
   "order": [
@@ -184,16 +143,8 @@
     "custom_liquid_4CcqaF",
     "featured_collection_NErq4q",
     "custom_liquid_K7hdbB",
-    "slideshow_pBUmHk",
     "custom_liquid_hMTQRi",
-    "178385716416096ac0",
-    "17845686348854efd1",
-    "17845689412c28638d",
-    "17845693366583685e",
-    "17845698177a26ada8",
     "blocks_9TpwGi",
-    "178457054736523364",
-    "17860163234ddb7664",
-    "178601718344242e31"
+    "slideshow_AQbmkK"
   ]
 }
