@@ -86,12 +86,31 @@
     "slideshow_AQbmkK": {
       "type": "slideshow",
       "blocks": {
+        "slide_HhrUki": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/8666B29D-A2AE-40AB-AD70-60C5721B228C.png",
+            "image_overlay_opacity": 0,
+            "heading": "INTIMISSI",
+            "heading_size": "h1",
+            "subheading": "WILDFYRE WOMENS FLORAL COLLECTION",
+            "button_label": "Button label",
+            "link": "",
+            "button_style_secondary": false,
+            "show_text_box": true,
+            "box_align": "middle-center",
+            "text_alignment": "center",
+            "text_alignment_mobile": "center",
+            "color_scheme": "scheme-4"
+          }
+        },
         "slide_WxLayr": {
           "type": "slide",
           "settings": {
-            "image_overlay_opacity": 0,
-            "heading": "Image slide",
-            "heading_size": "h1",
+            "image": "shopify://shop_images/46CA91E2-764C-4404-B2EE-B34807068A82.png",
+            "image_overlay_opacity": 20,
+            "heading": "OUD FOR DARK NIGHTS",
+            "heading_size": "h2",
             "subheading": "Tell your brand's story through images",
             "button_label": "Button label",
             "link": "",
@@ -100,7 +119,7 @@
             "box_align": "middle-center",
             "text_alignment": "center",
             "text_alignment_mobile": "center",
-            "color_scheme": ""
+            "color_scheme": "scheme-3"
           }
         },
         "slide_trTmew": {
@@ -122,6 +141,7 @@
         }
       },
       "block_order": [
+        "slide_HhrUki",
         "slide_WxLayr",
         "slide_trTmew"
       ],
