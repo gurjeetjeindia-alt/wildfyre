@@ -86,24 +86,6 @@
     "slideshow_AQbmkK": {
       "type": "slideshow",
       "blocks": {
-        "slide_HhrUki": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/8666B29D-A2AE-40AB-AD70-60C5721B228C.png",
-            "image_overlay_opacity": 0,
-            "heading": "INTIMISSI",
-            "heading_size": "h1",
-            "subheading": "WILDFYRE WOMENS FLORAL COLLECTION",
-            "button_label": "Button label",
-            "link": "",
-            "button_style_secondary": false,
-            "show_text_box": true,
-            "box_align": "middle-center",
-            "text_alignment": "center",
-            "text_alignment_mobile": "center",
-            "color_scheme": "scheme-4"
-          }
-        },
         "slide_WxLayr": {
           "type": "slide",
           "settings": {
@@ -120,6 +102,24 @@
             "text_alignment": "center",
             "text_alignment_mobile": "center",
             "color_scheme": "scheme-3"
+          }
+        },
+        "slide_HhrUki": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/8666B29D-A2AE-40AB-AD70-60C5721B228C.png",
+            "image_overlay_opacity": 0,
+            "heading": "INTIMISSI",
+            "heading_size": "h1",
+            "subheading": "WILDFYRE WOMENS FLORAL COLLECTION",
+            "button_label": "Button label",
+            "link": "",
+            "button_style_secondary": false,
+            "show_text_box": true,
+            "box_align": "middle-center",
+            "text_alignment": "center",
+            "text_alignment_mobile": "center",
+            "color_scheme": "scheme-4"
           }
         },
         "slide_trTmew": {
@@ -141,8 +141,8 @@
         }
       },
       "block_order": [
-        "slide_HhrUki",
         "slide_WxLayr",
+        "slide_HhrUki",
         "slide_trTmew"
       ],
       "name": "t:sections.slideshow.presets.name",
