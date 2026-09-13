@@ -589,3 +589,12 @@
   ]
 }
 {% endschema %}
+
+<style>
+  /* Hide the text/button box on the main slideshow image */
+  #Slider-{{ section.id }} .slideshow__text-wrapper,
+  #Slider-{{ section.id }} .slideshow__text,
+  #Slider-{{ section.id }} .banner__buttons {
+    display: none !important;
+  }
+</style>
