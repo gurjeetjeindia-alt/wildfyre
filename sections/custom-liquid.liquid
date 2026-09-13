@@ -1,405 +1,570 @@
-{%- style -%}
-  .section-{{ section.id }}-padding {
-    padding-top: calc({{ section.settings.padding_top }}px * 0.75);
-    padding-bottom: calc({{ section.settings.padding_bottom }}px  * 0.75);
-  }
-
-  @media screen and (min-width: 750px) {
-    .section-{{ section.id }}-padding {
-      padding-top: {{ section.settings.padding_top }}px;
-      padding-bottom: {{ section.settings.padding_bottom }}px;
-    }
-  }
-
-  @media screen and (max-width: 749px) {
-    [data-custom-liquid-section="{{ section.id }}"] .wf-luxury {
-      width: 100vw;
-      margin-left: calc(50% - 50vw);
-      margin-right: calc(50% - 50vw);
-    }
-
-    [data-custom-liquid-section="{{ section.id }}"] .wf-split {
-      display: flex !important;
-      flex-wrap: nowrap !important;
-      overflow-x: auto !important;
-      overflow-y: hidden !important;
-      width: 100%;
-      scroll-snap-type: none;
-      scroll-behavior: auto;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-      overscroll-behavior-x: contain;
-      touch-action: pan-y pinch-zoom;
-    }
-
-    [data-custom-liquid-section="{{ section.id }}"] .wf-split::-webkit-scrollbar {
-      display: none;
-    }
-
-    [data-custom-liquid-section="{{ section.id }}"] .wf-split > * {
-      flex: 0 0 100vw;
-      min-width: 100vw;
-      scroll-snap-align: start;
-    }
-
-    [data-custom-liquid-section="{{ section.id }}"] .wf-panel {
-      height: 72vh;
-    }
-
-    [data-custom-liquid-section="{{ section.id }}"] .wf-content {
-      left: 18px;
-      right: 18px;
-      bottom: 18px;
-    }
-  }
-{%- endstyle -%}
-<div class="color-{{ section.settings.color_scheme }} gradient" data-custom-liquid-section="{{ section.id }}">
-  <div class="section-{{ section.id }}-padding">
-    {{ section.settings.custom_liquid }}
-  </div>
-</div>
-
-<script>
-  (function () {
-    const section = document.querySelector('[data-custom-liquid-section="{{ section.id }}"]');
-    if (!section) return;
-
-    const rail = section.querySelector('.wf-split');
-    if (!rail) return;
-
-    const mobileQuery = window.matchMedia('(max-width: 749px)');
-    let stepTimer = 0;
-    let pauseTimer = 0;
-    let syncTimer = 0;
-    let currentIndex = 0;
-    let userInteracting = false;
-    let initialized = false;
-    let baseCount = 0;
-    let trackStart = 0;
-    let trackEnd = 0;
-    let loopWidth = 0;
-    let slideStep = 0;
-    let wrapLock = false;
-    let slides = [];
-
-    function isMobile() {
-      return mobileQuery.matches;
-    }
-
-    function clearTimers() {
-      if (stepTimer) {
-        clearInterval(stepTimer);
-        stepTimer = 0;
-      }
-      if (pauseTimer) {
-        clearTimeout(pauseTimer);
-        pauseTimer = 0;
-      }
-      if (syncTimer) {
-        clearTimeout(syncTimer);
-        syncTimer = 0;
-      }
-    }
-
-    function getSlides() {
-      return Array.from(rail.children).filter((node) => node.classList && node.classList.contains('wf-panel'));
-    }
-
-    function ensureInfiniteTrack() {
-      if (!isMobile() || initialized) return false;
-
-      const originalSlides = getSlides();
-      if (!originalSlides.length) return false;
-      baseCount = originalSlides.length;
-
-      const before = document.createDocumentFragment();
-      const after = document.createDocumentFragment();
-
-      originalSlides.forEach((node) => {
-        before.appendChild(node.cloneNode(true));
-        after.appendChild(node.cloneNode(true));
-      });
-
-      rail.insertBefore(before, rail.firstChild);
-      rail.appendChild(after);
-
-      initialized = true;
-      return true;
-    }
-
-    function syncIndexFromScroll() {
-      if (!slides.length) return;
-
-      const scrollLeft = rail.scrollLeft;
-      let closestIndex = 0;
-      let closestDistance = Infinity;
-
-      slides.forEach((slide, index) => {
-        const distance = Math.abs(slide.offsetLeft - scrollLeft);
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          closestIndex = index;
-        }
-      });
-
-      currentIndex = closestIndex;
-    }
-
-    function measureLoop() {
-      if (!slides.length) return;
-
-      const middleStart = baseCount;
-      const middleEnd = baseCount * 2;
-      const startSlide = slides[middleStart];
-      const endSlide = slides[middleEnd - 1];
-
-      trackStart = startSlide ? startSlide.offsetLeft : 0;
-      trackEnd = endSlide ? endSlide.offsetLeft + endSlide.offsetWidth : 0;
-      loopWidth = Math.max(0, trackEnd - trackStart);
-
-      if (baseCount > 1) {
-        const nextSlide = slides[middleStart + 1];
-        slideStep = nextSlide ? Math.max(1, nextSlide.offsetLeft - startSlide.offsetLeft) : startSlide.offsetWidth || 0;
-      } else {
-        slideStep = startSlide ? startSlide.offsetWidth : 0;
-      }
-    }
-
-    function startAutoScroll() {
-      if (!isMobile() || slides.length === 0 || !slideStep) return;
-
-      if (stepTimer) return;
-
-      stepTimer = window.setInterval(() => {
-        if (!isMobile() || !slides.length) return;
-        if (!userInteracting && !wrapLock) {
-          rail.scrollBy({
-            left: slideStep,
-            behavior: 'smooth',
-          });
-          wrapScrollPosition();
-        }
-      }, 1500);
-    }
-
-    function wrapScrollPosition() {
-      if (!isMobile() || !slides.length || !loopWidth) return;
-      if (wrapLock) return;
-
-      const scrollLeft = rail.scrollLeft;
-      if (scrollLeft >= trackEnd) {
-        wrapLock = true;
-        const previousSnap = rail.style.scrollSnapType;
-        rail.style.scrollSnapType = 'none';
-        rail.scrollLeft = scrollLeft - loopWidth;
-        window.requestAnimationFrame(() => {
-          rail.style.scrollSnapType = previousSnap || '';
-          wrapLock = false;
-        });
-      } else if (scrollLeft < trackStart) {
-        wrapLock = true;
-        const previousSnap = rail.style.scrollSnapType;
-        rail.style.scrollSnapType = 'none';
-        rail.scrollLeft = scrollLeft + loopWidth;
-        window.requestAnimationFrame(() => {
-          rail.style.scrollSnapType = previousSnap || '';
-          wrapLock = false;
-        });
-        return;
-      }
-    }
-
-    function resumeSoon() {
-      if (!isMobile()) return;
-      if (pauseTimer) clearTimeout(pauseTimer);
-      pauseTimer = window.setTimeout(() => {
-        userInteracting = false;
-        syncIndexFromScroll();
-        wrapScrollPosition();
-      }, 700);
-    }
-
-    function bindInteractionPause() {
-      rail.addEventListener('pointerdown', () => {
-        if (!isMobile()) return;
-        userInteracting = true;
-        if (pauseTimer) clearTimeout(pauseTimer);
-      });
-
-      rail.addEventListener('pointerup', resumeSoon);
-      rail.addEventListener('pointercancel', resumeSoon);
-      rail.addEventListener('touchstart', () => {
-        if (!isMobile()) return;
-        userInteracting = true;
-        if (pauseTimer) clearTimeout(pauseTimer);
-      }, { passive: true });
-      rail.addEventListener('touchend', resumeSoon);
-
-      rail.addEventListener('scroll', () => {
-        if (!isMobile()) return;
-        wrapScrollPosition();
-        if (syncTimer) clearTimeout(syncTimer);
-        syncTimer = window.setTimeout(() => {
-          if (!userInteracting) {
-            syncIndexFromScroll();
-          }
-        }, 80);
-      });
-    }
-
-    function refresh() {
-      clearTimers();
-      if (!isMobile()) {
-        rail.style.scrollSnapType = '';
-        rail.scrollLeft = 0;
-        return;
-      }
-
-      if (!initialized) {
-        ensureInfiniteTrack();
-        bindInteractionPause();
-      }
-
-      slides = getSlides();
-      if (!slides.length) return;
-
-      measureLoop();
-      userInteracting = false;
-      if (!initialized || rail.scrollLeft < trackStart || rail.scrollLeft >= trackEnd) {
-        rail.scrollLeft = trackStart || 0;
-      }
-
-      syncIndexFromScroll();
-      wrapScrollPosition();
-      startAutoScroll();
-    }
-
-    mobileQuery.addEventListener?.('change', refresh);
-    window.addEventListener('resize', refresh);
-    document.addEventListener('shopify:section:load', (event) => {
-      if (event.detail && event.detail.sectionId === '{{ section.id }}') {
-        refresh();
-      }
-    });
-
-    refresh();
-  })();
-</script>
-
-{% schema %}
-{
-  "name": "t:sections.custom-liquid.name",
-  "tag": "section",
-  "class": "section",
-  "settings": [
-    {
-      "type": "liquid",
-      "id": "custom_liquid",
-      "label": "t:sections.custom-liquid.settings.custom_liquid.label",
-      "info": "t:sections.custom-liquid.settings.custom_liquid.info"
-    },
-    {
-      "type": "color_scheme",
-      "id": "color_scheme",
-      "label": "t:sections.all.colors.label",
-      "default": "scheme-1"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.all.padding.section_padding_heading"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "t:sections.all.padding.padding_top",
-      "default": 40
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "t:sections.all.padding.padding_bottom",
-      "default": 52
-    }
-  ],
-  "presets": [
-    {
-      "name": "t:sections.custom-liquid.presets.name"
-    }
-  ]
-}
-{% endschema %}
-
 <style>
-@media screen and (max-width: 768px) {
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@300;400;500&display=swap');
+
+/* ================================
+   WILDFYRE COLLECTION SELECTOR
+================================ */
+
+.wf-luxury {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  background: #000;
+}
+
+/* ================================
+   THREE PANEL GRID
+================================ */
+
+.wf-split {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 100%;
+  height: 100%;
+}
+
+.wf-panel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  text-decoration: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* IMAGE */
+
+.wf-panel img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.5s ease;
+}
+
+.wf-panel:hover img {
+  transform: scale(1.06);
+}
+
+/* DARK OVERLAY */
+
+.wf-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.08),
+    rgba(0,0,0,0.12),
+    rgba(0,0,0,0.78)
+  );
+}
+
+/* ================================
+   COLLECTION TITLE
+================================ */
+
+.wf-title {
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+
+  width: 100%;
+
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(60px, 7vw, 140px);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+
+  color: #fff;
+  text-align: center;
+
+  pointer-events: none;
+}
+
+/* ================================
+   BOTTOM CONTENT
+================================ */
+
+.wf-content {
+  position: absolute;
+  left: 40px;
+  right: 40px;
+  bottom: 40px;
+
+  z-index: 3;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.wf-label {
+  margin-bottom: 10px;
+
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+
+  color: rgba(255,255,255,0.72);
+}
+
+.wf-link {
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+
+  color: #fff;
+}
+
+/* ================================
+   ARROW
+================================ */
+
+.wf-arrow {
+  width: 58px;
+  height: 58px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #fff;
+  color: #000;
+
+  font-size: 22px;
+
+  transition: transform 0.3s ease;
+}
+
+.wf-panel:hover .wf-arrow {
+  transform: scale(1.1);
+}
+
+/* ================================
+   DESKTOP CURSOR
+================================ */
+
+#wf-dot {
+  display: none;
+}
+
+#wf-circle {
+  display: none;
+}
+
+@media (min-width: 769px) {
+
+  #wf-dot {
+    display: block;
+
+    position: fixed;
+
+    width: 10px;
+    height: 10px;
+
+    background: #fff;
+    border-radius: 50%;
+
+    pointer-events: none;
+
+    z-index: 999999;
+
+    transform: translate(-50%, -50%);
+  }
+
+  #wf-circle {
+    display: block;
+
+    position: fixed;
+
+    width: 40px;
+    height: 40px;
+
+    border: 1px solid rgba(255,255,255,0.8);
+    border-radius: 50%;
+
+    pointer-events: none;
+
+    z-index: 999998;
+
+    transform: translate(-50%, -50%);
+
+    transition:
+      width 0.3s ease,
+      height 0.3s ease;
+  }
+
+  .wf-hovering #wf-circle {
+    width: 75px;
+    height: 75px;
+  }
+}
+
+/* ================================
+   MOBILE
+   THREE PANELS SIDE BY SIDE
+================================ */
+
+@media (max-width: 768px) {
 
   .wf-luxury {
-    width: 100% !important;
-    height: 100svh !important;
-    min-height: 100svh !important;
-    overflow: hidden !important;
+    width: 100%;
+    height: 100svh;
+    min-height: 100svh;
+
+    overflow: hidden;
   }
 
   .wf-split {
-    display: grid !important;
-    grid-template-columns: repeat(3, 33.333333%) !important;
-    grid-template-rows: 1fr !important;
-    width: 100% !important;
-    height: 100% !important;
-    gap: 0 !important;
+    display: grid;
+
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+
+    grid-template-rows: 1fr;
+
+    width: 100%;
+    height: 100%;
+
+    margin: 0;
+    padding: 0;
+
+    gap: 0;
   }
 
   .wf-panel {
-    display: block !important;
-    width: 100% !important;
-    height: 100% !important;
-    min-width: 0 !important;
-    min-height: 0 !important;
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    min-width: 0;
+    min-height: 0;
+
+    overflow: hidden;
   }
 
   .wf-panel img {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
   }
+
+  /* MOBILE TITLES */
 
   .wf-title {
-    font-size: 7vw !important;
-    top: 35px !important;
-    white-space: nowrap !important;
+    position: absolute;
+
+    top: 38px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 100%;
+
+    font-size: 7vw;
+    line-height: 1;
+
+    letter-spacing: 0.02em;
+
+    white-space: nowrap;
+
+    text-align: center;
   }
 
+  /* MOBILE BOTTOM CONTENT */
+
   .wf-content {
-    left: 5px !important;
-    right: 5px !important;
-    bottom: 15px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    text-align: center !important;
+    position: absolute;
+
+    left: 4px;
+    right: 4px;
+    bottom: 18px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: flex-end;
+
+    text-align: center;
   }
 
   .wf-label {
-    font-size: 6px !important;
-    letter-spacing: .12em !important;
+    margin-bottom: 6px;
+
+    font-size: 6px;
+    line-height: 1.2;
+
+    letter-spacing: 0.10em;
+
+    white-space: nowrap;
   }
 
   .wf-link {
-    font-size: 7px !important;
-    white-space: nowrap !important;
+    font-size: 7px;
+    line-height: 1.2;
+
+    letter-spacing: 0.06em;
+
+    white-space: nowrap;
   }
 
   .wf-arrow {
-    width: 30px !important;
-    height: 30px !important;
-    font-size: 14px !important;
+    width: 30px;
+    height: 30px;
+
+    margin-top: 10px;
+
+    font-size: 14px;
+  }
+}
+
+/* ================================
+   VERY SMALL PHONES
+================================ */
+
+@media (max-width: 380px) {
+
+  .wf-title {
+    top: 30px;
+    font-size: 6.5vw;
+  }
+
+  .wf-content {
+    bottom: 14px;
+  }
+
+  .wf-label {
+    font-size: 5px;
+  }
+
+  .wf-link {
+    font-size: 6px;
+  }
+
+  .wf-arrow {
+    width: 27px;
+    height: 27px;
+
+    font-size: 13px;
   }
 }
 </style>
+
+
+<!-- CURSOR -->
+
+<div id="wf-dot"></div>
+<div id="wf-circle"></div>
+
+
+<!-- MAIN SECTION -->
+
+<section class="wf-luxury">
+
+  <div class="wf-split">
+
+
+    <!-- MEN -->
+
+    <a
+      href="/collections/men"
+      class="wf-panel"
+    >
+
+      <img
+        src="https://cdn.shopify.com/s/files/1/0906/2835/8514/files/pexels-anna-ginger-2157748733-34952011.jpg?v=1780577945"
+        alt="Wildfyre Men Collection"
+      >
+
+      <div class="wf-title">
+        MEN
+      </div>
+
+      <div class="wf-content">
+
+        <div>
+
+          <div class="wf-label">
+            SIGNATURE COLLECTION
+          </div>
+
+          <div class="wf-link">
+            Explore Collection
+          </div>
+
+        </div>
+
+        <div class="wf-arrow">
+          →
+        </div>
+
+      </div>
+
+    </a>
+
+
+    <!-- WOMEN -->
+
+    <a
+      href="/collections/women"
+      class="wf-panel"
+    >
+
+      <img
+        src="https://cdn.shopify.com/s/files/1/0906/2835/8514/files/pexels-petrovskii-anton-123395531-12900452.jpg?v=1780576839"
+        alt="Wildfyre Women Collection"
+      >
+
+      <div class="wf-title">
+        WOMEN
+      </div>
+
+      <div class="wf-content">
+
+        <div>
+
+          <div class="wf-label">
+            LUXURY COLLECTION
+          </div>
+
+          <div class="wf-link">
+            Explore Collection
+          </div>
+
+        </div>
+
+        <div class="wf-arrow">
+          →
+        </div>
+
+      </div>
+
+    </a>
+
+
+    <!-- UNISEX -->
+
+    <a
+      href="/collections/unisex"
+      class="wf-panel"
+    >
+
+      <img
+        src="https://cdn.shopify.com/s/files/1/0906/2835/8514/files/pexels-andrea-acosta-1058133719-22805432.jpg?v=1780577158"
+        alt="Wildfyre Unisex Collection"
+      >
+
+      <div class="wf-title">
+        UNISEX
+      </div>
+
+      <div class="wf-content">
+
+        <div>
+
+          <div class="wf-label">
+            TIMELESS COLLECTION
+          </div>
+
+          <div class="wf-link">
+            Explore Collection
+          </div>
+
+        </div>
+
+        <div class="wf-arrow">
+          →
+        </div>
+
+      </div>
+
+    </a>
+
+
+  </div>
+
+</section>
+
+
+<script>
+
+(function() {
+
+  const dot = document.getElementById("wf-dot");
+  const circle = document.getElementById("wf-circle");
+
+  if (window.innerWidth > 768 && dot && circle) {
+
+    let mouseX = 0;
+    let mouseY = 0;
+
+    let circleX = 0;
+    let circleY = 0;
+
+    document.addEventListener("mousemove", function(e) {
+
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+
+      dot.style.left = mouseX + "px";
+      dot.style.top = mouseY + "px";
+
+    });
+
+    function animateCursor() {
+
+      circleX += (mouseX - circleX) * 0.15;
+      circleY += (mouseY - circleY) * 0.15;
+
+      circle.style.left = circleX + "px";
+      circle.style.top = circleY + "px";
+
+      requestAnimationFrame(animateCursor);
+
+    }
+
+    animateCursor();
+
+
+    document.querySelectorAll(".wf-panel").forEach(function(panel) {
+
+      panel.addEventListener("mouseenter", function() {
+        document.body.classList.add("wf-hovering");
+      });
+
+      panel.addEventListener("mouseleave", function() {
+        document.body.classList.remove("wf-hovering");
+      });
+
+    });
+
+  }
+
+})();
+
+</script>
