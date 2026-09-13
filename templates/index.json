@@ -81,10 +81,10 @@
     "slideshow_AQbmkK": {
       "type": "slideshow",
       "blocks": {
-        "slide_eLxGCH": {
+        "slide_AiNKjt": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/IMG_0367.jpg",
+            "image": "shopify://shop_images/IMG_0317.jpg",
             "image_overlay_opacity": 0,
             "heading": "Image slide",
             "heading_size": "h1",
@@ -155,7 +155,7 @@
         }
       },
       "block_order": [
-        "slide_eLxGCH",
+        "slide_AiNKjt",
         "slide_rnp7Qg",
         "slide_WxLayr",
         "slide_HhrUki"
