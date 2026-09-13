@@ -34,7 +34,7 @@
       "name": "t:sections.featured-collection.presets.name",
       "settings": {
         "collection": "frontpage",
-        "products_to_show": 2,
+        "products_to_show": 6,
         "title": "",
         "heading_size": "hxxl",
         "description": "",
@@ -52,7 +52,7 @@
         "show_vendor": true,
         "show_rating": true,
         "quick_add": "standard",
-        "columns_mobile": "1",
+        "columns_mobile": "2",
         "swipe_on_mobile": true,
         "padding_top": 60,
         "padding_bottom": 60
